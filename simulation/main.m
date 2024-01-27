@@ -1,3 +1,4 @@
+% ==> Ideal bayesian Observer Simulation
 clear all; close all; clc;
 % ==> lib
 addpath('pfc_functions/');
