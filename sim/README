@@ -1,0 +1,34 @@
+% ==> simulation for F1 panel  
+% simulates a Bayesian model and computes accuracy curves for varying perceptual noise magnitudes
+% computes accuracy for the MAP estimate, MLE, and choices based on the posterior density
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% => run main.m
+
+main.m defines the prior p_cw and samples K ground truth trial orientations (out of seven possible orientations). s0 is a vector of K orientation indices sampled from p_cw.
+
+for a range of sensory noise amplitudes (sigma parameters), main.m runs the function simpredf.m
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In simpredf.m, we compute zero-mean epsilon noise offsets for each ground truth trial orientation, which yields new 'sensory' orientations that are stored in s (these are essentially just jittered versions of the orientations in the ground truth s0 vector)
+Also computes the likelihood and posterior
+
+In calcaccf.m computes the accuracy for MLE, MAP, posterior density, and posterior sample approaches.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+pltf.m plots accuracy based on MLE, MAP and density - and shows the desired effect: decreasing accuracy with more perceptual uncertainty, 
+but less so for estimates based on the posterior.
+
+pltf.m also plots examples 'cw' choice ratios - showing the bias using the MAP estimate, and no bias for the MLE estimate (when comparing two noise magnitudes), but a flattening of the curves in both cases.
+
+pltf.m also plots bias as a function of perceptual uncertainty, and PF model fits to the MLE and MAP simulated choice counts for both the cw and ccw context prior conditions.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+lkadjf.m is a function the carries out the optional summation and adjustment of the likelihood based on truncated values
+
+
