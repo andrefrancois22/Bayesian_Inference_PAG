@@ -286,14 +286,14 @@ close all; clc;
 
 fg = figure(); set(fg,'color','white'); fg.Position = [139 604 1541 358];
 subplot(1,4,1); 
-scatter(slope(14:end,1),slope(14:end,2), 28,'o','filled'); axis square; ylim([0,0.6]); xlim([0,0.6]);
+scatter(slope(14:end,1),slope(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([0,0.6]); xlim([0,0.6]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
 ylabel('Slope high contrast')
 title('JP')
 subplot(1,4,2); 
-scatter(slope(1:13,1),slope(1:13,2), 28,'o','filled'); axis square; ylim([0,0.4]); xlim([0,0.4]);
+scatter(slope(1:13,1),slope(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([0,0.4]); xlim([0,0.4]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
@@ -301,20 +301,16 @@ ylabel('Slope high contrast')
 title('F')
 
 subplot(1,4,3); 
-scatter(bv(14:end,1),bv(14:end,2), 28,'o','filled'); axis square; ylim([-0.4,1.1]); xlim([-0.4,1.1]);
+scatter(bv(14:end,1),bv(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([-0.4,1.1]); xlim([-0.4,1.1]);
 hold on; hold all;
 plot(linspace(-0.4,1,10),linspace(-0.4,1,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
 title('JP')
 subplot(1,4,4); 
-scatter(bv(1:13,1),bv(1:13,2), 28,'o','filled'); axis square; ylim([-0.1,0.65]); xlim([-0.1,0.65]);
+scatter(bv(1:13,1),bv(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([-0.1,0.65]); xlim([-0.1,0.65]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
 title('F')
-
-
-
-
