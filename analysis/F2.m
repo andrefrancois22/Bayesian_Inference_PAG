@@ -248,7 +248,7 @@ title(['r = ',num2str(rFhi), ' p = ',num2str(pFhi)]);
 
 %% ==> Manuscript statistics for slope and bias differences
 
-clc;
+close all; clc;
 % ==> high contrast slopes minus low contrast slopes
 sdiff = slope(:,2) - slope(:,1);
 
