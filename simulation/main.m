@@ -16,7 +16,7 @@ n_o = 51; %7
 assert(mod(n_o,2),'>>>>>> the number of orientations must be odd! <<<<<<')
 
 % ======> sigmas (sensory noise range)
-sigs = linspace(0.25, 8.75, 50); %linspace(0.25, 3.75, 50);
+sigs = linspace(0.25, 12.75, 50); %linspace(0.25, 8.75, 50);  %linspace(0.25, 3.75, 50);
 
 % ======> (1) define a prior pr probability ratio
 fx = 2; % (experiments have a 2x factor)
@@ -35,6 +35,7 @@ LK_TRC_FLAG = 'false';
 
 % ======> number of 'sample' trials per orientation (Robbe's suggestion)
 % => lower case k is just the number of repeat samples for each orientation
+% => grid (rather than random sample)
 k = 100; %1000 
 
 %**** Robbe's suggestion ==> no random sample here.
@@ -126,9 +127,9 @@ startVec_M1 = [0.04 0.04 1 0 0];
 startVec_V2 = [0.04 0.04 3 -15 15];
 LB_M1(1,1)  = 0;                         UB_M1(1,1) = 0.05;      % lapse rate
 LB_M1(2,1)  = 0;                         UB_M1(2,1) = 0.05;      % lapse rate
-LB_M1(3,1)  = 0.1;                       UB_M1(3,1) = 5;         % perceptual uncertainty
-LB_M1(4,1)  = -20;                       UB_M1(4,1) = 20;        % decision criterion (-10->10 range originally)
-LB_M1(5,1)  = -20;                       UB_M1(5,1) = 20;        % decision criterion
+LB_M1(3,1)  = 0.1;                       UB_M1(3,1) = 10;         % perceptual uncertainty
+LB_M1(4,1)  = -200;                      UB_M1(4,1) = 200;        % decision criterion (-10->10 range originally)
+LB_M1(5,1)  = -200;                      UB_M1(5,1) = 200;        % decision criterion
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % orientations - for 7 this becomes { -3, -2, -1, 0, +1, +2, +3 }
