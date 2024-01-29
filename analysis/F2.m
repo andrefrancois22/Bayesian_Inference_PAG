@@ -81,9 +81,12 @@ for iSfln = 1:29
     fprintf('Computed results for session %d of %d... \n',iSfln,29)
 end
 
-%% ==> Fit bias and slope to DV peaks
+%% ==> Fit bias and slope parameters to DV peaks
 
 close all; clc;
+% => plot markers
+clrs = {'b','r'}; mrks = {'o:','*-'};
+    
 % ==> bias and perceptual uncertainty vectors
 bv  = nan(29,2);
 puv = nan(29,2); 
@@ -94,63 +97,62 @@ slope = nan(29,2);
 lss = nan(29,2);
 
 for iSfln =  1:29 
-
-clrs = {'b','r'}; mrks = {'o:','*-'};
-figure(2); set(gcf,'color','white'); 
-clf; axis square;
-
-% => k is contrast
-for k = 1:2    
     
-    % ==> fit linear model with identical slopes and different intercepts
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % ==> ys and x ir orientations
-    y = squeeze(mrx(iSfln,:,k,:));
-    x = or;
-    % ==> fit linear models with identical slopes and different intercepts to
-    % => initial parameter settings
-    p0 = [0,0,0];
-    % ==> two lines - 
-    yh1 = @(p) (p(1)*x + p(2));
-    yh2 = @(p) (p(1)*x + p(2) + p(3));
-    % ==> MSE objective for both lines
-    objective = @(p) sum( (yh1(p) - y(1,:)).^2 + (yh2(p) - y(2,:)).^2 );
-    % ==> overkill - could probably use normal equations optim params...
-    p_opt = fmincon(objective,p0);
-    % => inspect loss
-    lss(iSfln,k) = objective(p_opt);        
+    % ==> draw figure
+    figure(2); set(gcf,'color','white'); 
+    clf; axis square;
 
-    % ==> the bias is the vertical offset (optimal parameter 3 p(3))
-    bv(iSfln,k)  = p_opt(3);
-    % ==> uncertainty is slope
-    puv(iSfln,k) = 1 / p_opt(1); %**** of course it's the inverse! ==> shallower slope is ~larger~ likelihood width      
-    % ==> store slopes
-    slope(iSfln,k) = p_opt(1);
-    
-    % ==> console update
-    fprintf('completed linear model fit for context %d and contrast %k...\n',j,k)           
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    % => k is contrast
+    for k = 1:2    
 
-    
-    % ==> for visibility to inspect curve fits
-    subplot(1,2,k)
-    for j = 1:length(cx)  
-        plot(or,squeeze(mrx(iSfln,j,k,:))',[clrs{j},mrks{k}],'linewidth',1); hold on; hold all;   
-        if j==1
-            % ==> plot line fit          
-            plot(or,yh1(p_opt),['k','h:']);
-        elseif j==2
-            % ==> plot line fit  
-            plot(or,yh2(p_opt),['k','>:']);   
+        % ==> fit linear model with identical slopes and different intercepts
+        % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        % ==> ys and x ir orientations
+        y = squeeze(mrx(iSfln,:,k,:));
+        x = or;
+        % ==> fit linear models with identical slopes and different intercepts to
+        % => initial parameter settings
+        p0 = [0,0,0];
+        % ==> two lines - 
+        yh1 = @(p) (p(1)*x + p(2));
+        yh2 = @(p) (p(1)*x + p(2) + p(3));
+        % ==> MSE objective for both lines
+        objective = @(p) sum( (yh1(p) - y(1,:)).^2 + (yh2(p) - y(2,:)).^2 );
+        % ==> overkill - could probably use normal equations optim params...
+        p_opt = fmincon(objective,p0);
+        % => inspect loss
+        lss(iSfln,k) = objective(p_opt);        
+
+        % ==> the bias is the vertical offset (optimal parameter 3 p(3))
+        bv(iSfln,k)  = p_opt(3);
+        % ==> uncertainty is slope
+        puv(iSfln,k) = 1 / p_opt(1); %**** of course it's the inverse! ==> shallower slope is ~larger~ likelihood width      
+        % ==> store slopes
+        slope(iSfln,k) = p_opt(1);
+
+        % ==> console update
+        fprintf('completed linear model fit for context %d and contrast %k...\n',j,k)           
+        % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+        % ==> for visibility to inspect curve fits
+        subplot(1,2,k)
+        for j = 1:length(cx)  
+            plot(or,squeeze(mrx(iSfln,j,k,:))',[clrs{j},mrks{k}],'linewidth',1); hold on; hold all;   
+            if j==1
+                % ==> plot line fit          
+                plot(or,yh1(p_opt),['k','h:']);
+            elseif j==2
+                % ==> plot line fit  
+                plot(or,yh2(p_opt),['k','>:']);   
+            end
         end
+        title('Peak Average (signed) by stimulus condition and orientation')    
+        title(['Session: ',num2str(iSfln)]);
+        ylabel('Peak Average (signed)');
+        xlabel('Orientation');    
+        ylim([-2,2]);    
     end
-    title('Peak Average (signed) by stimulus condition and orientation')    
-    title(['Session: ',num2str(iSfln)]);
-    ylabel('Peak Average (signed)');
-    xlabel('Orientation');    
-    ylim([-2,2]);    
-end
-%       pause(1)
 end
 
 % ==> display loss
@@ -171,6 +173,7 @@ pJ = puv(14:end,:); pJ = pJ(:);
 clc;
 fprintf('Rank correlation for Friederich is r = %d, and for Jean-Paul is r = %d...\n',rF,rJ)
 
+%% ==> plot results
 
 % F: 1-13; JP: 14-29
 % ==> plot and rank correlation
@@ -193,7 +196,6 @@ legend('Monkey F low contrast', 'Monkey F high contrast', ...
 % ==> plot and rank correlation
 fg = figure(); set(fg,'color','white'); fg.Position = [675 309 1221 653];
 subplot(1,2,1); 
-% ==> spearman correlation
 semilogx(puv(1:13,1),bv(1:13,1),'o', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [1,1,1], 'linewidth', 2, 'markersize',10); axis square;
 hold on; hold all;
 semilogx(puv(1:13,2),bv(1:13,2),'o', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5], 'linewidth', 2, 'markersize',10); axis square; 
@@ -201,7 +203,6 @@ xlabel('log_{10} (perceptual uncertainty (1 / \beta_1))','fontsize',20)
 ylabel('bias (\beta_0)','fontsize',20)
 title(['r = ',num2str(rF), ' p = ',num2str(pvF)]);
 legend('low contrast','High contrast')
-
 subplot(1,2,2); 
 semilogx(puv(14:end,1),bv(14:end,1),'o', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,1,1], 'linewidth', 2, 'markersize',10); axis square; 
 hold on; hold all;
@@ -213,7 +214,6 @@ legend('low contrast','High contrast')
 
 
 % => rank correlation with log10 - (pearson)
-
 % ==> correlations by contrast conditions
 [rFlo, pFlo] = corr(real(log10(puv(1:13,1))),  bv(1:13,1),'type','pearson');
 [rJlo, pJlo] = corr(real(log10(puv(14:end,1))),bv(14:end,1),'type','pearson');
@@ -221,6 +221,7 @@ legend('low contrast','High contrast')
 [rFhi, pFhi] = corr(real(log10(puv(1:13,2))),  bv(1:13,2),'type','pearson');
 [rJhi, pJhi] = corr(real(log10(puv(14:end,2))),bv(14:end,2),'type','pearson');
 
+% ==> draw plots
 figure(); set(gcf,'color','white');
 subplot(2,2,1);
 semilogx(puv(14:end,1),bv(14:end,1),'o', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,1,1], 'linewidth', 2, 'markersize',10); axis square; 
@@ -233,7 +234,6 @@ semilogx(puv(14:end,2),bv(14:end,2),'o', 'markeredgecolor', [1,0.5,0], 'markerfa
 xlabel('log_{10} (perceptual uncertainty (1 / \beta_1))','fontsize',10)
 ylabel('bias (\beta_0)','fontsize',10)
 title(['r = ',num2str(rJhi), ' p = ',num2str(pJhi)]);
-
 subplot(2,2,3);
 semilogx(puv(1:13,1),bv(1:13,1),'o', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [1,1,1], 'linewidth', 2, 'markersize',10); axis square;
 hold on; hold all;
@@ -283,7 +283,6 @@ mdbJ = median(bdiff(14:end));
 %% ==> F2 - slope Hi v slope Lo, and bias Hi v bias Lo
 
 close all; clc;
-
 fg = figure(); set(fg,'color','white'); fg.Position = [139 604 1541 358];
 subplot(1,4,1); 
 scatter(slope(14:end,1),slope(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([0,0.6]); xlim([0,0.6]);
@@ -291,26 +290,25 @@ hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
 ylabel('Slope high contrast')
-title('JP')
+title('Monkey JP')
 subplot(1,4,2); 
 scatter(slope(1:13,1),slope(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([0,0.4]); xlim([0,0.4]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
 ylabel('Slope high contrast')
-title('F')
-
+title('Monkey F')
 subplot(1,4,3); 
 scatter(bv(14:end,1),bv(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([-0.4,1.1]); xlim([-0.4,1.1]);
 hold on; hold all;
 plot(linspace(-0.4,1,10),linspace(-0.4,1,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
-title('JP')
+title('Monkey JP')
 subplot(1,4,4); 
 scatter(bv(1:13,1),bv(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([-0.1,0.65]); xlim([-0.1,0.65]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
-title('F')
+title('Monkey F')
