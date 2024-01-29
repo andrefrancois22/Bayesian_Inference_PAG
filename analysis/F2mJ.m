@@ -6,7 +6,7 @@ drc = '../data/';
 
 % =========================
 % ==> Monkey sessions
-mIDs = 1:13;
+mIDs = 14:29;
 % =========================
 
 % => one way is to store the indexed DVs across sessions
@@ -396,13 +396,9 @@ idxi = S.exp.taskContext == 1 ...
 
 ids = find(idxi == 1);
 
-% ==> nice curves for session 13 (monkey F)
-rd1 = 19; 
-rd2 = 37;
-
-% ==> random choice
-% rd1 = randi(length(ids));
-% rd2 = randi(length(ids));
+% ==> random choice (F2 plot contains data from monkey F)
+rd1 = randi(length(ids));
+rd2 = randi(length(ids));
 
 % => sanity check -> visualize some examples
 ex = ids(rd1);
@@ -421,6 +417,8 @@ hold on; hold all;
 
 
 %% ==> rank correlations for each trial (DV fit & DV real)
+
+close all; clc;
 
 % ==> array containing correlations
 rks = nan(size(ts_m,1),1);
