@@ -1,4 +1,5 @@
 clear all; close all; clc;
+% ==> directories
 dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
 drc = '../data/';
 
