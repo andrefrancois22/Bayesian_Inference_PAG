@@ -3,8 +3,18 @@ clear all; close all; clc;
 dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
 drc = '../data/';
 
-% ==> will store log likelihood ratios etc
-llr = nan(1,29);
+% ==> for storing 4 model design matrices
+% => context 1 & contrast 1
+cx1_cr1_X = cell([29,1]);
+% => context 1 & contrast 2
+cx1_cr2_X = cell([29,1]);
+
+% => context 2 & contrast 1
+cx2_cr1_X = cell([29,1]);
+% => context 2 & contrast 2
+cx2_cr2_X = cell([29,1]);
+
+
 
 % ==> what is the session
 for iSfln = 1:29 
@@ -49,42 +59,67 @@ for iSfln = 1:29
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
     
     % x axis is orientation (the values differ for FN and JP!). Use unique values
-    or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
+    or = unique(ori)'; 
+    cx = unique(ctx)'; 
+    cr = unique(ctr)';
     
-    % ==> glm model design matrix
-    X = [ori, dynran];
-    y = cho;
-    y(y == -1) = 0;
-    
-    % ==> logistic regression (ori and dynran)
-    [b1,~,stats1] = glmfit(X,y,'binomial','link','logit');    
-    % => yhat
-    yh1 = glmval(b1,X,'logit');
-    % ==> model (just orientation)
-    [b0,~,stats0] = glmfit(X(:,1),y,'binomial','link','logit');    
-    % => yhat
-    yh0 = glmval(b0,X(:,1),'logit');
-    
-    % => acc (model 1)
-    acc1 = sum(y==(yh1>=0.5))/length(y);
-    % => acc (null model 0)
-    acc0 = sum(y==(yh0>=0.5))/length(y);
 
-    % ==> store model comparison metric
-    llr(iSfln) = acc1/acc0;
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    % => index context 1, and contrast 1 (low contrast)
+    idx11 = (ctx == 1) & (ctr == cr(1));
+    % 2) ==> dummy coding orientation    
+       
+    % => context 1 & contrast 1
+    cx1_cr1_X{iSfln} = [ori(idx11), dynran(idx11)];
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-%     figure(); plot(1:length(yh1(1:50)),yh1(1:50)>0.5,'r.-');
-%     hold on;
-%     plot(1:length(yh1(1:50)),y(1:50),'bo');
-%     drawnow;
     
     
-    % => console updates...
-%     fprintf('Computed results for session %d of %d... \n',iSfln,29)
-    fprintf('Model 1 Accuracy = %d...\n', acc1)
-    fprintf('Model 0 Accuracy = %d...\n\n', acc0)
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    % => index context 1, and contrast 2 (hi contrast)
+    idx12 = (ctx == 1) & (ctr == cr(2));
+    % 2) ==> dummy coding orientation        
+       
+    % => context 1 & contrast 1
+    cx1_cr2_X{iSfln} = [ori(idx12), dynran(idx12)];    
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    
+    
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    % => index context 2, and contrast 1 (low contrast)
+    idx21 = (ctx == -1) & (ctr == cr(1));
+    % 2) ==> dummy coding orientation        
+       
+    % => context 1 & contrast 1
+    cx2_cr1_X{iSfln} = [ori(idx21), dynran(idx21)];
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    
+    
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    % => index context 2, and contrast 2 (low contrast)
+    idx22 = (ctx == -1) & (ctr == cr(2));
+    % 2) ==> dummy coding orientation        
+       
+    % => context 1 & contrast 1
+    cx2_cr2_X{iSfln} = [ori(idx22), dynran(idx22)];    
+    % ==> behavioral choice outcome is y
+    y22 = cho(idx22);
+    y22(y22 == -1) = 0;
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      
     
 end
+ 
+% % ==> logistic regression (ori and dynran)
+% [b1,~,stats1] = glmfit(X,y,'binomial','link','logit');    
+% % => yhat
+% yh1 = glmval(b1,X,'logit');
+% % ==> model (just orientation)
+% [b0,~,stats0] = glmfit(X(:,1),y,'binomial','link','logit');    
+% % => yhat
+% yh0 = glmval(b0,X(:,1),'logit');
 
 % ==> load dvCatperf data
 dvCatPerf = load([drc,'dvCatPerf.mat'],'dvCatPerf');
@@ -94,3 +129,10 @@ dvCatPerf = dvCatPerf.dvCatPerf;
 
 figure();
 plot(dvCatPerf(idx),llr(idx),'o');
+
+
+
+% figure(); plot(1:length(yh1(1:50)),yh1(1:50)>0.5,'r.-');
+% hold on;
+% plot(1:length(yh1(1:50)),y(1:50),'bo');
+% drawnow;
