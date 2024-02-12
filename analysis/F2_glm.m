@@ -142,6 +142,7 @@ for iSfln = 1:29
 end
 
 %% 
+close all; clc;
 
 % => orientation independent variables index
 oidx = 1;
@@ -229,9 +230,9 @@ for iS = 1:29
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> AIC
-    % => m1 (k = 2)
-    aic_m1 = 4 - 2*sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]);    
-    % => m2 (k = 1)
+    % => m1 (k = 3)
+    aic_m1 = 3 - 2*sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]);    
+    % => m2 (k = 2)
     aic_m0 = 2 - 2*sum([m0ll_11; m0ll_21; m0ll_12; m0ll_22]);
     
     aic_d(iS) = (aic_m0 - aic_m1); 
@@ -240,9 +241,12 @@ for iS = 1:29
 end
 
 % ==> correlation between dvCatPerf and log likelihood ratios
-[rho_llr,p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','pearson') 
+[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','pearson'); 
 % ==> correlation between dvCatPerf and AIC delta
-[rho_aicd_rl,p_aicd_lr] = corr(dvCatPerf(idx)',aic_d(idx)','type','pearson')
+[rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','pearson');
+
+fprintf('correlation between dvCatPerf and log-likelihood ratios r = %d (p = %d)\n', rho_llr, p_llr)
+fprintf('correlation between dvCatPerf and AIC Delta r = %d (p = %d)\n', rho_aicd, p_aicd)
 
 figure(); 
 subplot(2,2,1);
