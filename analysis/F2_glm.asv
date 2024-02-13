@@ -147,12 +147,15 @@ close all; clc;
 % => orientation independent variables index
 oidx = 1;
 
+% ==> log-likelihood ratio
 llr = nan(1,29);
 
 % ==> AIC delta (AIC_0 - AIC_1), where AIC_1 is model 1 (our preferred model)
 aic_d = nan(1,29);
 % ==> probability of the ith model
 aic_p = nan(1,29);
+% ==> BIC delta
+bic_d = nan(1,29);
 
 for iS = 1:29
 
@@ -161,12 +164,10 @@ for iS = 1:29
     [b_m1_11,~,~] = glmfit(cx1_cr1_X{iS}, Y11{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_11 = glmval(b_m1_11, cx1_cr1_X{iS},'logit');
-
     % ==> Null model (just orientation)
     [b_m0_11,~,~] = glmfit(cx1_cr1_X{iS}(:,oidx), Y11{iS},'binomial','link','logit');    
     % => yhat
     yh_m0_11 = glmval(b_m0_11, cx1_cr1_X{iS}(:,oidx),'logit');
-
     % => for computing log likelihood (model 1)
     m1ll_11 = log(yh_m1_11).*Y11{iS} + log(1 - yh_m1_11).*(1 - Y11{iS});
     % => for computing log likelihood (model 0)
@@ -178,17 +179,14 @@ for iS = 1:29
     [b_m1_12,~,~] = glmfit(cx1_cr2_X{iS}, Y12{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_12 = glmval(b_m1_12, cx1_cr2_X{iS},'logit');
-
     % ==> Null model (just orientation)
     [b_m0_12,~,~] = glmfit(cx1_cr2_X{iS}(:,oidx), Y12{iS},'binomial','link','logit');    
     % => yhat
     yh_m0_12 = glmval(b_m0_12, cx1_cr2_X{iS}(:,oidx),'logit');
-
     % => for computing log likelihood (model 1)
     m1ll_12 = log(yh_m1_12).*Y12{iS} + log(1 - yh_m1_12).*(1 - Y12{iS});
     % => for computing log likelihood (model 0)
     m0ll_12 = log(yh_m0_12).*Y12{iS} + log(1 - yh_m0_12).*(1 - Y12{iS});
-
 
 
     % ====> condition 21 (context 2 - low contrast)
@@ -196,12 +194,10 @@ for iS = 1:29
     [b_m1_21,~,~] = glmfit(cx2_cr1_X{iS}, Y21{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_21 = glmval(b_m1_21, cx2_cr1_X{iS},'logit');
-
     % ==> Null model (just orientation)
     [b_m0_21,~,~] = glmfit(cx2_cr1_X{iS}(:,oidx), Y21{iS},'binomial','link','logit');    
     % => yhat
     yh_m0_21 = glmval(b_m0_21, cx2_cr1_X{iS}(:,oidx),'logit');
-
     % => for computing log likelihood (model 1)
     m1ll_21 = log(yh_m1_21).*Y21{iS} + log(1 - yh_m1_21).*(1 - Y21{iS});
     % => for computing log likelihood (model 0)
@@ -213,127 +209,82 @@ for iS = 1:29
     [b_m1_22,~,~] = glmfit(cx2_cr2_X{iS}, Y22{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_22 = glmval(b_m1_22, cx2_cr2_X{iS},'logit');
-
     % ==> Null model (just orientation)
     [b_m0_22,~,~] = glmfit(cx2_cr2_X{iS}(:,oidx), Y22{iS},'binomial','link','logit');    
     % => yhat
     yh_m0_22 = glmval(b_m0_22, cx2_cr2_X{iS}(:,oidx),'logit');
-
     % => for computing log likelihood (model 1)
     m1ll_22 = log(yh_m1_22).*Y22{iS} + log(1 - yh_m1_22).*(1 - Y22{iS});
     % => for computing log likelihood (model 0)
     m0ll_22 = log(yh_m0_22).*Y22{iS} + log(1 - yh_m0_22).*(1 - Y22{iS});    
     
-    % ==> aggregate
+    % ==> aggregate for computing log likelihood (with a sum over all observations)
     m1 = [m1ll_11; m1ll_21; m1ll_12; m1ll_22];
     m0 = [m0ll_11; m0ll_21; m0ll_12; m0ll_22];
+    % ==> log likelihoods
+    ll1 = sum(m1);
+    ll0 = sum(m0);
     
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % ==> log likelihood ratio
-    llr(iS) = sum(m1) - sum(m0);
+    % ==> log (likelihood ratio l1/l0) (difference in log likelihoods e.g. ll1 - ll0)
+    llr(iS) = ll1 - ll0;
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> AIC
     % => m1 (k = 3)
-    aic_m1 = 3/length() - 2*sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]);    
+    k1 = 3;
+    aic_m1 = -2/length(m1)*ll1 + 2*k1/length(m1);    
     % => m0 (k = 2)
-    aic_m0 = 2 - 2*sum([m0ll_11; m0ll_21; m0ll_12; m0ll_22]);
+    k0 = 2;
+    aic_m0 = -2/length(m0)*ll0 + 2*k0/length(m0);
     
+    % ==> choose model with lowest AIC. Quantify this with a difference
+    % => values above 0 indicate 
     aic_d(iS) = (aic_m0 - aic_m1); 
-    aic_p(iS) = exp( (aic_m0 - aic_m1) * 0.5 );
+    %aic_p(iS) = exp( (aic_m0 - aic_m1) * 0.5 );
+    
+    bic_m1 = -2*ll1 + log(length(m1))*k1;
+    bic_m0 = -2*ll0 + log(length(m0))*k0;    
+    % ==> choose model with lowest BIC. Quantify this with a difference
+    bic_d(iS) = (bic_m0 - bic_m1); % ==> want bic_m1 to be less than bic_m0
+    
     
 end
 
 % ==> correlation between dvCatPerf and log likelihood ratios
-[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','pearson'); 
+[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','spearman'); 
 % ==> correlation between dvCatPerf and AIC delta
-[rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','pearson');
+[rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','spearman');
+% ==> correlation between dvCatPerf and BIC delta
+[rho_bicd, p_bicd] = corr(dvCatPerf(idx)',bic_d(idx)','type','spearman');
 
-fprintf('correlation between dvCatPerf and log-likelihood ratios r = %d (p = %d)\n', rho_llr, p_llr)
-fprintf('correlation between dvCatPerf and AIC Delta r = %d (p = %d)\n', rho_aicd, p_aicd)
+fprintf('r between dvCatPerf and log-likelihood ratios r = %d (p = %d)\n', rho_llr, p_llr)
+fprintf('r between dvCatPerf and AIC Delta r = %d (p = %d)\n', rho_aicd, p_aicd)
+fprintf('r between dvCatPerf and BIC Delta r = %d (p = %d)\n', rho_bicd, p_bicd)
 
-figure(); 
-subplot(2,2,1);
-scatter(llr,1:29); 
-subplot(2,2,2);
-scatter(dvCatPerf(idx)',llr(idx)')
-subplot(2,2,3);
-scatter(aic_d,1:29); 
-subplot(2,2,4);
-scatter(dvCatPerf(idx)',aic_d(idx)')
+fg = figure();  set(fg,'Color','w'); fg.Position = [675 241 512 721];
+ax1 = subplot(3,2,1);
+scatter(llr, 1:29, 'filled'); 
+xlabel('log-likelihood ratio'); ylabel('Session'); xlim([-20,max(llr)]); ax1.YTickLabel = [];
+hold on; hold all; plot(zeros(1,30),0:29,'k--');
+subplot(3,2,2);
+scatter(dvCatPerf(idx)',llr(idx)', 'filled');
+xlabel('Choice Predictivity'); ylabel('log-likelihood ratio');
+ax3 = subplot(3,2,3);
+scatter(aic_d, 1:29, 'filled');
+xlabel('AIC \Delta'); ylabel('Session');  xlim([-0.02,max(aic_d)]); ax3.YTickLabel = [];
+hold on; hold all; plot(zeros(1,30),0:29,'k--');
+subplot(3,2,4);
+scatter(dvCatPerf(idx)',aic_d(idx)', 'filled'); 
+xlabel('Choice Predictivity'); ylabel('AIC \Delta');
+ax5 = subplot(3,2,5);
+scatter(bic_d, 1:29, 'filled'); 
+xlabel('BIC \Delta'); ylabel('Session');  xlim([-20,max(bic_d)]); ax5.YTickLabel = [];
+hold on; hold all; plot(zeros(1,30),0:29,'k--');
+subplot(3,2,6);
+scatter(dvCatPerf(idx)',bic_d(idx)', 'filled'); 
+xlabel('Choice Predictivity'); ylabel('BIC \Delta');
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-% %% ==> glm
-% clc;
-% 
-% % ==> store accuracy
-% acc11 = nan(29,1);
-% acc12 = nan(29,1);
-% 
-% % ==> session number
-% for iS = 1:29
-% 
-%     % => orientation independent variables index
-%     oidx = 1;
-% 
-%     % ====> condition 11
-%     % ==> logistic regression (ori and dynran)
-%     [b_m1_11,~,~] = glmfit(cx1_cr1_X{iS}, Y11{iS},'binomial','link','logit');    
-%     % => yhat
-%     yh_m1_11 = glmval(b_m1_11, cx1_cr1_X{iS},'logit');
-% 
-%     % ==> Null model (just orientation)
-%     [b_m0_11,~,~] = glmfit(cx1_cr1_X{iS}(:,oidx), Y11{iS},'binomial','link','logit');    
-%     % => yhat
-%     yh_m0_11 = glmval(b_m0_11, cx1_cr1_X{iS}(:,oidx),'logit');
-% 
-%     % ==> accuracy (model 1)
-%     acc11_m1 = sum((yh_m1_11 >= 0.5) == Y11{iS})/ length(Y11{iS});
-%     % ==> accuracy (model 0)
-%     acc11_m0 = sum((yh_m0_11 >= 0.5) == Y11{iS})/ length(Y11{iS});
-% 
-%     % ==> store accuracy
-%     acc11(iS) = acc11_m1/acc11_m0;
-% 
-% 
-%     % ====> condition 12
-%     % ==> logistic regression (ori and dynran)
-%     [b_m1_12,~,~] = glmfit(cx1_cr2_X{iS}, Y12{iS},'binomial','link','logit');    
-%     % => yhat
-%     yh_m1_12 = glmval(b_m1_12, cx1_cr2_X{iS},'logit');
-% 
-%     % ==> Null model (just orientation)
-%     [b_m0_12,~,~] = glmfit(cx1_cr2_X{iS}(:,oidx), Y12{iS},'binomial','link','logit');    
-%     % => yhat
-%     yh_m0_12 = glmval(b_m0_12, cx1_cr2_X{iS}(:,oidx),'logit');
-% 
-%     % ==> accuracy (model 1)
-%     acc12_m1 = sum((yh_m1_12 >= 0.5) == Y12{iS})/ length(Y12{iS});
-%     % ==> accuracy (model 0)
-%     acc12_m0 = sum((yh_m0_12 >= 0.5) == Y12{iS})/ length(Y12{iS});
-% 
-%     % ==> store accuracy
-%     acc12(iS) = acc12_m1/acc12_m0;
-%     
-%     fprintf('stored accuracy ratio for session %d of %d\n...',iS,29)
-% 
-% end
-% 
-% [~,idx] = sort(dvCatPerf);
-% 
-% corr(dvCatPerf(idx)',acc11(idx))
