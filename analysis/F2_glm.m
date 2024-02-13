@@ -57,18 +57,20 @@ for iSfln = 1:29
     % ==> context, contrast, orientation indicator variables
     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
 
-
+    % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV dynamic range ~~~~~~~~~~~~~~~~~~~~~~~ %
+    alpha = max([max(dvs, [], 2) - dvs(:,1), -(min(dvs, [], 2) - dvs(:,1))], [], 2);
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
+    
     % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV (signed) peak ~~~~~~~~~~~~~~~~~~~~~~~ %
     % ==> get max (maximum is either the positive peak if it's highest, 
     % or abs of negative peak if it's lowest)
-    %mx = [max(dvs, [], 2), abs(min(dvs, [], 2))];
-    %mxv = max(mx, [], 2);
+    mx = [max(dvs, [], 2), abs(min(dvs, [], 2))];
+    mxv = max(mx, [], 2);
     % => signed
-    %mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));
+    % mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));
     
-    % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV dynamic range ~~~~~~~~~~~~~~~~~~~~~~~ %
-    dynran = max([max(dvs, [], 2) - dvs(:,1), -(min(dvs, [], 2) - dvs(:,1))], [], 2);
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
+    % ==> alpha is DV (unsigned) peak
+    % alpha = mxv;
     
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = unique(ori)'; 
@@ -82,7 +84,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation    
        
     % => context 1 & contrast 1
-    cx1_cr1_X{iSfln} = [ori(idx11), dynran(idx11)];
+    cx1_cr1_X{iSfln} = [ori(idx11), alpha(idx11)];
     % ==> behavioral choice outcome is y
     y11 = cho(idx11);
     y11(y11 == -1) = 0;    
@@ -98,7 +100,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation        
        
     % => context 1 & contrast 1
-    cx1_cr2_X{iSfln} = [ori(idx12), dynran(idx12)];    
+    cx1_cr2_X{iSfln} = [ori(idx12), alpha(idx12)];    
     % ==> behavioral choice outcome is y
     y12 = cho(idx12);
     y12(y12 == -1) = 0;    
@@ -114,7 +116,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation        
        
     % => context 1 & contrast 1
-    cx2_cr1_X{iSfln} = [ori(idx21), dynran(idx21)];
+    cx2_cr1_X{iSfln} = [ori(idx21), alpha(idx21)];
     % ==> behavioral choice outcome is y
     y21 = cho(idx21);
     y21(y21 == -1) = 0;   
@@ -130,7 +132,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation        
        
     % => context 1 & contrast 1
-    cx2_cr2_X{iSfln} = [ori(idx22), dynran(idx22)];    
+    cx2_cr2_X{iSfln} = [ori(idx22), alpha(idx22)];    
     % ==> behavioral choice outcome is y
     y22 = cho(idx22);
     y22(y22 == -1) = 0;
