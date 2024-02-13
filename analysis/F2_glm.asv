@@ -142,14 +142,17 @@ for iSfln = 1:29
 end
 
 %% 
+close all; clc;
 
 % => orientation independent variables index
 oidx = 1;
 
 llr = nan(1,29);
 
-% ==> AIC delta (AIC_0 )
+% ==> AIC delta (AIC_0 - AIC_1), where AIC_1 is model 1 (our preferred model)
 aic_d = nan(1,29);
+% ==> probability of the ith model
+aic_p = nan(1,29);
 
 for iS = 1:29
 
@@ -221,31 +224,49 @@ for iS = 1:29
     % => for computing log likelihood (model 0)
     m0ll_22 = log(yh_m0_22).*Y22{iS} + log(1 - yh_m0_22).*(1 - Y22{iS});    
     
+    % ==> aggregate
+    m1 = [m1ll_11; m1ll_21; m1ll_12; m1ll_22];
+    m0 = [m0ll_11; m0ll_21; m0ll_12; m0ll_22];
+    
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % ==> log likelihood ratio
-    llr(iS) = sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]) - sum([m0ll_11; m0ll_21; m0ll_12; m0ll_22]);
+    llr(iS) = sum(m1) - sum(m0);
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> AIC
-    % => m1
-    aic_m1 = 2 - 2*sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]);    
-    % => m2
-    aic_m0 = 1 - 2*sum([m0ll_11; m0ll_21; m0ll_12; m0ll_22]);
+    % => m1 (k = 3)
+    aic_m1 = 3/length() - 2*sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]);    
+    % => m0 (k = 2)
+    aic_m0 = 2 - 2*sum([m0ll_11; m0ll_21; m0ll_12; m0ll_22]);
     
-    aic_d(iS) = (aic_m0 - aic_m1); %exp((aic_m0 - aic_m1)*0.5);
+    aic_d(iS) = (aic_m0 - aic_m1); 
+    aic_p(iS) = exp( (aic_m0 - aic_m1) * 0.5 );
     
 end
 
 % ==> correlation between dvCatPerf and log likelihood ratios
-[rho_llr,p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','pearson') %,'tail','right')
+[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','pearson'); 
+% ==> correlation between dvCatPerf and AIC delta
+[rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','pearson');
+
+fprintf('correlation between dvCatPerf and log-likelihood ratios r = %d (p = %d)\n', rho_llr, p_llr)
+fprintf('correlation between dvCatPerf and AIC Delta r = %d (p = %d)\n', rho_aicd, p_aicd)
 
 figure(); 
-subplot(1,2,1);
+subplot(2,2,1);
 scatter(llr,1:29); 
+subplot(2,2,2);
+scatter(dvCatPerf(idx)',llr(idx)')
+subplot(2,2,3);
+scatter(aic_d,1:29); 
+subplot(2,2,4);
+scatter(dvCatPerf(idx)',aic_d(idx)')
 
 
 
-[rho_aic_rl,p_aic_lr] = corr(dvCatPerf(idx)',aic_d(idx)','type','pearson')
+
+
+
 
 
 

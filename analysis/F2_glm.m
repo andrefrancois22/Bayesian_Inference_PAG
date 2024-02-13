@@ -154,6 +154,8 @@ aic_d = nan(1,29);
 % ==> probability of the ith model
 aic_p = nan(1,29);
 
+bic_d = nan(1,29);
+
 for iS = 1:29
 
     % ====> condition 11 (context 1 - low contrast)
@@ -224,29 +226,43 @@ for iS = 1:29
     % => for computing log likelihood (model 0)
     m0ll_22 = log(yh_m0_22).*Y22{iS} + log(1 - yh_m0_22).*(1 - Y22{iS});    
     
+    % ==> aggregate
+    m1 = [m1ll_11; m1ll_21; m1ll_12; m1ll_22];
+    m0 = [m0ll_11; m0ll_21; m0ll_12; m0ll_22];
+    
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % ==> log likelihood ratio
-    llr(iS) = sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]) - sum([m0ll_11; m0ll_21; m0ll_12; m0ll_22]);
+    llr(iS) = sum(m1) - sum(m0);
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> AIC
     % => m1 (k = 3)
-    aic_m1 = 3 - 2*sum([m1ll_11; m1ll_21; m1ll_12; m1ll_22]);    
-    % => m2 (k = 2)
-    aic_m0 = 2 - 2*sum([m0ll_11; m0ll_21; m0ll_12; m0ll_22]);
+    k1 = 3;
+    aic_m1 = -2/length(m1)*sum(m1) + 2*k1/length(m1);    
+    % => m0 (k = 2)
+    k0 = 2;
+    aic_m0 = -2/length(m0)*sum(m0) + 2*k0/length(m0);
     
     aic_d(iS) = (aic_m0 - aic_m1); 
-    aic_p(iS) = exp( (aic_m0 - aic_m1) * 0.5 );
+    %aic_p(iS) = exp( (aic_m0 - aic_m1) * 0.5 );
+    
+    bic_m1 = -2*sum(m1) + log(length(m1))*k1;
+    bic_m0 = -2*sum(m0) + log(length(m0))*k0;    
+    bic_d(iS) = (bic_m0 - bic_m1); 
     
 end
 
 % ==> correlation between dvCatPerf and log likelihood ratios
-[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','pearson'); 
+[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','spearman'); 
 % ==> correlation between dvCatPerf and AIC delta
-[rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','pearson');
+[rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','spearman');%,'tail','right');
+
+% ==> correlation between dvCatPerf and AIC delta
+[rho_bicd, p_bicd] = corr(dvCatPerf(idx)',bic_d(idx)','type','spearman');%,'tail','right');
 
 fprintf('correlation between dvCatPerf and log-likelihood ratios r = %d (p = %d)\n', rho_llr, p_llr)
 fprintf('correlation between dvCatPerf and AIC Delta r = %d (p = %d)\n', rho_aicd, p_aicd)
+fprintf('correlation between dvCatPerf and BIC Delta r = %d (p = %d)\n', rho_bicd, p_bicd)
 
 figure(); 
 subplot(2,2,1);
@@ -256,7 +272,7 @@ scatter(dvCatPerf(idx)',llr(idx)')
 subplot(2,2,3);
 scatter(aic_d,1:29); 
 subplot(2,2,4);
-scatter(dvCatPerf(idx)',aic_d(idx)')
+scatter(dvCatPerf(idx)',bic_d(idx)')
 
 
 
