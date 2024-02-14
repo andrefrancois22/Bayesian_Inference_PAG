@@ -58,7 +58,7 @@ for iSfln = 1:29
     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
 
     % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV dynamic range ~~~~~~~~~~~~~~~~~~~~~~~ %
-    alpha = max([max(dvs, [], 2) - dvs(:,1), -(min(dvs, [], 2) - dvs(:,1))], [], 2);
+    % alpha = max([max(dvs, [], 2) - dvs(:,1), -(min(dvs, [], 2) - dvs(:,1))], [], 2);
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
     
     % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV (signed) peak ~~~~~~~~~~~~~~~~~~~~~~~ %
@@ -67,10 +67,10 @@ for iSfln = 1:29
     mx = [max(dvs, [], 2), abs(min(dvs, [], 2))];
     mxv = max(mx, [], 2);
     % => signed
-    % mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));
+    mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));
     
     % ==> alpha is DV (unsigned) peak
-    % alpha = mxv;
+    alpha = mxv;
     
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = unique(ori)'; 
@@ -162,7 +162,7 @@ bic_d = nan(1,29);
 for iS = 1:29
 
     % ====> condition 11 (context 1 - low contrast)
-    % ==> logistic regression (ori and dynran)
+    % ==> logistic regression (ori and alpha)
     [b_m1_11,~,~] = glmfit(cx1_cr1_X{iS}, Y11{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_11 = glmval(b_m1_11, cx1_cr1_X{iS},'logit');
@@ -177,7 +177,7 @@ for iS = 1:29
 
 
     % ====> condition 12 (context 1 - hi contrast)
-    % ==> logistic regression (ori and dynran)
+    % ==> logistic regression (ori and alpha)
     [b_m1_12,~,~] = glmfit(cx1_cr2_X{iS}, Y12{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_12 = glmval(b_m1_12, cx1_cr2_X{iS},'logit');
@@ -192,7 +192,7 @@ for iS = 1:29
 
 
     % ====> condition 21 (context 2 - low contrast)
-    % ==> logistic regression (ori and dynran)
+    % ==> logistic regression (ori and alpha)
     [b_m1_21,~,~] = glmfit(cx2_cr1_X{iS}, Y21{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_21 = glmval(b_m1_21, cx2_cr1_X{iS},'logit');
@@ -207,7 +207,7 @@ for iS = 1:29
 
     
     % ====> condition 22 (context 2 - hi contrast)
-    % ==> logistic regression (ori and dynran)
+    % ==> logistic regression (ori and alpha)
     [b_m1_22,~,~] = glmfit(cx2_cr2_X{iS}, Y22{iS},'binomial','link','logit');    
     % => yhat
     yh_m1_22 = glmval(b_m1_22, cx2_cr2_X{iS},'logit');
@@ -228,7 +228,7 @@ for iS = 1:29
     ll0 = sum(m0);
     
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % ==> log (likelihood ratio l1/l0) (difference in log likelihoods e.g. ll1 - ll0)
+    % ==> log (likelihood ratio l1/l0) (difference in log-likelihoods e.g. ll1 - ll0)
     llr(iS) = ll1 - ll0;
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
@@ -256,7 +256,7 @@ for iS = 1:29
 end
 
 % ==> correlation between dvCatPerf and log likelihood ratios
-[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','spearman'); 
+[rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','spearman'); %,'tail','right'); 
 % ==> correlation between dvCatPerf and AIC delta
 [rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','spearman');
 % ==> correlation between dvCatPerf and BIC delta
@@ -266,41 +266,43 @@ fprintf('r between dvCatPerf and log-likelihood ratios r = %d (p = %d)\n', rho_l
 fprintf('r between dvCatPerf and AIC Delta r = %d (p = %d)\n', rho_aicd, p_aicd)
 fprintf('r between dvCatPerf and BIC Delta r = %d (p = %d)\n', rho_bicd, p_bicd)
 
-fg = figure();  set(fg,'Color','w'); fg.Position = [675 241 512 721];
-ax1 = subplot(3,2,1);
-scatter(llr, 1:29, 'filled'); 
-xlabel('log-likelihood ratio'); ylabel('Session'); xlim([-20,max(llr)]); ax1.YTickLabel = [];
-hold on; hold all; plot(zeros(1,30),0:29,'k--');
-subplot(3,2,2);
-scatter(dvCatPerf(idx)',llr(idx)', 'filled');
-xlabel('Choice Predictivity'); ylabel('log-likelihood ratio');
-ax3 = subplot(3,2,3);
-scatter(aic_d, 1:29, 'filled');
-xlabel('AIC \Delta'); ylabel('Session');  xlim([-0.02,max(aic_d)]); ax3.YTickLabel = [];
-hold on; hold all; plot(zeros(1,30),0:29,'k--');
-subplot(3,2,4);
-scatter(dvCatPerf(idx)',aic_d(idx)', 'filled'); 
-xlabel('Choice Predictivity'); ylabel('AIC \Delta');
-ax5 = subplot(3,2,5);
-scatter(bic_d, 1:29, 'filled'); 
-xlabel('BIC \Delta'); ylabel('Session');  xlim([-20,max(bic_d)]); ax5.YTickLabel = [];
-hold on; hold all; plot(zeros(1,30),0:29,'k--');
-subplot(3,2,6);
-scatter(dvCatPerf(idx)',bic_d(idx)', 'filled'); 
-xlabel('Choice Predictivity'); ylabel('BIC \Delta');
+% fg = figure();  set(fg,'Color','w'); fg.Position = [675 241 512 721];
+% ax1 = subplot(3,2,1);
+% scatter(llr, 1:29, 'filled'); 
+% xlabel('log-likelihood ratio'); ylabel('Session'); xlim([-20,max(llr)]); ax1.YTickLabel = [];
+% hold on; hold all; plot(zeros(1,30),0:29,'k--');
+% subplot(3,2,2);
+% scatter(dvCatPerf(idx)',llr(idx)', 'filled');
+% xlabel('Choice Predictivity'); ylabel('log-likelihood ratio');
+% ax3 = subplot(3,2,3);
+% scatter(aic_d, 1:29, 'filled');
+% xlabel('AIC \Delta'); ylabel('Session');  xlim([-0.02,max(aic_d)]); ax3.YTickLabel = [];
+% hold on; hold all; plot(zeros(1,30),0:29,'k--');
+% subplot(3,2,4);
+% scatter(dvCatPerf(idx)',aic_d(idx)', 'filled'); 
+% xlabel('Choice Predictivity'); ylabel('AIC \Delta');
+% ax5 = subplot(3,2,5);
+% scatter(bic_d, 1:29, 'filled'); 
+% xlabel('BIC \Delta'); ylabel('Session');  xlim([-20,max(bic_d)]); ax5.YTickLabel = [];
+% hold on; hold all; plot(zeros(1,30),0:29,'k--');
+% subplot(3,2,6);
+% scatter(dvCatPerf(idx)',bic_d(idx)', 'filled'); 
+% xlabel('Choice Predictivity'); ylabel('BIC \Delta');
 
 
 fg = figure();  set(fg,'Color','w'); fg.Position = [670 219 717 731];
 ax1 = subplot(2,2,1);
-scatter(llr, 1:29, 'filled'); 
-xlabel('log-likelihood ratio'); ylabel('Session'); xlim([-20,max(llr)]); ax1.YTickLabel = [];
+scatter(llr(idx), 1:29, 'filled');
+text(llr(idx)+15, 1:29, string(idx),'color','r','fontsize',8)
+xlabel('log-likelihood ratio'); ylabel('Session (sorted by choice pred.)'); xlim([-20,max(llr)]); ax1.YTickLabel = [];
 hold on; hold all; plot(zeros(1,30),0:29,'k--');
 subplot(2,2,2);
 scatter(dvCatPerf(idx)',llr(idx)', 'filled');
 xlabel('Choice Predictivity'); ylabel('log-likelihood ratio'); title(['r = ',num2str(rho_llr),', p = ', num2str(p_llr)]);
 ax3 = subplot(2,2,3);
-scatter(aic_d, 1:29, 'filled');
-xlabel('AIC \Delta'); ylabel('Session');  xlim([-0.02,max(aic_d)]); ax3.YTickLabel = [];
+scatter(aic_d(idx), 1:29, 'filled');
+text(aic_d(idx)+0.005, 1:29, string(idx),'color','r','fontsize',8)
+xlabel('AIC \Delta'); ylabel('Session (sorted by choice pred.)');  xlim([-0.02,max(aic_d)]); ax3.YTickLabel = [];
 hold on; hold all; plot(zeros(1,30),0:29,'k--');
 subplot(2,2,4);
 scatter(dvCatPerf(idx)',aic_d(idx)', 'filled');  title(['r = ',num2str(rho_aicd),', p = ', num2str(p_aicd)]); 
