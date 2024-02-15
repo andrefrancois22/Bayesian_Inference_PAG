@@ -259,45 +259,43 @@ end
 [rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','spearman'); %,'tail','right'); 
 % ==> correlation between dvCatPerf and AIC delta
 [rho_aicd, p_aicd] = corr(dvCatPerf(idx)',aic_d(idx)','type','spearman');
-% % ==> correlation between dvCatPerf and BIC delta
-% [rho_bicd, p_bicd] = corr(dvCatPerf(idx)',bic_d(idx)','type','spearman');
+% ==> correlation between dvCatPerf and BIC delta
+[rho_bicd, p_bicd] = corr(dvCatPerf(idx)',bic_d(idx)','type','spearman');
 
 fprintf('r between dvCatPerf and log-likelihood ratios r = %d (p = %d)\n', rho_llr, p_llr)
 fprintf('r between dvCatPerf and AIC Delta r = %d (p = %d)\n', rho_aicd, p_aicd)
-% fprintf('r between dvCatPerf and BIC Delta r = %d (p = %d)\n', rho_bicd, p_bicd)
-
-% return indicator variables for dvCatPerf plots
-[iF,~] = ismember(idx,1:13);
-[iJ,~] = ismember(idx,14:29);
+fprintf('r between dvCatPerf and BIC Delta r = %d (p = %d)\n', rho_bicd, p_bicd)
 
 fg = figure();  set(fg,'Color','w'); fg.Position = [255 165 714 714];
 ax1 = subplot(2,2,1);
-scatter(llr(1:13),  1:13, 100,  'o', 'filled',  'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]);
+scatter(llr(1:13),  1:13, 100,  'o', 'filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [1,1,1]);
 hold on; hold all;
-scatter(llr(14:29), 14:29, 100, 'o', 'filled',  'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]);
+scatter(llr(14:29), 14:29, 'o', 'filled',  'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]);
+
 xlabel('log-likelihood ratio'); ylabel('Session'); xlim([-20,max(llr)]); ax1.YTickLabel = [];
 hold on; hold all; plot(zeros(1,30),0:29,'k--');
-
 subplot(2,2,2);
-scatter(dvCatPerf(idx(iF))',llr(idx(iF))', 100,  'o', 'filled',  'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]);
-hold on; hold all;
-scatter(dvCatPerf(idx(iJ))',llr(idx(iJ))', 100,  'o', 'filled',  'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]);
+scatter(dvCatPerf(idx)',llr(idx)', 100, 'filled');
 xlabel('Choice Predictivity'); ylabel('log-likelihood ratio');
-title(['r = ',num2str(rho_llr),', p = ', num2str(p_llr)]);
 
 ax3 = subplot(2,2,3);
-scatter(aic_d(1:13),  1:13,  100, 'o', 'filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]);
+scatter(aic_d(1:13),  1:13,  'o', 'filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [1,1,1]);
 hold on; hold all;
-scatter(aic_d(14:29), 14:29, 100, 'o', 'filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]);
+scatter(aic_d(14:29), 14:29, 'o', 'filled',  'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); 
+
 xlabel('AIC \Delta'); ylabel('Session');  xlim([-0.02,max(aic_d)]); ax3.YTickLabel = [];
 hold on; hold all; plot(zeros(1,30),0:29,'k--');
-
 subplot(2,2,4);
-scatter(dvCatPerf(idx(iF))',aic_d(idx(iF))', 100,  'o', 'filled',  'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]);
-hold on; hold all;
-scatter(dvCatPerf(idx(iJ))',aic_d(idx(iJ))', 100,  'o', 'filled',  'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]);
-xlabel('Choice Predictivity'); ylabel('log-likelihood ratio');
-title(['r = ',num2str(rho_aicd),', p = ', num2str(p_aicd)]); 
+scatter(dvCatPerf(idx)',aic_d(idx)', 100, 'filled'); 
+xlabel('Choice Predictivity'); ylabel('AIC \Delta');
+
+% ax5 = subplot(3,2,5);
+% scatter(bic_d, 1:29, 'filled'); 
+% xlabel('BIC \Delta'); ylabel('Session');  xlim([-20,max(bic_d)]); ax5.YTickLabel = [];
+% hold on; hold all; plot(zeros(1,30),0:29,'k--');
+% subplot(3,2,6);
+% scatter(dvCatPerf(idx)',bic_d(idx)', 'filled'); 
+% xlabel('Choice Predictivity'); ylabel('BIC \Delta');
 
 
 % fg = figure();  set(fg,'Color','w'); fg.Position = [670 219 717 731];
