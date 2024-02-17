@@ -11,6 +11,35 @@ dvCatPerf = dvCatPerf.dvCatPerf;
 [~,idx] = sort(dvCatPerf);
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+% ==> define model-1 and null model (model-0).
+% => define independent variable indices.
+
+% % ~~~~~~~~~~ comparing m0 with only orientation to m1 with orientation and signed peak
+% % => model 1 index for IVs
+% oidx_m1 = [1,3];
+% % => model 0 index for IVs
+% oidx_m0 = 1; %1:2;
+% % ==> AIC K params
+% % => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
+% k1 = 12; 
+% % => m0 k = 4 x 2 = 8
+% k0 = 8;
+% % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% ~~~~~~~~~~ comparing m0 with only orientation + peak sign to m1 with orientation and signed peak
+% => model 1 index for IVs
+oidx_m1 = [1,3];
+% => model 0 index for IVs
+oidx_m0 = [1:2];
+% ==> AIC K params
+% => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
+k1 = 12; 
+% => m0 k = 4 x 3 = 12
+k0 = 12;
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
 % ==> for storing 4 model design matrices
 % => context 1 & contrast 1
 cx1_cr1_X = cell([29,1]);
@@ -68,9 +97,8 @@ for iSfln = 1:29
     mxv = max(mx, [], 2);
     % => signed
     mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));
-    
     % ==> alpha is DV (unsigned) peak
-    alpha = mxv;
+    alpha = [sign(mxv), mxv];
     
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = unique(ori)'; 
@@ -84,7 +112,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation    
        
     % => context 1 & contrast 1
-    cx1_cr1_X{iSfln} = [ori(idx11), alpha(idx11)];
+    cx1_cr1_X{iSfln} = [ori(idx11), alpha(idx11,:)];
     % ==> behavioral choice outcome is y
     y11 = cho(idx11);
     y11(y11 == -1) = 0;    
@@ -100,7 +128,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation        
        
     % => context 1 & contrast 1
-    cx1_cr2_X{iSfln} = [ori(idx12), alpha(idx12)];    
+    cx1_cr2_X{iSfln} = [ori(idx12), alpha(idx12,:)];    
     % ==> behavioral choice outcome is y
     y12 = cho(idx12);
     y12(y12 == -1) = 0;    
@@ -116,7 +144,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation        
        
     % => context 1 & contrast 1
-    cx2_cr1_X{iSfln} = [ori(idx21), alpha(idx21)];
+    cx2_cr1_X{iSfln} = [ori(idx21), alpha(idx21,:)];
     % ==> behavioral choice outcome is y
     y21 = cho(idx21);
     y21(y21 == -1) = 0;   
@@ -132,7 +160,7 @@ for iSfln = 1:29
     % 2) ==> dummy coding orientation        
        
     % => context 1 & contrast 1
-    cx2_cr2_X{iSfln} = [ori(idx22), alpha(idx22)];    
+    cx2_cr2_X{iSfln} = [ori(idx22), alpha(idx22,:)];    
     % ==> behavioral choice outcome is y
     y22 = cho(idx22);
     y22(y22 == -1) = 0;
@@ -145,9 +173,6 @@ end
 
 %% 
 close all; clc;
-
-% => orientation independent variables index
-oidx = 1;
 
 % ==> log-likelihood ratio
 llr = nan(1,29);
@@ -163,13 +188,13 @@ for iS = 1:29
 
     % ====> condition 11 (context 1 - low contrast)
     % ==> logistic regression (ori and alpha)
-    [b_m1_11,~,~] = glmfit(cx1_cr1_X{iS}, Y11{iS},'binomial','link','logit');    
+    [b_m1_11,~,~] = glmfit(cx1_cr1_X{iS}(:,oidx_m1), Y11{iS},'binomial','link','logit');    
     % => yhat
-    yh_m1_11 = glmval(b_m1_11, cx1_cr1_X{iS},'logit');
+    yh_m1_11 = glmval(b_m1_11, cx1_cr1_X{iS}(:,oidx_m1),'logit');
     % ==> Null model (just orientation)
-    [b_m0_11,~,~] = glmfit(cx1_cr1_X{iS}(:,oidx), Y11{iS},'binomial','link','logit');    
+    [b_m0_11,~,~] = glmfit(cx1_cr1_X{iS}(:,oidx_m0), Y11{iS},'binomial','link','logit');    
     % => yhat
-    yh_m0_11 = glmval(b_m0_11, cx1_cr1_X{iS}(:,oidx),'logit');
+    yh_m0_11 = glmval(b_m0_11, cx1_cr1_X{iS}(:,oidx_m0),'logit');
     % => for computing log likelihood (model 1)
     m1ll_11 = log(yh_m1_11).*Y11{iS} + log(1 - yh_m1_11).*(1 - Y11{iS});
     % => for computing log likelihood (model 0)
@@ -178,13 +203,13 @@ for iS = 1:29
 
     % ====> condition 12 (context 1 - hi contrast)
     % ==> logistic regression (ori and alpha)
-    [b_m1_12,~,~] = glmfit(cx1_cr2_X{iS}, Y12{iS},'binomial','link','logit');    
+    [b_m1_12,~,~] = glmfit(cx1_cr2_X{iS}(:,oidx_m1), Y12{iS},'binomial','link','logit');    
     % => yhat
-    yh_m1_12 = glmval(b_m1_12, cx1_cr2_X{iS},'logit');
+    yh_m1_12 = glmval(b_m1_12, cx1_cr2_X{iS}(:,oidx_m1),'logit');
     % ==> Null model (just orientation)
-    [b_m0_12,~,~] = glmfit(cx1_cr2_X{iS}(:,oidx), Y12{iS},'binomial','link','logit');    
+    [b_m0_12,~,~] = glmfit(cx1_cr2_X{iS}(:,oidx_m0), Y12{iS},'binomial','link','logit');    
     % => yhat
-    yh_m0_12 = glmval(b_m0_12, cx1_cr2_X{iS}(:,oidx),'logit');
+    yh_m0_12 = glmval(b_m0_12, cx1_cr2_X{iS}(:,oidx_m0),'logit');
     % => for computing log likelihood (model 1)
     m1ll_12 = log(yh_m1_12).*Y12{iS} + log(1 - yh_m1_12).*(1 - Y12{iS});
     % => for computing log likelihood (model 0)
@@ -193,13 +218,13 @@ for iS = 1:29
 
     % ====> condition 21 (context 2 - low contrast)
     % ==> logistic regression (ori and alpha)
-    [b_m1_21,~,~] = glmfit(cx2_cr1_X{iS}, Y21{iS},'binomial','link','logit');    
+    [b_m1_21,~,~] = glmfit(cx2_cr1_X{iS}(:,oidx_m1), Y21{iS},'binomial','link','logit');    
     % => yhat
-    yh_m1_21 = glmval(b_m1_21, cx2_cr1_X{iS},'logit');
+    yh_m1_21 = glmval(b_m1_21, cx2_cr1_X{iS}(:,oidx_m1),'logit');
     % ==> Null model (just orientation)
-    [b_m0_21,~,~] = glmfit(cx2_cr1_X{iS}(:,oidx), Y21{iS},'binomial','link','logit');    
+    [b_m0_21,~,~] = glmfit(cx2_cr1_X{iS}(:,oidx_m0), Y21{iS},'binomial','link','logit');    
     % => yhat
-    yh_m0_21 = glmval(b_m0_21, cx2_cr1_X{iS}(:,oidx),'logit');
+    yh_m0_21 = glmval(b_m0_21, cx2_cr1_X{iS}(:,oidx_m0),'logit');
     % => for computing log likelihood (model 1)
     m1ll_21 = log(yh_m1_21).*Y21{iS} + log(1 - yh_m1_21).*(1 - Y21{iS});
     % => for computing log likelihood (model 0)
@@ -208,13 +233,13 @@ for iS = 1:29
     
     % ====> condition 22 (context 2 - hi contrast)
     % ==> logistic regression (ori and alpha)
-    [b_m1_22,~,~] = glmfit(cx2_cr2_X{iS}, Y22{iS},'binomial','link','logit');    
+    [b_m1_22,~,~] = glmfit(cx2_cr2_X{iS}(:,oidx_m1), Y22{iS},'binomial','link','logit');    
     % => yhat
-    yh_m1_22 = glmval(b_m1_22, cx2_cr2_X{iS},'logit');
+    yh_m1_22 = glmval(b_m1_22, cx2_cr2_X{iS}(:,oidx_m1),'logit');
     % ==> Null model (just orientation)
-    [b_m0_22,~,~] = glmfit(cx2_cr2_X{iS}(:,oidx), Y22{iS},'binomial','link','logit');    
+    [b_m0_22,~,~] = glmfit(cx2_cr2_X{iS}(:,oidx_m0), Y22{iS},'binomial','link','logit');    
     % => yhat
-    yh_m0_22 = glmval(b_m0_22, cx2_cr2_X{iS}(:,oidx),'logit');
+    yh_m0_22 = glmval(b_m0_22, cx2_cr2_X{iS}(:,oidx_m0),'logit');
     % => for computing log likelihood (model 1)
     m1ll_22 = log(yh_m1_22).*Y22{iS} + log(1 - yh_m1_22).*(1 - Y22{iS});
     % => for computing log likelihood (model 0)
@@ -233,10 +258,6 @@ for iS = 1:29
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> AIC
-    % => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
-    k1 = 12;
-    % => m0 k = 4 x 2 = 8
-    k0 = 8;
     aic_m1 = -2/length(m1)*ll1 + 2*k1/length(m1);    
     aic_m0 = -2/length(m0)*ll0 + 2*k0/length(m0);
     
@@ -296,7 +317,7 @@ subplot(2,2,4);
 scatter(dvCatPerf(idx(iF))',aic_d(idx(iF))', 100,  'o', 'filled',  'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]);
 hold on; hold all;
 scatter(dvCatPerf(idx(iJ))',aic_d(idx(iJ))', 100,  'o', 'filled',  'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]);
-xlabel('Choice Predictivity'); ylabel('log-likelihood ratio');
+xlabel('Choice Predictivity'); ylabel('AIC \Delta');
 title(['r = ',num2str(rho_aicd),', p = ', num2str(p_aicd)]); 
 
 
