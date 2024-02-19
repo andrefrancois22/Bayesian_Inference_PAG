@@ -108,7 +108,6 @@ for iSfln = 1:29
 end
 
 %% ==> just one example
-close all; clc;
 
 figure(); set(gcf,'Color','w');
 
@@ -173,18 +172,15 @@ vccwhi = dvs(idxccwhi,:);
 subplot(1,2,1);
 title(['J',S.general.expDate, ' low contrast']);
 hold on; hold all;    
-plot(t,mean(vcwlo,1),  'color', [1,0,0,0.5], 'linewidth',4);
-plot(t,mean(vccwlo,1), 'color', [0,0,1,0.5], 'linewidth',4);
-xlabel('Time'); ylabel('Average Signed DV (vertical stimulus)');
-legend('CW prior context','CCW prior context');
+plot(t,mean(vcwlo,1),  'r-','linewidth',4);
+plot(t,mean(vccwlo,1), 'b-','linewidth',4);
+xlabel('Time'); ylabel('Average Signed DV')
 ylim([-1,1]);
 subplot(1,2,2);
 title(['J',S.general.expDate, ' high contrast']);
 hold on; hold all;   
 plot(t,mean(vcwhi,1),  'r-','linewidth',4);
 plot(t,mean(vccwhi,1), 'b-','linewidth',4);    
-xlabel('Time'); ylabel('Average Signed DV (vertical stimulus)');
-legend('CW prior context','CCW prior context');
 ylim([-1,1]);
 drawnow;
     
