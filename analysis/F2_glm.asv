@@ -3,13 +3,18 @@ clear all; close all; clc;
 dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
 drc = '../data/';
 
+% ==> define sessions (or animals)
+Sn = 1:29
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % ==> load dvCatperf data
 dvCatPerf = load([drc,'dvCatPerf.mat'],'dvCatPerf');
 dvCatPerf = dvCatPerf.dvCatPerf;
-% => sort and return index
-[~,idx] = sort(dvCatPerf);
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% => sort and return index
+% ==> get choice predictivity estimates for Sn
+[~,idx] = sort(dvCatPerf(Sn));
+
 
 % ==> define model-1 and null model (model-0).
 % => define independent variable indices.
@@ -19,7 +24,25 @@ dvCatPerf = dvCatPerf.dvCatPerf;
 oidx_m1 = [1,3];
 % => model 0 index for IVs
 oidx_m0 = 1; %1:2;
+% ==> AIC K params
+% => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
+k1 = 12; 
+% => m0 k = 4 x 2 = 8
+k0 = 8;
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% % ~~~~~~~~~~ comparing m0 with only orientation + peak sign to m1 with orientation and signed peak
+% % => model 1 index for IVs
+% oidx_m1 = [1,3];
+% % => model 0 index for IVs
+% oidx_m0 = [1:2];
+% % ==> AIC K params
+% % => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
+% k1 = 12; 
+% % => m0 k = 4 x 3 = 12
+% k0 = 12;
+% % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 
 % ==> for storing 4 model design matrices
@@ -40,7 +63,7 @@ Y21 = cell([29,1]);
 Y22 = cell([29,1]);
 
 % ==> what is the session
-for iSfln = 1:29 
+for iSfln = Sn
 
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % params: matrix with the model parameters [trial x parameter]
@@ -79,9 +102,8 @@ for iSfln = 1:29
     mxv = max(mx, [], 2);
     % => signed
     mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));
-    
     % ==> alpha is DV (unsigned) peak
-    alpha = [sign(mxv), mxv]; %mxv;
+    alpha = [sign(mxv), mxv];
     
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = unique(ori)'; 
@@ -167,7 +189,7 @@ aic_p = nan(1,29);
 % ==> BIC delta
 bic_d = nan(1,29);
 
-for iS = 1:29
+for iS = Sn
 
     % ====> condition 11 (context 1 - low contrast)
     % ==> logistic regression (ori and alpha)
@@ -241,10 +263,6 @@ for iS = 1:29
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> AIC
-    % => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
-    k1 = 12; %12;
-    % => m0 k = 4 x 2 = 8
-    k0 = 12; %8;
     aic_m1 = -2/length(m1)*ll1 + 2*k1/length(m1);    
     aic_m0 = -2/length(m0)*ll0 + 2*k0/length(m0);
     

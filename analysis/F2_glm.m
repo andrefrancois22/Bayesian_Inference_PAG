@@ -3,40 +3,44 @@ clear all; close all; clc;
 dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
 drc = '../data/';
 
+% ==> all sessions
+Sn = 1:29;
+
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % ==> load dvCatperf data
 dvCatPerf = load([drc,'dvCatPerf.mat'],'dvCatPerf');
 dvCatPerf = dvCatPerf.dvCatPerf;
 % => sort and return index
+% ==> get choice predictivity estimates for Sn
 [~,idx] = sort(dvCatPerf);
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> define model-1 and null model (model-0).
 % => define independent variable indices.
 
-% % ~~~~~~~~~~ comparing m0 with only orientation to m1 with orientation and signed peak
-% % => model 1 index for IVs
-% oidx_m1 = [1,3];
-% % => model 0 index for IVs
-% oidx_m0 = 1; %1:2;
-% % ==> AIC K params
-% % => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
-% k1 = 12; 
-% % => m0 k = 4 x 2 = 8
-% k0 = 8;
-% % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-% ~~~~~~~~~~ comparing m0 with only orientation + peak sign to m1 with orientation and signed peak
+% ~~~~~~~~~~ comparing m0 with only orientation to m1 with orientation and signed peak
 % => model 1 index for IVs
 oidx_m1 = [1,3];
 % => model 0 index for IVs
-oidx_m0 = [1:2];
+oidx_m0 = 1; %1:2;
 % ==> AIC K params
 % => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
 k1 = 12; 
-% => m0 k = 4 x 3 = 12
-k0 = 12;
+% => m0 k = 4 x 2 = 8
+k0 = 8;
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% % ~~~~~~~~~~ comparing m0 with only orientation + peak sign to m1 with orientation and signed peak
+% % => model 1 index for IVs
+% oidx_m1 = [1,3];
+% % => model 0 index for IVs
+% oidx_m0 = [1:2];
+% % ==> AIC K params
+% % => m1 k = (2 x beta + beta0 (intercept)) x 4 models = 3 x 4 = 12
+% k1 = 12; 
+% % => m0 k = 4 x 3 = 12
+% k0 = 12;
+% % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
@@ -58,7 +62,7 @@ Y21 = cell([29,1]);
 Y22 = cell([29,1]);
 
 % ==> what is the session
-for iSfln = 1:29 
+for iSfln = Sn
 
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % params: matrix with the model parameters [trial x parameter]
@@ -184,7 +188,7 @@ aic_p = nan(1,29);
 % ==> BIC delta
 bic_d = nan(1,29);
 
-for iS = 1:29
+for iS = Sn
 
     % ====> condition 11 (context 1 - low contrast)
     % ==> logistic regression (ori and alpha)
