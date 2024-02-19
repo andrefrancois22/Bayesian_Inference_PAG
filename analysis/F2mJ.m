@@ -53,13 +53,6 @@ for iSfln = mIDs
     elseif iSfln <= 9
         load([dataPath,'/dataSet_0',num2str(iSfln),'.mat']);
     end
-
-    % ==> load session data
-    if iSfln > 9
-        load([dataPath,'/dataSet_',num2str(iSfln),'.mat']);
-    elseif iSfln <= 9
-        load([dataPath,'/dataSet_0',num2str(iSfln),'.mat']);
-    end
     timeSac = S.dec.timeSac;
     % Set time boundaries
     fitTimeSacBegin = -800;  % in ms, relative to saccade onset
