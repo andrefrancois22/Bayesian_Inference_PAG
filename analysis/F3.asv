@@ -4,34 +4,56 @@ dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
 drc = '../data/';
 
 %% ==> accumulation bound panel
+close all; clc;
 
 pr_cw  =  0.5;
 pr_ccw = -0.5;
 
 % => number of trials
-N = 1000;
+N = 10;
 % => number of timepoints
-t = 100;
+t = 50;
 
 % ==>
 sens  = randn(N,t);
 % ==> cummulative
-csens = cumsum(sens);
+csens = cumsum(sens,2);
 % ==> bound
-bnd = 4;
+bnd = 5;
 
 % ==> csens with bound
-csensb_cw = csens + pr_cw;
+csensb_cw =  csens + pr_cw;
+csensb_ccw = csens + pr_ccw;
 
+% ==> cw prior ctx
 csensb_cw(csensb_cw >=  bnd) =  bnd;
 csensb_cw(csensb_cw <= -bnd) = -bnd;
+% ==> ccw prior ctx
+csensb_ccw(csensb_ccw >=  bnd) =  bnd;
+csensb_ccw(csensb_ccw <= -bnd) = -bnd;
 
-% figure(); 
-% subplot(1,2,1); plot(csens,  'r');     ylim([-20,20]);
-% subplot(1,2,2); plot(csensb_cw, 'r');  ylim([-20,20]);
+% ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
+% starting from t+1 to the bound for that trial
+for i = 1:N
+    find(csensb_cw(i,:) >=  bnd)
+end
+
+figure(); 
+subplot(1,2,1); 
+hold on; hold all;
+plot(1:t,repmat( bnd,t), 'r--');
+plot(1:t,repmat(-bnd,t), 'b--');
+plot(csensb_cw, 'color', [1,0.5,0.5,0.5]);     ylim([-20,20]);
+
+subplot(1,2,2); 
+hold on; hold all;
+plot(1:t,repmat( bnd,t), 'r--');
+plot(1:t,repmat(-bnd,t), 'b--');
+plot(csensb_ccw, 'color', [0.5,0.5,1,0.5]);     ylim([-20,20]);
+
 % 
 % figure();
-% plot(mean(csensb_cw,1), 'r.-','linewidth',2);
+% plot(mean(csensb_cw,1),'linewidth',1);
 
 %%
 
@@ -108,6 +130,7 @@ for iSfln = 1:29
 end
 
 %% ==> just one example
+close all; clc;
 
 figure(); set(gcf,'Color','w');
 
@@ -172,15 +195,18 @@ vccwhi = dvs(idxccwhi,:);
 subplot(1,2,1);
 title(['J',S.general.expDate, ' low contrast']);
 hold on; hold all;    
-plot(t,mean(vcwlo,1),  'r-','linewidth',4);
-plot(t,mean(vccwlo,1), 'b-','linewidth',4);
-xlabel('Time'); ylabel('Average Signed DV')
+plot(t,mean(vcwlo,1),  'color', [1,0,0,0.5], 'linewidth',4);
+plot(t,mean(vccwlo,1), 'color', [0,0,1,0.5], 'linewidth',4);
+xlabel('Time'); ylabel('Average Signed DV (vertical stimulus)');
+legend('CW prior context','CCW prior context');
 ylim([-1,1]);
 subplot(1,2,2);
 title(['J',S.general.expDate, ' high contrast']);
 hold on; hold all;   
 plot(t,mean(vcwhi,1),  'r-','linewidth',4);
 plot(t,mean(vccwhi,1), 'b-','linewidth',4);    
+xlabel('Time'); ylabel('Average Signed DV (vertical stimulus)');
+legend('CW prior context','CCW prior context');
 ylim([-1,1]);
 drawnow;
     

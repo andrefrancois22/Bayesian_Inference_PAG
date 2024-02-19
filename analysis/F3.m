@@ -9,29 +9,90 @@ pr_cw  =  0.5;
 pr_ccw = -0.5;
 
 % => number of trials
-N = 1000;
+N = 500;
 % => number of timepoints
-t = 100;
+t = 200;
 
 % ==>
 sens  = randn(N,t);
 % ==> cummulative
-csens = cumsum(sens);
+csens = cumsum(sens,2);
 % ==> bound
-bnd = 4;
+bnd = 5;
 
 % ==> csens with bound
-csensb_cw = csens + pr_cw;
+csensb_cw =  csens + pr_cw;
+csensb_ccw = csens + pr_ccw;
 
+% ==> cw prior ctx
 csensb_cw(csensb_cw >=  bnd) =  bnd;
 csensb_cw(csensb_cw <= -bnd) = -bnd;
+% ==> ccw prior ctx
+csensb_ccw(csensb_ccw >=  bnd) =  bnd;
+csensb_ccw(csensb_ccw <= -bnd) = -bnd;
 
-% figure(); 
-% subplot(1,2,1); plot(csens,  'r');     ylim([-20,20]);
-% subplot(1,2,2); plot(csensb_cw, 'r');  ylim([-20,20]);
-% 
-% figure();
-% plot(mean(csensb_cw,1), 'r.-','linewidth',2);
+% ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
+% starting from t+1 to the bound for that trial
+
+% ==> cw cases
+for i = 1:N
+    bidx = min(find(csensb_cw(i,:) >=  bnd));
+    % => set to bound
+    if ~isempty(bidx)
+        csensb_cw(i,bidx:end) = bnd;
+    end
+end
+for i = 1:N
+    bidx = min(find(csensb_cw(i,:) <=  -bnd));
+    % => set to bound
+    if ~isempty(bidx)
+        csensb_cw(i,bidx:end) = -bnd;
+    end
+end
+
+% ==> ccw context cases
+for i = 1:N
+    bidx = min(find(csensb_ccw(i,:) >=  bnd));
+    % => set to bound
+    if ~isempty(bidx)
+        csensb_ccw(i,bidx:end) = bnd;
+    end
+end
+for i = 1:N
+    bidx = min(find(csensb_ccw(i,:) <=  -bnd));
+    % => set to bound
+    if ~isempty(bidx)
+        csensb_ccw(i,bidx:end) = -bnd;
+    end
+end
+
+figure(1); set(gcf,'Color','w'); set(gcf,'Position',[124 717 1682 245]);
+subplot(1,5,1); 
+hold on; hold all;
+plot(1:t,repmat( bnd,t), 'r--');
+plot(1:t,repmat(-bnd,t), 'b--');
+plot((csens + pr_cw)', 'color', [1,0.5,0.5,0.5]);     ylim([-5,5]);
+subplot(1,5,2); 
+hold on; hold all;
+plot(1:t,repmat( bnd,t), 'r--');
+plot(1:t,repmat(-bnd,t), 'b--');
+plot((csens + pr_ccw)', 'color', [0.5,0.5,1,0.5]);     ylim([-5,5]);
+ 
+subplot(1,5,3); 
+hold on; hold all;
+plot(1:t,repmat( bnd,t), 'r--');
+plot(1:t,repmat(-bnd,t), 'b--');
+plot(csensb_cw', 'color', [1,0.5,0.5,0.5]);     ylim([-5,5]);
+subplot(1,5,4); 
+hold on; hold all;
+plot(1:t,repmat( bnd,t), 'r--');
+plot(1:t,repmat(-bnd,t), 'b--');
+plot(csensb_ccw', 'color', [0.5,0.5,1,0.5]);     ylim([-5,5]);
+
+subplot(1,5,5);
+plot(mean(csensb_cw,1),'linewidth',1, 'color',  [1,0.5,0.5,0.5]);
+hold on; hold all;
+plot(mean(csensb_ccw,1),'linewidth',1, 'color', [0.5,0.5,1,0.5]);
 
 %%
 
