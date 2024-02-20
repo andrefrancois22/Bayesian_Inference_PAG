@@ -20,10 +20,12 @@ csens = cumsum(sens,2);
 % ==> bound
 bnd = 5;
 
-% ==> csens with bound
+% ==> csens with bound - two cases: with ccw prior or with cw prior
 csensb_cw =  csens + pr_cw;
 csensb_ccw = csens + pr_ccw;
 
+% ==> set DV values for timepoints over trials that reach or exceed a bound
+% to the bound value.
 % ==> cw prior ctx
 csensb_cw(csensb_cw >=  bnd) =  bnd;
 csensb_cw(csensb_cw <= -bnd) = -bnd;
@@ -33,7 +35,6 @@ csensb_ccw(csensb_ccw <= -bnd) = -bnd;
 
 % ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
 % starting from t+1 to the bound for that trial
-
 % ==> cw cases
 for i = 1:N
     bidx = min(find(csensb_cw(i,:) >=  bnd));
@@ -49,7 +50,6 @@ for i = 1:N
         csensb_cw(i,bidx:end) = -bnd;
     end
 end
-
 % ==> ccw context cases
 for i = 1:N
     bidx = min(find(csensb_ccw(i,:) >=  bnd));
@@ -69,30 +69,37 @@ end
 figure(1); set(gcf,'Color','w'); set(gcf,'Position',[124 717 1682 245]);
 subplot(1,5,1); 
 hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--');
-plot(1:t,repmat(-bnd,t), 'b--');
-plot((csens + pr_cw)', 'color', [1,0.5,0.5,0.5]);     ylim([-5,5]);
+plot((csens + pr_cw)', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
+plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+title('cw prior ctx')
 subplot(1,5,2); 
 hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--');
-plot(1:t,repmat(-bnd,t), 'b--');
-plot((csens + pr_ccw)', 'color', [0.5,0.5,1,0.5]);     ylim([-5,5]);
+plot((csens + pr_ccw)', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
+plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+title('ccw prior ctx')
  
 subplot(1,5,3); 
 hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--');
-plot(1:t,repmat(-bnd,t), 'b--');
-plot(csensb_cw', 'color', [1,0.5,0.5,0.5]);     ylim([-5,5]);
+plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+plot(csensb_cw', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
+title('cw prior ctx')
 subplot(1,5,4); 
 hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--');
-plot(1:t,repmat(-bnd,t), 'b--');
-plot(csensb_ccw', 'color', [0.5,0.5,1,0.5]);     ylim([-5,5]);
+plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+plot(csensb_ccw', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
+title('ccw prior ctx')
 
 subplot(1,5,5);
 plot(mean(csensb_cw,1),'linewidth',1, 'color',  [1,0.5,0.5,0.5]);
 hold on; hold all;
 plot(mean(csensb_ccw,1),'linewidth',1, 'color', [0.5,0.5,1,0.5]);
+ylabel('Average signed DV (acc. bound)')
+xlabel('Time')
+title('Average over trials')
 
 %%
 
