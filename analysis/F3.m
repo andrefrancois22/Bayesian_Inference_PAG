@@ -17,8 +17,9 @@ t = 200;
 sens  = randn(N,t);
 % ==> cummulative
 csens = cumsum(sens,2);
+
 % ==> bound
-bnd = 5;
+bnd = 10;
 
 % ==> csens with bound - two cases: with ccw prior or with cw prior
 csensb_cw =  csens + pr_cw;
