@@ -5,16 +5,21 @@ drc = '../data/';
 
 %% ==> accumulation bound panel
 
-pr_cw  =  0.5;
-pr_ccw = -0.5;
+figure(3); set(gcf,'Color','w'); set(gcf, 'Position',[675 461 932 501])
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for fc = 1:0.1:5
+
+pr_cw  =  0.5 * fc;
+pr_ccw = -0.5 * fc;
 
 % => number of trials
 N = 500;
 % => number of timepoints
-t = 200;
+tm = 200;
 
 % ==>
-sens  = randn(N,t);
+sens  = randn(N,tm);
 % ==> cummulative
 csens = cumsum(sens,2);
 
@@ -67,50 +72,50 @@ for i = 1:N
     end
 end
 
-figure(1); set(gcf,'Color','w'); set(gcf,'Position',[124 717 1682 245]);
-subplot(1,5,1); 
-hold on; hold all;
-plot((csens + pr_cw)', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-title('cw prior ctx')
-subplot(1,5,2); 
-hold on; hold all;
-plot((csens + pr_ccw)', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-title('ccw prior ctx')
- 
-subplot(1,5,3); 
-hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-plot(csensb_cw', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
-title('cw prior ctx')
-subplot(1,5,4); 
-hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-plot(csensb_ccw', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
-title('ccw prior ctx')
+% figure(1); set(gcf,'Color','w'); set(gcf,'Position',[124 717 1682 245]);
+% subplot(1,5,1); 
+% hold on; hold all;
+% plot((csens + pr_cw)', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% plot(1:t,repmat( bnd,tm), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,tm), 'b--', 'linewidth', 4);
+% title('cw prior ctx')
+% subplot(1,5,2); 
+% hold on; hold all;
+% plot((csens + pr_ccw)', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% plot(1:t,repmat( bnd,tm), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,tm), 'b--', 'linewidth', 4);
+% title('ccw prior ctx')
+%  
+% subplot(1,5,3); 
+% hold on; hold all;
+% plot(1:t,repmat( bnd,tm), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,tm), 'b--', 'linewidth', 4);
+% plot(csensb_cw', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% title('cw prior ctx')
+% subplot(1,5,4); 
+% hold on; hold all;
+% plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+% plot(csensb_ccw', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% title('ccw prior ctx')
+% 
+% subplot(1,5,5);
+% plot(mean(csensb_cw,1),'linewidth',1, 'color',  [1,0.5,0.5,0.5]);
+% hold on; hold all;
+% plot(mean(csensb_ccw,1),'linewidth',1, 'color', [0.5,0.5,1,0.5]);
+% ylabel('Average signed DV (acc. bound)')
+% xlabel('Time')
+% title('Average over trials')
 
-subplot(1,5,5);
-plot(mean(csensb_cw,1),'linewidth',1, 'color',  [1,0.5,0.5,0.5]);
-hold on; hold all;
-plot(mean(csensb_ccw,1),'linewidth',1, 'color', [0.5,0.5,1,0.5]);
-ylabel('Average signed DV (acc. bound)')
-xlabel('Time')
-title('Average over trials')
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%==> case with a bias that grows linearly with t (mean drift)
 
-
-%% ==> case with a bias that grows linearly with t (mean drift)
-
-pr_cw_d =   (0:(t-1))/(t-1);
-pr_ccw_d = -(0:(t-1))/(t-1);
+pr_cw_d =   fc*(0:(t-1))/(t-1);
+pr_ccw_d = -fc*(0:(t-1))/(t-1);
 
 % ==> check that average bias is equal to pr_cw and pr_ccw
-assert(mean(pr_cw_d)  == pr_cw);
-assert(mean(pr_ccw_d) == pr_ccw);
+% assert(mean(pr_cw_d)  == pr_cw);
+% assert(mean(pr_ccw_d) == pr_ccw);
 
 % ==> csens with bound - two cases: with ccw prior or with cw prior
 csensb_cw_d =  csens + repmat(pr_cw_d, [N,1]);
@@ -158,42 +163,42 @@ for i = 1:N
     end
 end
 
-figure(2); set(gcf,'Color','w'); set(gcf,'Position',[124 717 1682 245]);
-subplot(1,5,1); 
-hold on; hold all;
-plot((csens + repmat(pr_cw_d, [N,1]))', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-title('cw prior ctx')
-subplot(1,5,2); 
-hold on; hold all;
-plot((csens + repmat(pr_ccw_d, [N,1]))', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-title('ccw prior ctx')
- 
-subplot(1,5,3); 
-hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-plot(csensb_cw_d', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
-title('cw prior ctx')
-subplot(1,5,4); 
-hold on; hold all;
-plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
-plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
-plot(csensb_ccw_d', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
-title('ccw prior ctx')
+% figure(2); set(gcf,'Color','w'); set(gcf,'Position',[124 717 1682 245]);
+% subplot(1,5,1); 
+% hold on; hold all;
+% plot((csens + repmat(pr_cw_d, [N,1]))', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+% title('cw prior ctx')
+% subplot(1,5,2); 
+% hold on; hold all;
+% plot((csens + repmat(pr_ccw_d, [N,1]))', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+% title('ccw prior ctx')
+%  
+% subplot(1,5,3); 
+% hold on; hold all;
+% plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+% plot(csensb_cw_d', 'color', [1,0.5,0.5,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% title('cw prior ctx')
+% subplot(1,5,4); 
+% hold on; hold all;
+% plot(1:t,repmat( bnd,t), 'r--', 'linewidth', 4);
+% plot(1:t,repmat(-bnd,t), 'b--', 'linewidth', 4);
+% plot(csensb_ccw_d', 'color', [0.5,0.5,1,0.5]);     ylim([-bnd - 10, bnd + 10]);
+% title('ccw prior ctx')
+% 
+% subplot(1,5,5);
+% plot(mean(csensb_cw_d,1),'linewidth',1, 'color',  [1,0.5,0.5,0.5]);
+% hold on; hold all;
+% plot(mean(csensb_ccw_d,1),'linewidth',1, 'color', [0.5,0.5,1,0.5]);
+% ylabel('Average signed DV (acc. bound)')
+% xlabel('Time')
+% title('Average over trials')
 
-subplot(1,5,5);
-plot(mean(csensb_cw_d,1),'linewidth',1, 'color',  [1,0.5,0.5,0.5]);
-hold on; hold all;
-plot(mean(csensb_ccw_d,1),'linewidth',1, 'color', [0.5,0.5,1,0.5]);
-ylabel('Average signed DV (acc. bound)')
-xlabel('Time')
-title('Average over trials')
-
-%%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % -800 and -600 ms plotted against the same statistic computed between -500 and -300.
 
@@ -201,11 +206,11 @@ title('Average over trials')
 t = linspace(-795,-45,200);
 
 % get indices of timepoints closest to -500 and -300 ms
-[~,il] = min(abs(t + 350)); %-500
+[~,il] = min(abs(t + 500)); %-500
 [~,iu] = min(abs(t + 300)); %-300
 % get indices of timepoints closest to -800 and -600 ms
 [~,il2] = min(abs(t + 800)); %-800
-[~,iu2] = min(abs(t + 750)); %-600
+[~,iu2] = min(abs(t + 600)); %-600
 
 % ==> drifting prior expectation
 % => time window 1
@@ -223,14 +228,49 @@ csensb_cw_mu  =  mean(mean(csensb_cw(:, il:iu),1),2);
 csensb_ccw_mu2 = mean(mean(csensb_ccw(:,il2:iu2),1),2);
 csensb_cw_mu2  = mean(mean(csensb_cw(:, il2:iu2),1),2);
 
-figure(3);
+subplot(1,2,1);
 hold on; hold all;
-plot(1:2,[csensb_ccw_d_mu2, csensb_ccw_d_mu],'b-');
-plot(1:2,[csensb_cw_d_mu2,  csensb_cw_d_mu], 'r-');
-plot(1:2,[csensb_ccw_mu2, csensb_ccw_d_mu],'b:');
-plot(1:2,[csensb_cw_mu2,  csensb_cw_d_mu], 'r:');
+% scatter(csensb_cw_d_mu2 - csensb_ccw_d_mu2, csensb_cw_d_mu - csensb_ccw_d_mu,  90, 'ko'); %,'markerfacecolor', 'b', 'markeredgecolor', 'b')
+scatter(csensb_cw_d_mu2,  csensb_cw_d_mu,     90, 'o','markerfacecolor', 'r', 'markeredgecolor', 'r')
+scatter(csensb_ccw_d_mu2,  csensb_ccw_d_mu,   90, 'o','markerfacecolor', 'b', 'markeredgecolor', 'b')
+axis equal;
+subplot(1,2,2);
+hold on; hold all;
+% scatter(csensb_cw_mu2 - csensb_ccw_mu2,     csensb_cw_mu - csensb_ccw_mu, 90,  'ko'); %,'markerfacecolor', 'b', 'markeredgecolor', 'b')
+scatter(csensb_cw_mu2,    csensb_cw_mu,    90,  'o','markerfacecolor', 'r', 'markeredgecolor', 'r')
+scatter(csensb_ccw_mu2,    csensb_ccw_mu,  90,  'o','markerfacecolor', 'b', 'markeredgecolor', 'b')
+axis equal;
+
+fprintf('completed plotting for prior offset factor %d...\n',fc)
+
+end
+
+subplot(1,2,1);
+hold on; hold all;
+plot(-3:0.1:3,-3:0.1:3,'k--')
+plot(-3:0.1:3,zeros([1,length(-3:0.1:3)]),'k--')
+plot(zeros([1,length(-3:0.1:3)]),-3:0.1:3,'k--')
+axis equal; axis square;
+xlabel('Average (-800ms to -600ms) window')
+ylabel('Average (-500ms to -300ms) window')
+legend('cw \Delta DV between time windows', 'ccw \Delta DV between time windows', 'Location', 'NorthWest')
+title('Diffusion sticky bound with mean drift')
+drawnow;
+
+subplot(1,2,2);
+hold on; hold all;
+plot(-3:0.1:3,-3:0.1:3,'k--')
+plot(-3:0.1:3,zeros([1,length(-3:0.1:3)]),'k--')
+plot(zeros([1,length(-3:0.1:3)]),-3:0.1:3,'k--')
+axis equal; axis square;
+xlabel('Average (-800ms to -600ms) window')
+ylabel('Average (-500ms to -300ms) window')
+legend('cw \Delta DV between time windows', 'ccw \Delta DV between time windows', 'Location', 'NorthWest')
+title('Diffusion sticky bound (no drift)')
+drawnow;
 
 %%
+close all; clc;
 
 figure(); set(gcf,'Color','w');
 
@@ -377,35 +417,40 @@ for iSfln = 1:29
 end
 
 %%
-close all; clc;
+% close all; clc;
 
 figure(); set(gcf,'Color','w'); set(gcf,'Position',[86 490 1834 472]);
 subplot(1,3,1);
 hold on; hold all;
 % => monkey F
-scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Fmu_cw_hi(:,1), Fmu_cw_hi(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r')
-scatter(Fmu_ccw_hi(:,1),Fmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b')
+s1 = scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s2 = scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s3 = scatter(Fmu_cw_hi(:,1), Fmu_cw_hi(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r');
+s4 = scatter(Fmu_ccw_hi(:,1),Fmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b');
 % => monkey J
-scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Jmu_cw_hi(:,1), Jmu_cw_hi(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r')
-scatter(Jmu_ccw_hi(:,1),Jmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b')
+s5 = scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s6 = scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s7 = scatter(Jmu_cw_hi(:,1), Jmu_cw_hi(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r');
+s8 = scatter(Jmu_ccw_hi(:,1),Jmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b');
 hold on; hold all
 plot(-0.6:0.1:0.6,-0.6:0.1:0.6,'k--')
-plot(-0.6:0.1:0.6,repmat(0,[1,length(-0.6:0.1:0.6)]),'k--')
-plot(repmat(0,[1,length(-0.6:0.1:0.6)]),-0.6:0.1:0.6,'k--')
+plot(-0.6:0.1:0.6,zeros([1,length(-0.6:0.1:0.6)]),'k--')
+plot(zeros([1,length(-0.6:0.1:0.6)]),-0.6:0.1:0.6,'k--')
 axis equal; axis square;
 xlabel('Average (-800ms to -600ms) window')
 ylabel('Average (-500ms to -300ms) window')
+legend([s1,s2,s3,s4,s5,s6,s7,s8], 'Monkey F cw low contrast','Monkey F ccw low contrast','Monkey F cw high contrast','Monkey F ccw high contrast', ...
+                                  'Monkey J cw low contrast','Monkey J ccw low contrast','Monkey J cw high contrast','Monkey J ccw high contrast',... 
+                                 'Location','SouthEast')
+
+
 
 subplot(1,3,2);
 hold on; hold all;
-plot(linspace(-790,-40,200), mean(J_cw_lo,1), 'color', [1,0,0,0.35],  'linewidth',8)
-plot(linspace(-790,-40,200), mean(J_cw_hi,1), 'r-',  'linewidth',4)
-plot(linspace(-790,-40,200), mean(J_ccw_lo,1), 'color', [0,0,1,0.35], 'linewidth',8)
-plot(linspace(-790,-40,200), mean(J_ccw_hi,1), 'b-', 'linewidth',4)
+p1 = plot(linspace(-790,-40,200), mean(J_cw_lo,1), 'color', [1,0,0,0.35],  'linewidth',8);
+p2 = plot(linspace(-790,-40,200), mean(J_cw_hi,1), 'r-',  'linewidth',4);
+p3 = plot(linspace(-790,-40,200), mean(J_ccw_lo,1), 'color', [0,0,1,0.35], 'linewidth',8);
+p4 = plot(linspace(-790,-40,200), mean(J_ccw_hi,1), 'b-', 'linewidth',4);
 % => time windows
 plot(repmat(-800,[20,1]),linspace(-0.2,0.2,20),'k--')
 plot(repmat(-600,[20,1]),linspace(-0.2,0.2,20),'k--')
@@ -413,14 +458,18 @@ plot(repmat(-600,[20,1]),linspace(-0.2,0.2,20),'k--')
 plot(repmat(-500,[20,1]),linspace(-0.2,0.2,20),'k:')
 plot(repmat(-300,[20,1]),linspace(-0.2,0.2,20),'k:')
 xlim([-840,-30])
-title('Monkey J')
+title('Monkey J');
+xlabel('Time');
+ylabel('Signed DV average (vertical stimulus)');
+legend([p1,p2,p3,p4],'cw context, low contrast', 'cw context high contrast', ...
+                     'ccw context, low contrast', 'ccw context, high contrast');
 
 subplot(1,3,3);
 hold on; hold all;
-plot(linspace(-795,-45,200), mean(F_cw_lo,1), 'color', [1,0,0,0.35],  'linewidth',8)
-plot(linspace(-795,-45,200), mean(F_cw_hi,1), 'r-',  'linewidth',4)
-plot(linspace(-795,-45,200), mean(F_ccw_lo,1), 'color', [0,0,1,0.35], 'linewidth',8)
-plot(linspace(-795,-45,200), mean(F_ccw_hi,1), 'b-', 'linewidth',4)
+p1 = plot(linspace(-795,-45,200), mean(F_cw_lo,1), 'color', [1,0,0,0.35],  'linewidth',8);
+p2 = plot(linspace(-795,-45,200), mean(F_cw_hi,1), 'r-',  'linewidth',4);
+p3 = plot(linspace(-795,-45,200), mean(F_ccw_lo,1), 'color', [0,0,1,0.35], 'linewidth',8);
+p4 = plot(linspace(-795,-45,200), mean(F_ccw_hi,1), 'b-', 'linewidth',4);
 % => time windows
 plot(repmat(-800,[20,1]),linspace(-0.2,0.2,20),'k--')
 plot(repmat(-600,[20,1]),linspace(-0.2,0.2,20),'k--')
@@ -428,46 +477,61 @@ plot(repmat(-600,[20,1]),linspace(-0.2,0.2,20),'k--')
 plot(repmat(-500,[20,1]),linspace(-0.2,0.2,20),'k:')
 plot(repmat(-300,[20,1]),linspace(-0.2,0.2,20),'k:')
 xlim([-840,-30])
-title('Monkey F')
+title('Monkey F');
+xlabel('Time');
+ylabel('Signed DV average (vertical stimulus)');
+legend([p1,p2,p3,p4],'cw context, low contrast', 'cw context high contrast', ...
+                     'ccw context, low contrast', 'ccw context, high contrast');
 
 %% ==> just seprate out by monkey
 
-figure(); set(gcf,'Color','w'); set(gcf,'Position',[-15 435 1219 469]);
+figure(); set(gcf,'Color','w'); set(gcf,'Position',[178 358 1325 604]);
 subplot(1,2,1);
 hold on; hold all;
 % => monkey F
-scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Fmu_cw_hi(:,1), Fmu_cw_hi(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r')
-scatter(Fmu_ccw_hi(:,1),Fmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b')
+s1 = scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s2 = scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s3 = scatter(Fmu_cw_hi(:,1), Fmu_cw_hi(:,2),  140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r');
+s4 = scatter(Fmu_ccw_hi(:,1),Fmu_ccw_hi(:,2), 140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b');
 % ==> lines
 plot(-0.6:0.1:0.6,-0.6:0.1:0.6,'k--')
-plot(-0.6:0.1:0.6,repmat(0,[1,length(-0.6:0.1:0.6)]),'k--')
-plot(repmat(0,[1,length(-0.6:0.1:0.6)]),-0.6:0.1:0.6,'k--')
+plot(-0.6:0.1:0.6,zeros([1,length(-0.6:0.1:0.6)]),'k--')
+plot(zeros([1,length(-0.6:0.1:0.6)]),-0.6:0.1:0.6,'k--')
 axis equal; axis square;
-xlabel('Average (-800ms to -600ms) window')
-ylabel('Average (-500ms to -300ms) window')
+xlabel('Average (-800ms to -600ms) window');
+ylabel('Average (-500ms to -300ms) window');
+legend([s1,s2,s3,s4],'cw low contrast','ccw low contrast','cw high contrast','ccw high contrast','Location','SouthEast')
+title('Monkey F');
+
 subplot(1,2,2);
 hold on; hold all;
 % => monkey J
-scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1)
-scatter(Jmu_cw_hi(:,1), Jmu_cw_hi(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r')
-scatter(Jmu_ccw_hi(:,1),Jmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b')
+s1 = scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s2 = scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s3 = scatter(Jmu_cw_hi(:,1), Jmu_cw_hi(:,2),  140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r');
+s4 = scatter(Jmu_ccw_hi(:,1),Jmu_ccw_hi(:,2), 140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b');
 % ==> lines
 plot(-0.6:0.1:0.6,-0.6:0.1:0.6,'k--')
-plot(-0.6:0.1:0.6,repmat(0,[1,length(-0.6:0.1:0.6)]),'k--')
-plot(repmat(0,[1,length(-0.6:0.1:0.6)]),-0.6:0.1:0.6,'k--')
+plot(-0.6:0.1:0.6,zeros([1,length(-0.6:0.1:0.6)]),'k--')
+plot(zeros([1,length(-0.6:0.1:0.6)]),-0.6:0.1:0.6,'k--')
 axis equal; axis square;
 xlabel('Average (-800ms to -600ms) window')
 ylabel('Average (-500ms to -300ms) window')
+legend([s1,s2,s3,s4],'cw low contrast','ccw low contrast','cw high contrast','ccw high contrast','Location','SouthEast')
+title('Monkey J');
+
+% text(Jmu_cw_lo(:,1)  - 0.015, Jmu_cw_lo(:,2),  string([14:29]),'fontsize',6)
+% text(Jmu_ccw_lo(:,1) - 0.015,Jmu_ccw_lo(:,2), string([14:29]),'fontsize',6)
+% text(Jmu_cw_hi(:,1)  - 0.015, Jmu_cw_hi(:,2),  string([14:29]),'fontsize',6)
+% text(Jmu_ccw_hi(:,1) - 0.015,Jmu_ccw_hi(:,2), string([14:29]),'fontsize',6)
+
 
 %% ==> just one example
-close all; clc;
+% close all; clc;
 
-figure(); set(gcf,'Color','w');
+figure(); set(gcf,'Color','w'); set(gcf, 'Position',[675 363 602 599])
 
-iSfln = 17;
+iSfln = 23;
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % params: matrix with the model parameters [trial x parameter]
@@ -525,28 +589,23 @@ vcwhi = dvs(idxcwhi,:);
 vccwhi = dvs(idxccwhi,:);    
 
 
-subplot(1,2,1);
-title(['J',S.general.expDate, ' low contrast']);
+title(['J',S.general.expDate]);
 hold on; hold all;    
-plot(t,mean(vcwlo,1),  'color', [1,0,0,0.5], 'linewidth',4);
-plot(t,mean(vccwlo,1), 'color', [0,0,1,0.5], 'linewidth',4);
+p1 = plot(t,mean(vcwlo,1),  'color', [1,0,0,0.5], 'linewidth',8);
+p2 = plot(t,mean(vccwlo,1), 'color', [0,0,1,0.5], 'linewidth',8);
 xlabel('Time'); ylabel('Average Signed DV (vertical stimulus)');
-legend('CW prior context','CCW prior context');
-ylim([-1,1]);
-subplot(1,2,2);
-title(['J',S.general.expDate, ' high contrast']);
-hold on; hold all;   
-plot(t,mean(vcwhi,1),  'r-','linewidth',4);
-plot(t,mean(vccwhi,1), 'b-','linewidth',4);    
-xlabel('Time'); ylabel('Average Signed DV (vertical stimulus)');
-legend('CW prior context','CCW prior context');
 ylim([-1,1]);
 % => time windows
 plot(repmat(-800,[20,1]),linspace(-0.8,0.8,20),'k--')
 plot(repmat(-600,[20,1]),linspace(-0.8,0.8,20),'k--')
-
 plot(repmat(-500,[20,1]),linspace(-0.8,0.8,20),'k:')
 plot(repmat(-300,[20,1]),linspace(-0.8,0.8,20),'k:')
-xlim([-840,-30])
+xlim([-840,-30]);
+
+hold on; hold all;   
+p3 = plot(t,mean(vcwhi,1),  'r-','linewidth',4);
+p4 = plot(t,mean(vccwhi,1), 'b-','linewidth',4);    
+
+legend([p1,p2,p3,p4],'CW prior low contrast','CCW prior low contrast', 'CW prior high contrast','CCW prior high contrast');
 drawnow;
     
