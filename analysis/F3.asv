@@ -501,13 +501,8 @@ drawnow;
 [p_cwF,~]  = signrank(cwsF);
 [p_ccwF,~] = signrank(ccwsF);
 
-fprintf('Wilcoxon test p values evaluating initial offsets in the vertical stimulus condition...\n')
-fprintf('Wilcoxon test for animal F cw cases, p = %d...\n', p_cwF)
-fprintf('Wilcoxon test for animal F ccw cases, p = %d...\n', p_ccwF)
-
-
-fprintf('Wilcoxon test for animal J cw cases, p = %d...\n', p_cwJ)
-fprintf('Wilcoxon test for animal J ccw cases, p = %d...\n', p_ccwJ)
+fprintf('Wilcoxon test for animal F cw cases, p = %d...\n', pcwF)
+fprintf('Wilcoxon test for animal F ccw cases, p = %d...\n', pccwF)
  
  
 %%
