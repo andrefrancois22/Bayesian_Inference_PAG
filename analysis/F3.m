@@ -540,7 +540,10 @@ fprintf('Wilcoxon test for animal F ccw cases, p = %d...\n', p_ccwF)
 fprintf('Wilcoxon test for animal J cw cases, p = %d...\n', p_cwJ)
 fprintf('Wilcoxon test for animal J ccw cases, p = %d...\n', p_ccwJ)
  
- 
+% ==> ranksum
+[PJ,HJ] = ranksum(cwsJ,ccwsJ)
+
+[PF,HF] = ranksum(cwsF,ccwsF)
 %%
 % close all; clc;
 
@@ -702,7 +705,7 @@ ccw_lo_raw_DVs = [F_ccw_lo_raw_DVs; J_ccw_lo_raw_DVs];
 
 figure(); set(gcf,'Color','w'); set(gcf, 'Position',[675 363 602 599])
 
-iSfln = 19;
+iSfln = 23;
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % params: matrix with the model parameters [trial x parameter]
