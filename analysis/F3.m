@@ -128,8 +128,8 @@ for fc = 1:0.1:5
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     %==> case with a bias that grows linearly with t (mean drift)
 
-    pr_cw_d =   fc*(0:(tm-1))/(0.5*tm-1);
-    pr_ccw_d = -fc*(0:(tm-1))/(0.5*tm-1);
+    pr_cw_d =   fc*(0:(tm-1))/(0.5*tm);
+    pr_ccw_d = -fc*(0:(tm-1))/(0.5*tm);
 
     % ==> csens with bound - two cases: with ccw prior or with cw prior
     csensb_cw_d =  csens + repmat(pr_cw_d, [N,1]);
@@ -147,8 +147,11 @@ for fc = 1:0.1:5
     % ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
     % starting from t+1 to the bound for that trial
     % ==> cw cases
+    % ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
+    % starting from t+1 to the bound for that trial
+    % ==> cw cases
     for i = 1:N
-        bidx = find(csensb_cw(i,:) >=  bnd, 1, 'first');
+        bidx = find(csensb_cw_d(i,:) >=  bnd, 1, 'first');
         % => set to bound
         if ~isempty(bidx)
             csensb_cw_d(i,bidx:end) = bnd;
@@ -164,7 +167,7 @@ for fc = 1:0.1:5
     end
     % ==> ccw context cases
     for i = 1:N
-        bidx = find(csensb_ccw(i,:) >=  bnd, 1, 'first');
+        bidx = find(csensb_ccw_d(i,:) >=  bnd, 1, 'first');
         % => set to bound
         if ~isempty(bidx)
             csensb_ccw_d(i,bidx:end) = bnd;
@@ -323,6 +326,18 @@ vcwhisJ = [];
 % ==> context ccw (ctx == 1)
 vccwhisJ = [];     
 
+% ==> store raw DV averages
+J_cw_lo_raw_DVs = [];
+J_cw_hi_raw_DVs = [];
+J_ccw_lo_raw_DVs = [];
+J_ccw_hi_raw_DVs = [];
+
+% ==> store raw DV averages
+F_cw_lo_raw_DVs = [];
+F_cw_hi_raw_DVs = [];
+F_ccw_lo_raw_DVs = [];
+F_ccw_hi_raw_DVs = [];
+
 % ==> what is the session
 for iSfln = 1:29 
 
@@ -390,6 +405,10 @@ for iSfln = 1:29
     % ==> context ccw (ctx == 1)
     vccwhi = dvs(idxccwhi,:);                   
     
+    % ==> true dcCalAll (raw) values
+    dvs_raw = S.dec.dvCatAll;
+    
+    
     subplot(5,6,iSfln);
     hold on; hold all;    
     plot(t,mean(vcwlo,1),  'r:');
@@ -415,7 +434,13 @@ for iSfln = 1:29
         F_cw_lo(iSfln,:) = mean(vcwlo,1);    
         F_cw_hi(iSfln,:) = mean(vcwhi,1);  
         F_ccw_lo(iSfln,:) = mean(vccwlo,1);    
-        F_ccw_hi(iSfln,:) = mean(vccwhi,1);       
+        F_ccw_hi(iSfln,:) = mean(vccwhi,1);  
+        
+        % ==> store averages of raw DVs 
+        F_cw_lo_raw_DVs(iSfln,:)  = mean(dvs_raw(idxcwlo,:),1);
+        F_cw_hi_raw_DVs(iSfln,:)  = mean(dvs_raw(idxcwhi,:),1);
+        F_ccw_lo_raw_DVs(iSfln,:) = mean(dvs_raw(idxccwlo,:),1);
+        F_ccw_hi_raw_DVs(iSfln,:) = mean(dvs_raw(idxccwhi,:),1);        
         
         % ==> store all single trial dvs
         vcwlosF  = [vcwlosF; vcwlo];
@@ -435,13 +460,19 @@ for iSfln = 1:29
         % => hi contrast
         Jmu_ccw_hi(iSfln -13,:) = [mean(mean(vccwhi(:,il2:iu2),1),2), mean(mean(vccwhi(:,il:iu),1),2)];      
         
-        % ==> store average DV trajectories        
+        % ==> store average DV trajectories (model fits)       
         J_cw_lo(iSfln  -13,:) = mean(vcwlo,1);    
         J_cw_hi(iSfln  -13,:) = mean(vcwhi,1);  
         J_ccw_lo(iSfln -13,:) = mean(vccwlo,1);    
         J_ccw_hi(iSfln -13,:) = mean(vccwhi,1);    
         
-        % ==> store all single trial dvs
+        % ==> store averages of raw DVs 
+        J_cw_lo_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxcwlo,:),1);
+        J_cw_hi_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxcwhi,:),1);
+        J_ccw_lo_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxccwlo,:),1);
+        J_ccw_hi_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxccwhi,:),1);
+        
+        % ==> store all single trial dvs (model fits)
         vcwlosJ  = [vcwlosJ; vcwlo];
         vccwlosJ = [vccwlosJ; vccwlo]; 
         vcwhisJ  = [vcwhisJ; vcwhi];
@@ -583,6 +614,9 @@ subplot(1,2,1);
 hold on; hold all;
 p1 = plot(linspace(-790,-40,200), mean(J_cw_lo,1), 'color', [1,0,0,0.35],  'linewidth',8);
 p3 = plot(linspace(-790,-40,200), mean(J_ccw_lo,1), 'color', [0,0,1,0.35], 'linewidth',8);
+% ==> timeSac(16) == -790 and timeSac(31) == -40
+p4 = plot(timeSac(16:31), mean(J_cw_lo_raw_DVs(:,16:31),1), 'o', 'color', [1,0,0,0.35]);
+p5 = plot(timeSac(16:31), mean(J_ccw_lo_raw_DVs(:,16:31),1), 'o', 'color', [0,0,1,0.35], 'linewidth',1);
 % => time windows
 plot(repmat(-800,[20,1]),linspace(-0.2,0.2,20),'k--')
 plot(repmat(-600,[20,1]),linspace(-0.2,0.2,20),'k--')
@@ -595,10 +629,14 @@ xlabel('Time');
 ylabel('Signed DV average (vertical stimulus)');
 % legend([p1,p3],'cw context, low contrast', ...
 %                'ccw context, low contrast');
+
 subplot(1,2,2);
 hold on; hold all;
 p1 = plot(linspace(-795,-45,200), mean(F_cw_lo,1), 'color', [1,0,0,0.35],  'linewidth',8);
 p3 = plot(linspace(-795,-45,200), mean(F_ccw_lo,1), 'color', [0,0,1,0.35], 'linewidth',8);
+% ==> timeSac(16) == -790 and timeSac(31) == -40
+p4 = plot(timeSac(16:31), mean(F_cw_lo_raw_DVs(:,16:31),1), 'o', 'color', [1,0,0,0.35]);
+p5 = plot(timeSac(16:31), mean(F_ccw_lo_raw_DVs(:,16:31),1), 'o', 'color', [0,0,1,0.35], 'linewidth',1);
 % => time windows
 plot(repmat(-800,[20,1]),linspace(-0.2,0.2,20),'k--')
 plot(repmat(-600,[20,1]),linspace(-0.2,0.2,20),'k--')
@@ -658,9 +696,13 @@ title('Monkey J');
 %% ==> just one example
 % close all; clc;
 
+% ==> raw DV averages
+cw_lo_raw_DVs  = [F_cw_lo_raw_DVs;  J_cw_lo_raw_DVs];
+ccw_lo_raw_DVs = [F_ccw_lo_raw_DVs; J_ccw_lo_raw_DVs];
+
 figure(); set(gcf,'Color','w'); set(gcf, 'Position',[675 363 602 599])
 
-iSfln = 23;
+iSfln = 19;
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % params: matrix with the model parameters [trial x parameter]
@@ -722,6 +764,9 @@ title(['J',S.general.expDate]);
 hold on; hold all;    
 p1 = plot(t,mean(vcwlo,1),  'color', [1,0,0,0.5], 'linewidth',8);
 p2 = plot(t,mean(vccwlo,1), 'color', [0,0,1,0.5], 'linewidth',8);
+p4 = plot(timeSac(16:31), cw_lo_raw_DVs(iSfln,  16:31), 'o', 'color', [1,0,0,0.35]);
+p5 = plot(timeSac(16:31), ccw_lo_raw_DVs(iSfln, 16:31), 'o', 'color', [0,0,1,0.35], 'linewidth',1);
+% => time windows
 xlabel('Time'); ylabel('Average Signed DV (vertical stimulus)');
 ylim([-1,1]);
 % => time windows
