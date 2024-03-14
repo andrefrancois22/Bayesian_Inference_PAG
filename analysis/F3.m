@@ -489,6 +489,11 @@ cwsF  = [vcwlosF; vcwhisF];   cwsF  = cwsF(:,1);
 % ==> all CCW offset values for vertical stimulus - across hi and lo contrasts
 ccwsF = [vccwlosF; vccwhisF]; ccwsF = ccwsF(:,1);
 
+% ==> all CW offset values for vertical stimulus - across hi and lo contrasts
+cwsJ  = [vcwlosJ; vcwhisJ];   cwsJ  = cwsJ(:,1);
+% ==> all CCW offset values for vertical stimulus - across hi and lo contrasts
+ccwsJ = [vccwlosJ; vccwhisJ]; ccwsJ = ccwsJ(:,1);
+
 % ==> edges
 edgs = -1.5:0.1:1.5;
 
@@ -505,11 +510,6 @@ title('Animal F: ccw prior context')
 xlabel('Signed DV initial offset')
 ylabel('Frequency')
 drawnow;
-
-% ==> all CW offset values for vertical stimulus - across hi and lo contrasts
-cwsJ  = [vcwlosJ; vcwhisJ];   cwsJ  = cwsJ(:,1);
-% ==> all CCW offset values for vertical stimulus - across hi and lo contrasts
-ccwsJ = [vccwlosJ; vccwhisJ]; ccwsJ = ccwsJ(:,1);
  
 subplot(2,2,3);
 histogram(cwsJ,edgs,'facecolor',[1,0.5,0]); hold on; hold all;
@@ -544,6 +544,10 @@ fprintf('Wilcoxon test for animal J ccw cases, p = %d...\n', p_ccwJ)
 [PJ,HJ] = ranksum(cwsJ,ccwsJ)
 
 [PF,HF] = ranksum(cwsF,ccwsF)
+
+% ==> restrict to the low contrast trials and repeat ranksum
+
+
 %%
 % close all; clc;
 
