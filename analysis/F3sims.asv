@@ -23,7 +23,7 @@ bnd = 10;
 % ==> choose model
 % mdl = 'model2';
 % mdl = 'model3';
-mdl = 'model4';
+% mdl = 'model4';
 
 % ==> figure 
 figure(1); set(gcf,'Color','w'); set(gcf, 'Position',[71 510 1850 440])

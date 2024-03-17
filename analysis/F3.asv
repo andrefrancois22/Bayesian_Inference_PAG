@@ -628,35 +628,9 @@ for b = 1:BT
     fprintf('computed first PC slope for sampled data %d of %d...\n',b,BT)
 end
 
-% ==> eigendecomposition
-[V,D] = eig(covFJ);
-% ==> get index of max eigenvalue
-[~,I] = max(D);
-% ==> mean of the distribution
-muFJ = mean(FJ)';
-
-% ==> angle of first eigenvector
-[TH,~] = cart2pol(V(1,I(2)),V(2,I(2)));
-% ==> visualize first eigenvector over distribution
-fg = figure(1); fg.Position = [333 552 850 338]; 
-clf; set(gcf,'Color','w');
-subplot(1,2,1);
-scatter(FJ(:,1),FJ(:,2),'ko','filled');
-hold on; hold all;
-plot([muFJ(1),V(1,I(2))],[muFJ(2),V(2,I(2))],'r-'); 
-% ==> lines
-plot(-0.6:0.1:0.6,-0.6:0.1:0.6,'r--')
-plot(-0.6:0.1:0.6,zeros([1,length(-0.6:0.1:0.6)]),'k--')
-plot(zeros([1,length(-0.6:0.1:0.6)]),-0.6:0.1:0.6,'k--')
-axis equal; axis square;
-xlabel('Average (-800ms to -600ms) window');
-ylabel('Average (-500ms to -300ms) window');
-title(['First PC slope (rad): ', num2str(TH)])
-drawnow;
-
 bns = 25;
 subplot(1,2,2); cla;
-h = histogram(s,bns,'Facecolor','r'); hold on; hold all;
+h = histogram(s,bns,); hold on; hold all;
 xlabel('First PC slope (radians)');
 ylabel('frequency');
 title('distribution of slopes of first PC');
