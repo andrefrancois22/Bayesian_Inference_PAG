@@ -53,7 +53,7 @@ vccwlosJ = [];
 % ==> context cw (ctx == 1)
 vcwhisJ = [];
 % ==> context ccw (ctx == 1)
-vccwhisJ = [];     
+vccwhisJ = [];        
 
 % ==> store raw DV averages
 J_cw_lo_raw_DVs = [];
@@ -66,6 +66,9 @@ F_cw_lo_raw_DVs = [];
 F_cw_hi_raw_DVs = [];
 F_ccw_lo_raw_DVs = [];
 F_ccw_hi_raw_DVs = [];
+
+% ==> store dynamic range means
+mus_dynr = nan(1,29);
 
 % ==> what is the session
 for iSfln = 1:29 
@@ -118,6 +121,13 @@ for iSfln = 1:29
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
     
+    % ==> dynamic range for session
+    dynr = max([max(dvs, [], 2) - dvs(:,1), -(min(dvs, [], 2) - dvs(:,1))], [], 2);
+    % ==> average of the dynamic range for that session
+    dynr_mu = mean(dynr);
+    % ==> store the average for that session
+    mus_dynr(iSfln) = dynr_mu;
+    
     % indices
     idxcwlo =  (ori == 0) & (ctx == cx(2)) & (ctr == cr(1));
     idxccwlo = (ori == 0) & (ctx == cx(1)) & (ctr == cr(1));
@@ -126,18 +136,17 @@ for iSfln = 1:29
     idxccwhi = (ori == 0) & (ctx == cx(1)) & (ctr == cr(2));    
     
     % ==> context cw (ctx == 1)
-    vcwlo = dvs(idxcwlo,:);
+    vcwlo  = dvs(idxcwlo,:);
     % ==> context ccw (ctx == 1)
     vccwlo = dvs(idxccwlo,:);    
     % ==> context cw (ctx == 1)
-    vcwhi = dvs(idxcwhi,:);
+    vcwhi  = dvs(idxcwhi,:);
     % ==> context ccw (ctx == 1)
     vccwhi = dvs(idxccwhi,:);                   
     
     % ==> true dcCalAll (raw) values
     dvs_raw = S.dec.dvCatAll;
-    
-    
+      
     subplot(5,6,iSfln);
     hold on; hold all;    
     plot(t,mean(vcwlo,1),  'r:');
@@ -151,17 +160,17 @@ for iSfln = 1:29
     if iSfln <= 13
         % ==> store averages in two time windows
         % => lo contrast       
-        Fmu_cw_lo(iSfln,:) = [mean(mean(vcwlo(:,il2:iu2),1),2), mean(mean(vcwlo(:,il:iu),1),2)];
+        Fmu_cw_lo(iSfln,:)  = [mean(mean(vcwlo(:,il2:iu2),1),2), mean(mean(vcwlo(:,il:iu),1),2)];
         % => hi contrast
-        Fmu_cw_hi(iSfln,:) = [mean(mean(vcwhi(:,il2:iu2),1),2), mean(mean(vcwhi(:,il:iu),1),2)];        
+        Fmu_cw_hi(iSfln,:)  = [mean(mean(vcwhi(:,il2:iu2),1),2), mean(mean(vcwhi(:,il:iu),1),2)];        
         % => lo contrast
         Fmu_ccw_lo(iSfln,:) = [mean(mean(vccwlo(:,il2:iu2),1),2), mean(mean(vccwlo(:,il:iu),1),2)];
         % => hi contrast
         Fmu_ccw_hi(iSfln,:) = [mean(mean(vccwhi(:,il2:iu2),1),2), mean(mean(vccwhi(:,il:iu),1),2)];    
         
         % ==> store average DV trajectories        
-        F_cw_lo(iSfln,:) = mean(vcwlo,1);    
-        F_cw_hi(iSfln,:) = mean(vcwhi,1);  
+        F_cw_lo(iSfln,:)  = mean(vcwlo,1);    
+        F_cw_hi(iSfln,:)  = mean(vcwhi,1);  
         F_ccw_lo(iSfln,:) = mean(vccwlo,1);    
         F_ccw_hi(iSfln,:) = mean(vccwhi,1);  
         
@@ -171,19 +180,20 @@ for iSfln = 1:29
         F_ccw_lo_raw_DVs(iSfln,:) = mean(dvs_raw(idxccwlo,:),1);
         F_ccw_hi_raw_DVs(iSfln,:) = mean(dvs_raw(idxccwhi,:),1);        
         
-        % ==> store all single trial dvs
-        vcwlosF  = [vcwlosF; vcwlo];
-        vccwlosF = [vccwlosF; vccwlo]; 
-        vcwhisF  = [vcwhisF; vcwhi];
-        vccwhisF = [vccwhisF; vccwhi];      
+        % ==> store all single trial dv (model fit) initial offsets 
+        % normalized by average dynamic range
+        vcwlosF  = [vcwlosF;  vcwlo(:,1)];%  / dynr_mu ];
+        vccwlosF = [vccwlosF; vccwlo(:,1)];% / dynr_mu ]; 
+        vcwhisF  = [vcwhisF;  vcwhi(:,1)];%  / dynr_mu ];
+        vccwhisF = [vccwhisF; vccwhi(:,1)];% / dynr_mu ];      
         
     % => if Monkey J    
     elseif iSfln >= 14
         % ==> store averages in two time windows        
         % => lo contrast
-        Jmu_cw_lo(iSfln -13,:) = [mean(mean(vcwlo(:,il2:iu2),1),2), mean(mean(vcwlo(:,il:iu),1),2)];
+        Jmu_cw_lo(iSfln -13,:)  = [mean(mean(vcwlo(:,il2:iu2),1),2), mean(mean(vcwlo(:,il:iu),1),2)];
         % => hi contrast
-        Jmu_cw_hi(iSfln -13,:) = [mean(mean(vcwhi(:,il2:iu2),1),2), mean(mean(vcwhi(:,il:iu),1),2)];        
+        Jmu_cw_hi(iSfln -13,:)  = [mean(mean(vcwhi(:,il2:iu2),1),2), mean(mean(vcwhi(:,il:iu),1),2)];        
         % => lo contrast
         Jmu_ccw_lo(iSfln -13,:) = [mean(mean(vccwlo(:,il2:iu2),1),2), mean(mean(vccwlo(:,il:iu),1),2)];
         % => hi contrast
@@ -196,58 +206,63 @@ for iSfln = 1:29
         J_ccw_hi(iSfln -13,:) = mean(vccwhi,1);    
         
         % ==> store averages of raw DVs 
-        J_cw_lo_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxcwlo,:),1);
-        J_cw_hi_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxcwhi,:),1);
+        J_cw_lo_raw_DVs(iSfln  -13,:)  = mean(dvs_raw(idxcwlo,:),1);
+        J_cw_hi_raw_DVs(iSfln  -13,:)  = mean(dvs_raw(idxcwhi,:),1);
         J_ccw_lo_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxccwlo,:),1);
         J_ccw_hi_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxccwhi,:),1);
         
-        % ==> store all single trial dvs (model fits)
-        vcwlosJ  = [vcwlosJ; vcwlo];
-        vccwlosJ = [vccwlosJ; vccwlo]; 
-        vcwhisJ  = [vcwhisJ; vcwhi];
-        vccwhisJ = [vccwhisJ; vccwhi];      
+        % ==> store all single trial dv (model fit) initial offsets 
+        % normalized by average dynamic range
+        vcwlosJ  = [vcwlosJ;  vcwlo(:,1)];%  / dynr_mu ];
+        vccwlosJ = [vccwlosJ; vccwlo(:,1)];% / dynr_mu ]; 
+        vcwhisJ  = [vcwhisJ;  vcwhi(:,1)];%  / dynr_mu ];
+        vccwhisJ = [vccwhisJ; vccwhi(:,1)];% / dynr_mu ];      
         
     end    
 end
 
-%% ==> barplots for F3
+%% ==> histograms for F3
 close all; clc;
 
 % ==> all CW offset values for vertical stimulus - across hi and lo contrasts
-cwsF  = [vcwlosF; vcwhisF];   cwsF  = cwsF(:,1);
+cwsF  = [vcwlosF; vcwhisF];   %cwsF  = cwsF(:,1);
 % ==> all CCW offset values for vertical stimulus - across hi and lo contrasts
-ccwsF = [vccwlosF; vccwhisF]; ccwsF = ccwsF(:,1);
+ccwsF = [vccwlosF; vccwhisF]; %ccwsF = ccwsF(:,1);
 
 % ==> all CW offset values for vertical stimulus - across hi and lo contrasts
-cwsJ  = [vcwlosJ; vcwhisJ];   cwsJ  = cwsJ(:,1);
+cwsJ  = [vcwlosJ; vcwhisJ];   %cwsJ  = cwsJ(:,1);
 % ==> all CCW offset values for vertical stimulus - across hi and lo contrasts
-ccwsJ = [vccwlosJ; vccwhisJ]; ccwsJ = ccwsJ(:,1);
+ccwsJ = [vccwlosJ; vccwhisJ]; %ccwsJ = ccwsJ(:,1);
 
 % ==> edges
 edgs = -1.5:0.1:1.5;
 
 fg = figure(); set(fg,'color','white'); set(fg, 'Position',[675 421 660 541])
 subplot(2,2,1);
-histogram(cwsF,edgs,'facecolor',[0.15,0.75,0.5]); hold on; hold all;
+hFcw = histogram(cwsF,edgs,'facecolor',[0.15,0.75,0.5]); hold on; hold all;
+plot(zeros(1,max(hFcw.Values)),1:max(hFcw.Values),'r--','linewidth',2)
 title('Animal F: cw prior context')
 xlabel('Signed DV initial offset')
 ylabel('Frequency')
 drawnow;
 subplot(2,2,2);
-histogram(ccwsF,edgs,'facecolor',[0.15,0.75,0.5]); hold on; hold all;
+hFccw = histogram(ccwsF,edgs,'facecolor',[0.15,0.75,0.5]); hold on; hold all;
+plot(zeros(1,max(hFccw.Values)),1:max(hFccw.Values),'r--','linewidth',2)
 title('Animal F: ccw prior context')
 xlabel('Signed DV initial offset')
 ylabel('Frequency')
 drawnow;
  
 subplot(2,2,3);
-histogram(cwsJ,edgs,'facecolor',[1,0.5,0]); hold on; hold all;
+hJcw = histogram(cwsJ,edgs,'facecolor',[1,0.5,0]); hold on; hold all;
+plot(zeros(1,max(hJcw.Values)),1:max(hJcw.Values),'r--','linewidth',2)
 title('Animal J: cw prior context')
 xlabel('Signed DV initial offset')
 ylabel('Frequency')
 drawnow;
 subplot(2,2,4);
-histogram(ccwsJ,edgs,'facecolor',[1,0.5,0]); hold on; hold all;
+hJccw = histogram(ccwsJ,edgs,'facecolor',[1,0.5,0]); hold on; hold all;
+plot(zeros(1,max(hJccw.Values)),1:max(hJccw.Values),'r--','linewidth',2)
 title('Animal J: ccw prior context')
 xlabel('Signed DV initial offset')
 ylabel('Frequency')
@@ -284,13 +299,13 @@ figure(); set(gcf,'Color','w'); set(gcf,'Position',[86 490 1834 472]);
 subplot(1,3,1);
 hold on; hold all;
 % => monkey F
-s1 = scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
-s2 = scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s1 = scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  90, 'o','markerfacecolor', [0.25,0.85,0.6], 'markeredgecolor', 'r'); %, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s2 = scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [0.25,0.85,0.6], 'markeredgecolor', 'b'); %, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
 s3 = scatter(Fmu_cw_hi(:,1), Fmu_cw_hi(:,2),  90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r');
 s4 = scatter(Fmu_ccw_hi(:,1),Fmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b');
 % => monkey J
-s5 = scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
-s6 = scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s5 = scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  90, 'o','markerfacecolor', [1,0.75,0], 'markeredgecolor', 'r'); %, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s6 = scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 90, 'o','markerfacecolor', [1,0.75,0], 'markeredgecolor', 'b'); %, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
 s7 = scatter(Jmu_cw_hi(:,1), Jmu_cw_hi(:,2),  90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r');
 s8 = scatter(Jmu_ccw_hi(:,1),Jmu_ccw_hi(:,2), 90, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b');
 hold on; hold all
@@ -392,8 +407,8 @@ figure(); set(gcf,'Color','w'); set(gcf,'Position',[178 358 1325 604]);
 subplot(1,2,1);
 hold on; hold all;
 % => monkey F
-s1 = scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
-s2 = scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s1 = scatter(Fmu_cw_lo(:,1), Fmu_cw_lo(:,2),  140, 'o','markerfacecolor', [0.25,0.85,0.6], 'markeredgecolor', 'r');%, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s2 = scatter(Fmu_ccw_lo(:,1),Fmu_ccw_lo(:,2), 140, 'o','markerfacecolor', [0.25,0.85,0.6], 'markeredgecolor', 'b');%, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
 s3 = scatter(Fmu_cw_hi(:,1), Fmu_cw_hi(:,2),  140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'r');
 s4 = scatter(Fmu_ccw_hi(:,1),Fmu_ccw_hi(:,2), 140, 'o','markerfacecolor', [0.15,0.75,0.5], 'markeredgecolor', 'b');
 % ==> lines
@@ -409,8 +424,8 @@ title('Monkey F');
 subplot(1,2,2);
 hold on; hold all;
 % => monkey J
-s1 = scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
-s2 = scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b', 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s1 = scatter(Jmu_cw_lo(:,1), Jmu_cw_lo(:,2),  140, 'o','markerfacecolor', [1,0.75,0], 'markeredgecolor', 'r');%, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
+s2 = scatter(Jmu_ccw_lo(:,1),Jmu_ccw_lo(:,2), 140, 'o','markerfacecolor', [1,0.75,0], 'markeredgecolor', 'b');%, 'MarkerFaceAlpha',.3,'MarkerEdgeAlpha',1);
 s3 = scatter(Jmu_cw_hi(:,1), Jmu_cw_hi(:,2),  140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'r');
 s4 = scatter(Jmu_ccw_hi(:,1),Jmu_ccw_hi(:,2), 140, 'o','markerfacecolor', [1,0.5,0], 'markeredgecolor', 'b');
 % ==> lines
@@ -629,7 +644,7 @@ for b = 1:BT
 end
 
 % ==> eigendecomposition
-[V,D] = eig(covFJ);
+[V,D] = eig(covFJs);
 % ==> get index of max eigenvalue
 [~,I] = max(D);
 % ==> mean of the distribution
@@ -659,7 +674,7 @@ subplot(1,2,2); cla;
 h = histogram(s,bns,'Facecolor','r'); hold on; hold all;
 xlabel('First PC slope (radians)');
 ylabel('frequency');
-title('distribution of slopes of first PC');
+title('distribution of slopes of first PC (JP)');
 plot(repmat(pi/4,[1,length(0:max(h.Values))]),0:max(h.Values),'r--')
 text(pi/4 + 0.025,10,'\pi/4 equality line (x=y) angle (slope)','Rotation',90,'Color','r')
 xlim([pi/5,pi/2]);
