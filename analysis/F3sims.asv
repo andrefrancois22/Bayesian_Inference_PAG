@@ -289,18 +289,9 @@ dvs_c_ccw = csensb_ccw(ccw_r==-1,:);
 dynr_c_ccw = max([max(dvs_c_ccw, [], 2) - dvs_c_ccw(:,1), -(min(dvs_c_ccw, [], 2) - dvs_c_ccw(:,1))], [], 2);
 
 
-figure(); set(gcf,'color','white'); set(gcf, 'Position', [382 304 1171 646]);
-subplot(1,2,1);
-h1 = histogram(dynr_i_cw,'facecolor','r','BinWidth',1); hold on; hold all;
-h2 = histogram(dynr_c_cw,'facecolor','b','BinWidth',1); 
-xlabel('dynamic range')
-ylabel('Frequency')
-title('Dynamic range and choice congruency (cw context)')
-legend([h1,h2],'incongruent trials','congruent trials')
-subplot(1,2,2);
-h3 = histogram(dynr_i_ccw,'facecolor','r','BinWidth',1); hold on; hold all;
-h4 = histogram(dynr_c_ccw,'facecolor','b','BinWidth',1); 
-xlabel('dynamic range')
-ylabel('Frequency')
-title('Dynamic range and choice congruency (ccw context)')
-legend([h3,h4],'incongruent trials','congruent trials')
+figure(); subplot(1,2,1);
+histogram(dynr_i_cw,'facecolor','r','BinWidth',); hold on; hold all;
+histogram(dynr_c_cw,'facecolor','b',25); 
+ subplot(1,2,2);
+histogram(dynr_i_ccw,'facecolor','r'); hold on; hold all;
+histogram(dynr_c_ccw,'facecolor','b'); 
