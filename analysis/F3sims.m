@@ -25,6 +25,10 @@ bnd = 10;
 % mdl = 'model3';
 mdl = 'model4';
 
+% ==> standard deviation for randn
+sd = 1;
+% ==> mean for randn
+mu = 0.0; %****
 % ==> figure 
 figure(1); set(gcf,'Color','w'); set(gcf, 'Position',[71 510 1850 440])
 
@@ -35,13 +39,18 @@ for fc = 0:0.5:10 %1:0.1:5
     pr_cw  =  0.5 * fc;
     pr_ccw = -0.5 * fc;
 
+    % ==> randn
+    rdn = randn(N,tm);
     % ==> Gaussian random walk
-    sens  = randn(N,tm);
+    sens_cw  =  mu + sd*rdn;
+    sens_ccw = -mu + sd*rdn;
     % ==> cummulative sum over time
-    csens = cumsum(sens,2);
+    csens_cw  = cumsum(sens_cw,2);
+    csens_ccw = cumsum(sens_ccw,2);
+    
     % ==> csens with bound -> two cases: with ccw prior or with cw prior offsets
-    csensb_cw =  csens + pr_cw;
-    csensb_ccw = csens + pr_ccw;
+    csensb_cw =  csens_cw  + pr_cw; %****
+    csensb_ccw = csens_ccw + pr_ccw; %****
     
     % ==> for model 1
     % ==> set DV values for timepoints over trials that reach or exceed a bound
@@ -100,8 +109,8 @@ for fc = 0:0.5:10 %1:0.1:5
         pr_cw_d_m  = [zeros([1,iu2]),  pr_cw_d(1:(tm - iu2))]   / (0.5*tm);
         pr_ccw_d_m = [zeros([1,iu2]),  pr_ccw_d(1:(tm - iu2))]  / (0.5*tm);  
         % ==> csens with bound - two cases: with ccw prior or with cw prior
-        csensb_cw_d =  csens + repmat(pr_cw_d_m,  [N,1]);
-        csensb_ccw_d = csens + repmat(pr_ccw_d_m, [N,1]);    
+        csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]);
+        csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]);    
     end
     if strcmp(mdl, 'model3')
         % ==> model 3
@@ -110,8 +119,8 @@ for fc = 0:0.5:10 %1:0.1:5
         pr_cw_d_m  = [repmat(pr_cw_d(iu2),  [1,iu2-1]),  pr_cw_d(iu2:end)]   / (0.5*tm);
         pr_ccw_d_m = [repmat(pr_ccw_d(iu2), [1,iu2-1]),  pr_ccw_d(iu2:end)]  / (0.5*tm);  
         % ==> csens with bound - two cases: with ccw prior or with cw prior
-        csensb_cw_d =  csens + repmat(pr_cw_d_m,  [N,1]); 
-        csensb_ccw_d = csens + repmat(pr_ccw_d_m, [N,1]);   
+        csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]); 
+        csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]);   
     end
     if strcmp(mdl, 'model4')
         % ==> model 4
@@ -119,8 +128,8 @@ for fc = 0:0.5:10 %1:0.1:5
         pr_cw_d_m  = pr_cw_d  / (0.5*tm);
         pr_ccw_d_m = pr_ccw_d / (0.5*tm);
         % ==> csens with bound - two cases: with ccw prior or with cw prior
-        csensb_cw_d =  csens + repmat(pr_cw_d_m,  [N,1]); 
-        csensb_ccw_d = csens + repmat(pr_ccw_d_m, [N,1]);   
+        csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]); %****
+        csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]); %****   
     end    
     
     % ==> plot the mean drift pattern
