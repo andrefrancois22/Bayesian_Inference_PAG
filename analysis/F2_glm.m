@@ -280,6 +280,10 @@ for iS = Sn
     
 end
 
+% ==> save AIC delta and llr
+save([drc,'aic_d.mat'],'aic_d');
+save([drc,'llr.mat'],'llr');
+
 % ==> correlation between dvCatPerf and log likelihood ratios
 [rho_llr,  p_llr] = corr(dvCatPerf(idx)',llr(idx)','type','spearman'); %,'tail','right'); 
 % ==> correlation between dvCatPerf and AIC delta
