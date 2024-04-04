@@ -78,6 +78,11 @@ fprintf('Done...\n')
 
 %% ==> dynamic range analysis
 
+% ==> estimate dynamic range per population?
+dyn_type = 'popu';
+% ==> estimate dynamic range per stimulus?
+dyn_type = 'stim';
+
 DV_dynr_meds_check = nan(29,7,2,2);
 
 % ==> dynamic range function
@@ -158,9 +163,11 @@ for iS = 1:29
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
     
-%     % ==> dynamic range for session
-%     dynr = dynf(dvs); ldyn = (dynr(:,1) <  median(dynr)); hdyn = (dynr(:,1) >= median(dynr));
-
+    if strcmp(dyn_type,'popu')
+        % ==> dynamic range for session
+        dynr = dynf(dvs); ldyn = (dynr(:,1) <  median(dynr)); hdyn = (dynr(:,1) >= median(dynr));
+    end
+    
     % ==> cw context (congruent choices)
     % ==> cw context & lo contrast
     cw_lcr_cng = (ctx == 1) & (ctr == min(ctr))   & (cho == 1); 
@@ -214,9 +221,12 @@ for iS = 1:29
         
         % ==> low contrast trials only ==================================================================================================================
         % ==> low dynamic range split ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
-%         % ==> dynamic range for session % => indexing variables - dynamic range
-%         dv = dvs((ctx == 1) & (ctr == min(ctr)) & ori==or(th),:);
-%         dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,2,1) = median(dynr);    
+
+        if strcmp(dyn_type,'stim')
+            % ==> dynamic range for session % => indexing variables - dynamic range
+            dv = dvs((ctx == 1) & (ctr == min(ctr)) & ori==or(th),:);
+            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,2,1) = median(dynr);    
+        end
         % ==> cw congruent choice, lo ctr, lo dynr
         cho_cw_ct_cw_cr_lo_dynr_lo(th)   = sum(cw_lcr_cng   & ori==or(th) & ldyn);
         % ==> cw congruent choice, lo ctr, hi dynr
@@ -226,10 +236,11 @@ for iS = 1:29
         % ==> ccw incongruent choice, lo ctr, hi dynr
         cho_ccw_ct_cw_cr_lo_dynr_hi(th)  = sum(cw_lcr_icg   & ori==or(th) & hdyn);                        
                
-        
-%         % ==> dynamic range for session % => indexing variables - dynamic range
-%         dv = dvs((ctx == -1) & (ctr == min(ctr)) & ori==or(th),:);
-%         dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,1,1) = median(dynr);  
+        if strcmp(dyn_type,'stim')        
+            % ==> dynamic range for session % => indexing variables - dynamic range
+            dv = dvs((ctx == -1) & (ctr == min(ctr)) & ori==or(th),:);
+            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,1,1) = median(dynr);  
+        end
         % ==> cw incongruent choice, lo ctr, lo dynr
         cho_cw_ct_ccw_cr_lo_dynr_lo(th)  = sum(ccw_lcr_icg  & ori==or(th) & ldyn);    
         % ==> cw incongruent choice, lo ctr, hi dynr
@@ -242,9 +253,11 @@ for iS = 1:29
     
         % ==> high contrast trials only =================================================================================================================
         % ==> low dynamic range split ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%         % ==> dynamic range for session % => indexing variables - dynamic range
-%         dv = dvs((ctx == 1) & (ctr == max(ctr)) & ori==or(th),:);
-%         dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,2,2) = median(dynr);            
+        if strcmp(dyn_type,'stim') 
+            % ==> dynamic range for session % => indexing variables - dynamic range
+            dv = dvs((ctx == 1) & (ctr == max(ctr)) & ori==or(th),:);
+            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,2,2) = median(dynr);            
+        end
         % ==> cw congruent choice, hi ctr, lo dynr
         cho_cw_ct_cw_cr_hi_dynr_lo(th)   = sum(cw_hcr_cng   & ori==or(th) & ldyn);
         % ==> cw congruent choice, hi ctr, lo dynr
@@ -254,10 +267,11 @@ for iS = 1:29
         % ==> ccw incongruent choice, hi ctr, lo dynr
         cho_ccw_ct_cw_cr_hi_dynr_hi(th)  = sum(cw_hcr_icg   & ori==or(th) & hdyn);   
             
-        
-        % ==> dynamic range for session % => indexing variables - dynamic range
-        dv = dvs((ctx == -1) & (ctr == max(ctr)) & ori==or(th),:);
-        dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,1,2) = median(dynr);            
+        if strcmp(dyn_type,'stim')         
+            % ==> dynamic range for session % => indexing variables - dynamic range
+            dv = dvs((ctx == -1) & (ctr == max(ctr)) & ori==or(th),:);
+            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,1,2) = median(dynr);            
+        end
         % ==> cw incongruent choice, hi ctr, lo dynr
         cho_cw_ct_ccw_cr_hi_dynr_lo(th)  = sum(ccw_hcr_icg  & ori==or(th) & ldyn); 
         % ==> cw incongruent choice, hi ctr, lo dynr
@@ -330,15 +344,13 @@ for iS = 1:29
 end
 
 % ==> quick check
-assert(unique(DV_dynr_meds_check == DV_dynr_meds))
-
+if strcmp(dyn_type,'stim') 
+    assert(unique(DV_dynr_meds_check == DV_dynr_meds))
+end
 %% ==> DV choice predictivity
 
 dvCatPerf = load([drc,'dvCatPerf.mat']);
 dvCatPerf = dvCatPerf.dvCatPerf';
-
-% dbias_lo_ctr(dbias_lo_ctr > 4) = 4;
-% dbias_lo_ctr_hcr(dbias_lo_ctr_hcr > 4) = 4;
 
 % ==> AIC Delta
 aic_d = load([drc,'aic_d.mat']);
@@ -350,180 +362,77 @@ llr = llr.llr';
 
 % ==> choose populations to plot
 % ppl = 1:13 %14:29 
-ppl = 1:29;
-ppl(ppl==1) = [];
-ppl(ppl==7) = [];
-ppl(ppl==8) = [];
-ppl(ppl==12) = [];
-ppl(ppl==25) = [];
+% ppl = 2:13%29;
+% ppl(ppl==1) = [];
+% ppl(ppl==7) = [];
+% ppl(ppl==8) = [];
+% ppl(ppl==12) = [];
+% ppl(ppl==25) = [];
 
-% ==> choice predictivity and delta bias + delta uncertainty
-[rb,pb] = corr(dvCatPerf(ppl), db_lcr(ppl));
-[rp,pp] = corr(dvCatPerf(ppl), dp_lcr(ppl));
+% ==> MF
+ppl = 2:13; ids = ppl;
+fg = figure(6); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf(db_lcr, dp_lcr, aic_d, llr, dvCatPerf, ppl, fg, 'lo_ctr', ids);
+% ==> MJ
+ppl = 14:29; ids = ppl;
+fg = figure(7); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf(db_lcr, dp_lcr, aic_d, llr, dvCatPerf, ppl, fg, 'lo_ctr', ids);
+% ==> plot all
+ppl = 2:29; ids = ppl;
+fg = figure(8); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf(db_lcr, dp_lcr, aic_d, llr, dvCatPerf, ppl, fg, 'lo_ctr', ids);
 
-% ==> Use AIC computation from F2 instead of choice predictivity
-[rb_aic,pb_aic] = corr(aic_d(ppl), db_lcr(ppl));
-[rp_aic,pp_aic] = corr(aic_d(ppl), dp_lcr(ppl));
-
-% ==> with LLR from F2
-[rb_llr,pb_llr] = corr(llr(ppl), db_lcr(ppl));
-[rp_llr,pp_llr] = corr(llr(ppl), dp_lcr(ppl));
-
-
-% ==> pearson correlation between delta bias and delta uncertainty
-% ==> ommitting session 1 here!
-[r_bp,p_bp] = corr(db_lcr(ppl),dp_lcr(ppl));
-
-
-figure(5); set(gcf,'color','white'); set(gcf,'Position',[723 4 1104 958]);
-subplot(3,3,1);
-scatter(dvCatPerf(ppl), db_lcr(ppl),30,'ko','filled'); hold on; hold all;
-text(dvCatPerf(ppl)+0.005, db_lcr(ppl)-0.005, string([ppl]),'FontSize',6); 
-title(['r = ',num2str(rb), ', p = ',num2str(pb)]);
-xlabel('Choice Predictivity');
-ylabel('\Delta bias');
-subplot(3,3,2);
-scatter(dvCatPerf(ppl), dp_lcr(ppl),30,'ko','filled'); hold on; hold all;
-text(dvCatPerf(ppl)+0.005, dp_lcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(rp), ', p = ',num2str(pp)]);
-xlabel('Choice Predictivity');
-ylabel('\Delta perceptual uncertainty (slope)');
-subplot(3,3,3);
-scatter(db_lcr(ppl), dp_lcr(ppl),30,'ko','filled'); hold on; hold all;
-text(db_lcr(ppl)+0.005,dp_lcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(r_bp), ', p = ',num2str(p_bp)]);
-xlabel('\Delta bias')
-ylabel('\Delta perceptual uncertainty (slope)')
-subplot(3,3,4);
-scatter(aic_d(ppl), db_lcr(ppl),30,'ko','filled'); hold on; hold all;
-text(aic_d(ppl)+0.005, db_lcr(ppl)-0.005, string([ppl]),'FontSize',6); 
-title(['r = ',num2str(rb_aic), ', p = ',num2str(pb_aic)]);
-xlabel('AIC \Delta');
-ylabel('\Delta bias');
-subplot(3,3,5);
-scatter(aic_d(ppl), dp_lcr(ppl),30,'ko','filled'); hold on; hold all;
-text(aic_d(ppl)+0.005, dp_lcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(rp_aic), ', p = ',num2str(pp_aic)]);
-xlabel('AIC \Delta');
-ylabel('\Delta perceptual uncertainty (slope)');
-subplot(3,3,7);
-scatter(llr(ppl), db_lcr(ppl),30,'ko','filled'); hold on; hold all;
-text(llr(ppl)+0.005, db_lcr(ppl)-0.005, string([ppl]),'FontSize',6); 
-title(['r = ',num2str(rb_llr), ', p = ',num2str(pb_llr)]);
-xlabel('Log-likelihood ratio');
-ylabel('\Delta bias');
-subplot(3,3,8);
-scatter(llr(ppl), dp_lcr(ppl),30,'ko','filled'); hold on; hold all;
-text(llr(ppl)+0.005, dp_lcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(rp_llr), ', p = ',num2str(pp_llr)]);
-xlabel('Log-likelihood ratio');
-ylabel('\Delta perceptual uncertainty (slope)');
-
-%% ==> high contrast trials
-
-% ==> choose populations to plot
-% ppl = 1:13% 14:29 
-ppl = 1:29;
-ppl(ppl==16) = [];
-ppl(ppl==20) = [];
+% ==> MF
+ppl = 2:13; ids = ppl;
+fg = figure(9); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf(db_hcr, dp_hcr, aic_d, llr, dvCatPerf, ppl, fg, 'hi_ctr', ids);
+% ==> MJ
+ppl = 14:29; ids = ppl;
+fg = figure(10); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf(db_hcr, dp_hcr, aic_d, llr, dvCatPerf, ppl, fg, 'hi_ctr', ids);
+% ==> plot all
+ppl = 2:29; ids = ppl;
+fg = figure(11); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf(db_hcr, dp_hcr, aic_d, llr, dvCatPerf, ppl, fg, 'hi_ctr', ids);
 
 
-% ==> choice predictivity and delta bias + delta uncertainty
-[rb,pb] = corr(dvCatPerf(ppl), db_hcr(ppl));
-[rp,pp] = corr(dvCatPerf(ppl), dp_hcr(ppl));
+%%
 
-% ==> Use AIC computation from F2 instead of choice predictivity
-[rb_aic,pb_aic] = corr(aic_d(ppl), db_hcr(ppl));
-[rp_aic,pp_aic] = corr(aic_d(ppl), dp_hcr(ppl));
+% ==> F
+db_lcr_adj = db_lcr;
+db_lcr_adj(db_lcr_adj > 3) = 3;
+fprintf('==> careful here --- need to figure out the right way to deal with extreme values\n')
 
-% ==> with LLR from F2
-[rb_llr,pb_llr] = corr(llr(ppl), db_hcr(ppl));
-[rp_llr,pp_llr] = corr(llr(ppl), dp_hcr(ppl));
+dvCatPerf = load([drc,'dvCatPerf.mat']);
+dvCatPerf = dvCatPerf.dvCatPerf';
 
+% ==> AIC Delta
+aic_d = load([drc,'aic_d.mat']);
+aic_d = aic_d.aic_d';
 
-% ==> pearson correlation between delta bias and delta uncertainty
-% ==> ommitting session 1 here!
-[r_bp,p_bp] = corr(db_hcr(ppl),dp_hcr(ppl));
+% ==> log-likelihood ratios
+llr = load([drc,'llr.mat']);
+llr = llr.llr';
 
-figure(6); set(gcf,'color','white'); set(gcf,'Position',[723 4 1104 958]);
-subplot(3,3,1);
-scatter(dvCatPerf(ppl), db_hcr(ppl),30,'mo','filled'); hold on; hold all;
-text(dvCatPerf(ppl)+0.005, db_hcr(ppl)-0.005, string([ppl]),'FontSize',6); 
-title(['r = ',num2str(rb), ', p = ',num2str(pb)]);
-xlabel('Choice Predictivity');
-ylabel('\Delta bias');
-subplot(3,3,2);
-scatter(dvCatPerf(ppl), dp_hcr(ppl),30,'mo','filled'); hold on; hold all;
-text(dvCatPerf(ppl)+0.005, dp_hcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(rp), ', p = ',num2str(pp)]);
-xlabel('Choice Predictivity');
-ylabel('\Delta perceptual uncertainty (slope)');
-subplot(3,3,3);
-scatter(db_hcr(ppl), dp_hcr(ppl),30,'mo','filled'); hold on; hold all;
-text(db_hcr(ppl)+0.005,dp_hcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(r_bp), ', p = ',num2str(p_bp)]);
-xlabel('\Delta bias')
-ylabel('\Delta perceptual uncertainty (slope)')
-subplot(3,3,4);
-scatter(aic_d(ppl), db_hcr(ppl),30,'mo','filled'); hold on; hold all;
-text(aic_d(ppl)+0.005, db_hcr(ppl)-0.005, string([ppl]),'FontSize',6); 
-title(['r = ',num2str(rb_aic), ', p = ',num2str(pb_aic)]);
-xlabel('AIC \Delta');
-ylabel('\Delta bias');
-subplot(3,3,5);
-scatter(aic_d(ppl), dp_hcr(ppl),30,'mo','filled'); hold on; hold all;
-text(aic_d(ppl)+0.005, dp_hcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(rp_aic), ', p = ',num2str(pp_aic)]);
-xlabel('AIC \Delta');
-ylabel('\Delta perceptual uncertainty (slope)');
-subplot(3,3,7);
-scatter(llr(ppl), db_hcr(ppl),30,'mo','filled'); hold on; hold all;
-text(llr(ppl)+0.005, db_hcr(ppl)-0.005, string([ppl]),'FontSize',6); 
-title(['r = ',num2str(rb_llr), ', p = ',num2str(pb_llr)]);
-xlabel('Log-likelihood ratio');
-ylabel('\Delta bias');
-subplot(3,3,8);
-scatter(llr(ppl), dp_hcr(ppl),30,'mo','filled'); hold on; hold all;
-text(llr(ppl)+0.005, dp_hcr(ppl)-0.005,string([ppl]),'FontSize',6);
-title(['r = ',num2str(rp_llr), ', p = ',num2str(pp_llr)]);
-xlabel('Log-likelihood ratio');
-ylabel('\Delta perceptual uncertainty (slope)');
+close all; clc;
+ppl = [2:29,(2:29)+29]; ids = [1:29,1:29];
+fg = figure(12); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf([db_lcr_adj;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, fg, 'lo_hi_ctr', ids);
 
-%% ==>
+%%
 
-% PFs_predPF_dynr_lo_mu = nan(29,2,7);
-% 
-% cd = colormap('parula'); % take your pick (doc colormap)
-% cd = interp1(linspace(min(aic_d(ppl)),max(aic_d),length(cd)),cd,aic_d(ppl)); % map color to y values
-% cd = uint8(cd'*255); % need a 4xN uint8 array
-% cd(4,:) = 255; % last column is transparency
-% 
-% 
-% figure(6); set(gcf,'color','white');
-% % subplot(1,2,1);
-% for iS = ppl
-%     plot([-3,-2,-1,0,1,2,3], PFs_predPF_dynr_lo{iS}(1,:) - PFs_predPF_dynr_lo{iS}(2,:), '-', 'Color',cd(:,iS-1), 'LineWidth', 1); hold on; hold all;
-%     xlabel('Orientation')
-%     ylabel('\Delta bias')
-%     PFs_predPF_dynr_lo_mu(iS,1,:) = PFs_predPF_dynr_lo{iS}(1,:);
-%     PFs_predPF_dynr_lo_mu(iS,2,:) = PFs_predPF_dynr_lo{iS}(2,:);
-% end
-% colorbar();
-% 
-% % ==> average
-% mu = squeeze(nanmean(PFs_predPF_dynr_lo_mu,1));
-% y = mu(1,:)-mu(2,:);
-% h = plot(or,y,'k.-','LineWidth',2);
-% 
-% dfs = squeeze((PFs_predPF_dynr_lo_mu(ppl,1,:) - PFs_predPF_dynr_lo_mu(ppl,2,:)));
+% close all; clc;
+ppl = [1:13,(1:13)+29]; ids = [1:29,1:29];
+fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf([db_lcr_adj;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, fg, 'lo_hi_ctr', ids);
 
-% figure();
-% plot(or, ncw_dynr_lo./sum(ncw_dynr_lo,1));
-% hold on; hold all;
-% plot(or, nccw_dynr_lo./sum(nccw_dynr_lo,1));
-% 
-% ncw_dynr_hi./sum(ncw_dynr_hi,1)
-% nccw_dynr_hi./sum(nccw_dynr_hi,1)
+ppl = [2:13,(2:13)+29]; ids = [1:29,1:29];
+fg = figure(14); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, fg, 'lo_hi_ctr', ids);
 
+%%
 
-
+% close all; clc;
+ppl = [14:29,(14:29)+29]; ids = [1:29,1:29];
+fg = figure(15); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, fg, 'lo_hi_ctr', ids);

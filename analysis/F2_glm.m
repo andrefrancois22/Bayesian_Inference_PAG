@@ -262,8 +262,11 @@ for iS = Sn
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> AIC
-    aic_m1 = -2/length(m1)*ll1 + 2*k1/length(m1);    
-    aic_m0 = -2/length(m0)*ll0 + 2*k0/length(m0);
+%     aic_m1 = -2/length(m1)*ll1 + 2*k1/length(m1);    
+%     aic_m0 = -2/length(m0)*ll0 + 2*k0/length(m0);
+    
+    aic_m1 = -2*ll1 + 2*k1;    
+    aic_m0 = -2*ll0 + 2*k0;    
     
     % ==> choose model with lowest AIC. Quantify this with a difference
     % => values above 0 indicate model 1 is better than null model
