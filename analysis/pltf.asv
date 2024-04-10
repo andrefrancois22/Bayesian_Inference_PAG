@@ -1,7 +1,7 @@
-function pltf(db, dp, aicd, llr, chpd, ppl, ctrs, ids)
+function pltf(db, dp, aicd, llr, chpd, ppl, fg, ctrs, ids)
 
 % ==> marker colors
-clr = [repmat([1,0.75,0],13,1); repmat([0.15,0.75,0.5],16,1)];
+clr = [repmat([0.15,0.75,0.5],13,1); repmat([1,0.75,0],16,1)];
 if (size(ppl,2) == 56) || (size(ppl,2) == 26) || (size(ppl,2) == 24) || (size(ppl,2) == 32) || (size(ppl,2) == 58)
     clr = [clr;clr];
 end
@@ -34,7 +34,7 @@ end
 [rbp,pbp] = corr(db(ppl),dp(ppl));
 
 % keyboard
-
+% fg;
 subplot(3,3,1);
 for i = ppl
     scatter(chpd(i), db(i), msz, 'o','filled','markeredgecolor', clr(i,:), 'markerfacecolor', clr(i,:), 'MarkerFaceAlpha', alpha(i),'MarkerEdgeAlpha', 1); 

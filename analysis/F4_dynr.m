@@ -77,11 +77,12 @@ end
 fprintf('Done...\n')
 
 %% ==> dynamic range analysis
+close all; clc;
 
 % ==> estimate dynamic range per population?
-dyn_type = 'popu';
+% dyn_type = 'popu';
 % ==> estimate dynamic range per stimulus?
-% dyn_type = 'stim';
+dyn_type = 'stim';
 
 DV_dynr_meds_check = nan(29,7,2,2);
 
@@ -101,8 +102,8 @@ startVec_M1 = [0.04 0.04 1 0 0];
 LB_M1(1,1)  = 0;                         UB_M1(1,1) = 0.05;      % lapse rate
 LB_M1(2,1)  = 0;                         UB_M1(2,1) = 0.05;      % lapse rate
 LB_M1(3,1)  = 0.1;                       UB_M1(3,1) = 10;        % perceptual uncertainty
-LB_M1(4,1)  = -4;                        UB_M1(4,1) = 4;        % decision criterion (-10->10 range originally)
-LB_M1(5,1)  = -4;                        UB_M1(5,1) = 4;        % decision criterion
+LB_M1(4,1)  = -5;                        UB_M1(4,1) = 5;        % decision criterion (-10->10 range originally)
+LB_M1(5,1)  = -5;                        UB_M1(5,1) = 5;        % decision criterion
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> delta bias and uncertainty metrics
@@ -120,8 +121,11 @@ PFs_predPF_dynr_hi = cell(29,1);
 PFs_predPF_dynr_lo_hcr = cell(29,1);
 PFs_predPF_dynr_hi_hcr = cell(29,1);
 
-figure(3); set(gcf,'color','white'); set(gcf,'Position',[91 109 1160 853]);
-figure(4); set(gcf,'color','white'); set(gcf,'Position',[91 109 1160 853]);
+figure(3); set(gcf,'color','white'); set(gcf,'Position',[86 282 921 668]);
+figure(4); set(gcf,'color','white'); set(gcf,'Position',[86 282 921 668]);
+figure(5); set(gcf,'color','white'); set(gcf,'Position',[86 282 921 668]);
+figure(6); set(gcf,'color','white'); set(gcf,'Position',[86 282 921 668]);
+
 
 % ==> what is the session
 for iS = 1:29 
@@ -180,16 +184,16 @@ for iS = 1:29
     % ==> ccw context & lo contrast
     ccw_lcr_icg = (ctx == -1) & (ctr == min(ctr)) & (cho == 1); %   
         
-    % ==> cw context & lo contrast
+    % ==> cw context & hi contrast
     cw_hcr_cng = (ctx == 1) & (ctr == max(ctr))   & (cho == 1); %    
     % ==> ccw context (congruent choices)
-    % ==> ccw context & lo contrast
+    % ==> ccw context & hi contrast
     ccw_hcr_cng = (ctx == -1) & (ctr == max(ctr)) & (cho == -1); %     
     % ==> cw context (incongruent choices)
-    % ==> cw context & lo contrast
+    % ==> cw context & hi contrast
     cw_hcr_icg = (ctx == 1) & (ctr == max(ctr))   & (cho == -1); %             
     % ==> ccw context (incongruent choices)
-    % ==> ccw context & lo contrast
+    % ==> ccw context & hi contrast
     ccw_hcr_icg = (ctx == -1) & (ctr == max(ctr)) & (cho == 1); %      
                        
     % ==> counts
@@ -216,6 +220,18 @@ for iS = 1:29
     cho_ccw_ct_cw_cr_hi_dynr_hi  = nan(1,7);
     cho_ccw_ct_ccw_cr_hi_dynr_hi = nan(1,7);    
     
+    % ==> proportions cw for lo contrast
+    prop_cw_lcr_ldyn  = nan(1,7);
+    prop_ccw_lcr_ldyn = nan(1,7);
+    prop_cw_hcr_ldyn  = nan(1,7);
+    prop_ccw_hcr_ldyn = nan(1,7);
+    
+    prop_cw_lcr_hdyn  = nan(1,7);
+    prop_ccw_lcr_hdyn = nan(1,7);
+    prop_cw_hcr_hdyn  = nan(1,7);
+    prop_ccw_hcr_hdyn = nan(1,7);    
+    
+    
     % ==> compute counts for each stimulus orientation
     for th = 1:length(or)
         
@@ -224,7 +240,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim')
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == 1) & (ctr == min(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,2,1) = median(dynr);    
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,2,1) = median(dynr);    
         end
         % ==> cw congruent choice, lo ctr, lo dynr
         cho_cw_ct_cw_cr_lo_dynr_lo(th)   = sum(cw_lcr_cng   & ori==or(th) & ldyn);
@@ -238,7 +254,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim')        
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == -1) & (ctr == min(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,1,1) = median(dynr);  
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,1,1) = median(dynr);  
         end
         % ==> cw incongruent choice, lo ctr, lo dynr
         cho_cw_ct_ccw_cr_lo_dynr_lo(th)  = sum(ccw_lcr_icg  & ori==or(th) & ldyn);    
@@ -255,7 +271,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim') 
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == 1) & (ctr == max(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,2,2) = median(dynr);            
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,2,2) = median(dynr);            
         end
         % ==> cw congruent choice, hi ctr, lo dynr
         cho_cw_ct_cw_cr_hi_dynr_lo(th)   = sum(cw_hcr_cng   & ori==or(th) & ldyn);
@@ -269,7 +285,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim')         
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == -1) & (ctr == max(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dvs(:,1) <  median(dynr)); hdyn=(dvs(:,1) >= median(dynr));              DV_dynr_meds_check(iS,th,1,2) = median(dynr);            
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,1,2) = median(dynr);            
         end
         % ==> cw incongruent choice, hi ctr, lo dynr
         cho_cw_ct_ccw_cr_hi_dynr_lo(th)  = sum(ccw_hcr_icg  & ori==or(th) & ldyn); 
@@ -280,6 +296,9 @@ for iS = 1:29
         % ==> ccw congruent choice, hi ctr, lo dynr
         cho_ccw_ct_ccw_cr_hi_dynr_hi(th) = sum(ccw_hcr_cng  & ori==or(th) & hdyn);                  
 
+        
+        % ==> compute ratios for actual data
+        prop_cw_fun();      
     end
     
     % ==> PF curve fit
@@ -297,18 +316,33 @@ for iS = 1:29
     % ==> plots
     figure(3);
     subplot(5,6,iS); title(['Session: ', num2str(iS)]);
-    plot(or,PF_ldyn_lcr(1,:),'b.-')
+    plot(or,PF_ldyn_lcr(1,:),'b.-','linewidth', 1)
     hold on; hold all;
-    plot(or,PF_ldyn_lcr(2,:),'r.-')
+    plot(or,PF_ldyn_lcr(2,:),'r.-','linewidth', 1)
     hold on; hold all;
-    plot(or,PF_hdyn_lcr(1,:),'bx:')
+    plot(or,PF_hdyn_lcr(1,:),'b+:','linewidth', 1)
     hold on; hold all;
-    plot(or,PF_hdyn_lcr(2,:),'r+:')    
-    xlabel('stimulus orientation')
-    ylabel('Proportion cw PF fit')
-    drawnow;    
-    % ==> plots
+    plot(or,PF_hdyn_lcr(2,:),'rx:','linewidth', 1)   
+    xlabel('orientation')
+    ylabel('prop cw')
+    drawnow;
+
     figure(4);
+    subplot(5,6,iS); title(['Session: ', num2str(iS)]);
+    plot(or,prop_cw_lcr_hdyn,'b+:')
+    hold on; hold all;
+    plot(or,prop_ccw_lcr_hdyn,'rx:')
+    hold on; hold all;    
+    plot(or,prop_cw_lcr_ldyn,'b.-')
+    hold on; hold all;
+    plot(or,prop_ccw_lcr_ldyn,'r.-')
+    hold on; hold all;    
+    xlabel('orientation')
+    ylabel('prop cw')
+    drawnow;
+    
+    % ==> plots
+    figure(5);
     subplot(5,6,iS); title(['Session: ', num2str(iS)]);
     plot(or,PF_ldyn_hcr(1,:),'g.-')
     hold on; hold all;
@@ -317,8 +351,22 @@ for iS = 1:29
     plot(or,PF_hdyn_hcr(1,:),'gx:')
     hold on; hold all;
     plot(or,PF_hdyn_hcr(2,:),'m+:')    
-    xlabel('stimulus orientation')
-    ylabel('Proportion cw PF fit')
+    xlabel('orientation')
+    ylabel('prop cw')
+    drawnow;
+    
+    figure(6);
+    subplot(5,6,iS); title(['Session: ', num2str(iS)]);    
+    plot(or,prop_cw_hcr_hdyn,'g+:')
+    hold on; hold all;
+    plot(or,prop_ccw_hcr_hdyn,'mx:')
+    hold on; hold all;       
+    plot(or,prop_cw_hcr_ldyn,'g.-')
+    hold on; hold all;
+    plot(or,prop_ccw_hcr_ldyn,'m.-')
+    hold on; hold all;    
+    xlabel('orientation')
+    ylabel('prop cw')
     drawnow;    
     
     % ==> delta bias (this is a different computation from original)
@@ -359,60 +407,40 @@ aic_d = aic_d.aic_d';
 llr = load([drc,'llr.mat']);
 llr = llr.llr';
 
-%% ==> DV choice predictivity
-
-% ==> choose populations to plot
-% ppl = 1:13 %14:29 
-% ppl = 2:13%29;
-% ppl(ppl==1) = [];
-% ppl(ppl==7) = [];
-% ppl(ppl==8) = [];
-% ppl(ppl==12) = [];
-% ppl(ppl==25) = [];
-
-% ==> MF
-ppl = 2:13; ids = ppl;
-fg = figure(6); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf(db_lcr, dp_lcr, aic_d, llr, dvCatPerf, ppl, fg, 'lo_ctr', ids);
-% ==> MJ
-ppl = 14:29; ids = ppl;
-fg = figure(7); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf(db_lcr, dp_lcr, aic_d, llr, dvCatPerf, ppl, fg, 'lo_ctr', ids);
-% ==> plot all
-ppl = 2:29; ids = ppl;
-fg = figure(8); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf(db_lcr, dp_lcr, aic_d, llr, dvCatPerf, ppl, fg, 'lo_ctr', ids);
-
-% ==> MF
-ppl = 2:13; ids = ppl;
-fg = figure(9); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf(db_hcr, dp_hcr, aic_d, llr, dvCatPerf, ppl, fg, 'hi_ctr', ids);
-% ==> MJ
-ppl = 14:29; ids = ppl;
-fg = figure(10); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf(db_hcr, dp_hcr, aic_d, llr, dvCatPerf, ppl, fg, 'hi_ctr', ids);
-% ==> plot all
-ppl = 2:29; ids = ppl;
-fg = figure(11); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf(db_hcr, dp_hcr, aic_d, llr, dvCatPerf, ppl, fg, 'hi_ctr', ids);
-
-
 %%
+close all; clc;
+% ppl = [1:13]; ids = [1:29];
+% fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_lcr], [dp_lcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+
+% ppl = [1:13]; ids = [1:29];
+% fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_hcr], [dp_hcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+
+% ppl = [14:29]; ids = [1:29];
+% fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_lcr], [dp_lcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+
+ppl = [14:29]; ids = [1:29];
+fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+pltf([db_hcr], [dp_hcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+
+%% ==> DV choice predictivity, AIC delta analysis etc
 
 % close all; clc;
 ppl = [1:29,(1:29)+29]; ids = [1:29,1:29];
 fg = figure(12); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, fg, 'lo_hi_ctr', ids);
+pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
 
 %%
 % ==> F
 % close all; clc;
 ppl = [1:13,(1:13)+29]; ids = [1:29,1:29];
 fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, fg, 'lo_hi_ctr', ids);
+pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
 
 % ==> JP
 % close all; clc;
 ppl = [14:29,(14:29)+29]; ids = [1:29,1:29];
 fg = figure(15); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, fg, 'lo_hi_ctr', ids);
+pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
