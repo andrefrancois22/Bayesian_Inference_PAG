@@ -28,7 +28,7 @@ mdl = 'model4';
 % ==> standard deviation for randn
 sd = 1;
 % ==> mean for randn
-mu = 0.0; %****
+mus = [-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3]; %****
 % ==> figure 
 figure(1); set(gcf,'Color','w'); set(gcf, 'Position',[71 510 1850 440])
 
@@ -42,8 +42,8 @@ for fc = 0:0.5:10 %1:0.1:5
     % ==> randn
     rdn = randn(N,tm);
     % ==> Gaussian random walk
-    sens_cw  =  mu + sd*rdn;
-    sens_ccw = -mu + sd*rdn;
+    sens_cw  =  mus(4) + sd*rdn;
+    sens_ccw = -mus(4) + sd*rdn;
     % ==> cummulative sum over time
     csens_cw  = cumsum(sens_cw,2);
     csens_ccw = cumsum(sens_ccw,2);
@@ -208,27 +208,27 @@ for fc = 0:0.5:10 %1:0.1:5
     csensb_cw_mu2  = mean(mean(csensb_cw(:, il2:iu2),1),2);
 
     % ==> plot simulated results with drift
+    lim = fc/2;
     subplot(1,3,3);
     hold on; hold all;
     scatter(csensb_cw_d_mu2,  csensb_cw_d_mu,     90, 'o','markerfacecolor', 'r', 'markeredgecolor', 'r')
     scatter(csensb_ccw_d_mu2,  csensb_ccw_d_mu,   90, 'o','markerfacecolor', 'b', 'markeredgecolor', 'b')
-    axis equal;
+  
     
     % ==> plot simulated results without drift
     subplot(1,3,2);
     hold on; hold all;
     scatter(csensb_cw_mu2,    csensb_cw_mu,    90,  'o','markerfacecolor', 'r', 'markeredgecolor', 'r')
     scatter(csensb_ccw_mu2,    csensb_ccw_mu,  90,  'o','markerfacecolor', 'b', 'markeredgecolor', 'b')
-    axis equal;
+
     
     % ==> updates
     fprintf('completed plotting for prior offset factor %d...\n',fc)
 
 end
 
-lim = fc/2;
-% ==> plot axes and lines
 subplot(1,3,3);
+axis equal;
 hold on; hold all;
 plot(-lim:0.1:lim,-lim:0.1:lim,'k--')
 plot(-lim:0.1:lim,zeros([1,length(-lim:0.1:lim)]),'k--')
@@ -238,10 +238,10 @@ xlabel('Average (-800ms to -600ms) window')
 ylabel('Average (-500ms to -300ms) window')
 legend('cw', 'ccw', 'Location', 'NorthWest')
 title(['Diffusion sticky bound with mean drift ', mdl])
-drawnow;
+drawnow;  
 
-% ==> plot axes and lines
 subplot(1,3,2);
+axis equal;
 hold on; hold all;
 plot(-lim:0.1:lim,-lim:0.1:lim,'k--')
 plot(-lim:0.1:lim,zeros([1,length(-lim:0.1:lim)]),'k--')
@@ -251,7 +251,8 @@ xlabel('Average (-800ms to -600ms) window')
 ylabel('Average (-500ms to -300ms) window')
 legend('cw', 'ccw', 'Location', 'NorthWest')
 title('Diffusion sticky bound (no drift - model 1)')
-drawnow;
+drawnow;    
+
 
 %% simulating responses and dynamic range analysis
 
