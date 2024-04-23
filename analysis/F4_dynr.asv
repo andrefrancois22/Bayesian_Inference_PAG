@@ -327,30 +327,16 @@ for iS = 1:29
     ylabel('prop cw')
     drawnow;
 
-    % ==> plots
-    figure(4);
-    subplot(5,6,iS); title(['Session: ', num2str(iS)]);
-    plot(or,prop_cw_lcr_hdyn,'b.-','linewidth', 1)
-    hold on; hold all;
-    plot(or,prop_ccw_lcr_hdyn,'r.-','linewidth', 1)
-    hold on; hold all;
-    plot(or,prop_cw_lcr_ldyn,'b+:','linewidth', 1)
-    hold on; hold all;
-    plot(or,prop_ccw_lcr_ldyn,'rx:','linewidth', 1)   
-    xlabel('orientation')
-    ylabel('prop cw')
+    figure(3);
+    subplot(5,6,iS); 
+    for o = 1:length(or)
+        hold on; hold all;
+        scatter(or(o), prop_cw_lcr_hdyn(o),  max([1,round(prop_cw_lcr_hdyn(o)*100)]), 'o','filled','markerfacecolor',[0,0,1],'markeredgecolor','b')
+        scatter(or(o), prop_ccw_lcr_hdyn(o), max([1,round(prop_ccw_lcr_hdyn(o)*100)]), 'o','filled','markerfacecolor'[1,0,0],'markeredgecolor','r')
+        scatter(or(o), prop_cw_lcr_ldyn(o),  max([1,round(prop_cw_lcr_ldyn(o)*100)]), 'o','filled','markerfacecolor',[0.5,0.5,1],'markeredgecolor','b')
+        scatter(or(o), prop_ccw_lcr_ldyn(o), max([1,round(prop_ccw_lcr_ldyn(o)*100)]),'o','filled','markerfacecolor',[1,0.5,0.5],'markeredgecolor','r')
+    end
     drawnow;
-    
-%     figure(3);
-%     subplot(5,6,iS); 
-%     for o = 1:length(or)
-%         hold on; hold all;
-%         scatter(or(o), prop_cw_lcr_hdyn(o),  max([1,round(prop_cw_lcr_hdyn(o)*100)]), 'o','filled','markerfacecolor', [0,0,1],     'markeredgecolor','b')
-%         scatter(or(o), prop_ccw_lcr_hdyn(o), max([1,round(prop_ccw_lcr_hdyn(o)*100)]), 'o','filled','markerfacecolor',[1,0,0],     'markeredgecolor','r')
-%         scatter(or(o), prop_cw_lcr_ldyn(o),  max([1,round(prop_cw_lcr_ldyn(o)*100)]), 'o','filled','markerfacecolor', [0.5,0.5,1], 'markeredgecolor','b')
-%         scatter(or(o), prop_ccw_lcr_ldyn(o), max([1,round(prop_ccw_lcr_ldyn(o)*100)]),'o','filled','markerfacecolor', [1,0.5,0.5], 'markeredgecolor','r')
-%     end
-%     drawnow;
     
     % ==> plots
     figure(5);
@@ -456,7 +442,7 @@ ppl = [14:29,(14:29)+29]; ids = [1:29,1:29];
 fg = figure(15); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
 pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
 
-%% ==> Average delta bias by animal and by contrast (F4G)
+%% F4 subpanels
 
 % ==> plot average delta Bias
 figure(17); set(gcf,'color','white');
@@ -483,7 +469,7 @@ xlim([0,5]);
 [pJh,~] = signrank(db_hcr(14:end))
 [pFh,~] = signrank(db_hcr(1:13))
 
-%% ==> correlation plots (delta bias and delta AIC) (F4H)
+%% ==> correlation plots (delta bias and delta AIC)
 
 rFl = corr(db_lcr(1:13),aic_d(1:13));
 rFh = corr(db_hcr(1:13),aic_d(1:13));
@@ -545,7 +531,7 @@ errorbar([3,4], ...
 xlim([0,5]);
 ylim([0,1.1]);
 
-%% ==> average delta perceptual uncertainty (F4I)
+%% ==> F4 subpanels
 
 % ==> plot average delta perceptual uncertainty
 figure(19); set(gcf,'color','white');
@@ -573,7 +559,7 @@ xlim([0,5]);
 [pFhu,~] = signrank(dp_hcr(1:13))
 
 
-%% ==> correlation delta perceptual uncertainty and delta AIC (F4J)
+%% ==> correlation plots (delta perceptual uncertainty and delta AIC)
 
 rFl = corr(dp_lcr(1:13),aic_d(1:13));
 rFh = corr(dp_hcr(1:13),aic_d(1:13));
