@@ -13,7 +13,9 @@ t = linspace(-795,-45,200);
 
 % => number of simulated trials
 N = 1000;
-% => number of simulated timepoints% lim = 8;
+
+% % => number of simulated timepoints% 
+% lim = 8;
 % figure(10); set(gcf,'color','white'); set(gcf,'Position',[495 530 770 399]);
 % subplot(1,2,2);
 % axis equal;
@@ -71,8 +73,8 @@ for fc = fcs
     for or = 1:7
 
          % ==> Static prior offsets (model 1)
-        pr_cw  =  25 * fc;
-        pr_ccw = -25 * fc;
+        pr_cw  =  25 * fc; % 25 * fc;
+        pr_ccw = -25 * fc; %-25 * fc;
 
         % ==> randn
         rdn = randn(N,tm);
@@ -329,4 +331,4 @@ plot(t,dvs_c_ccw(nc,:)','linewidth',1.5,'color','r');
 dynrs = [dynr_c_cw; dynr_i_cw; dynr_i_ccw; dynr_c_ccw];
 
 figure(); set(gcf,'color','white');
-hist(dynrs,25);
+hist(dynrs,15);
