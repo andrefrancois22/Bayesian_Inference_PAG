@@ -73,8 +73,8 @@ for fc = fcs
     for or = 1:7
 
          % ==> Static prior offsets (model 1)
-        pr_cw  =  25 * fc; % 25 * fc;
-        pr_ccw = -25 * fc; %-25 * fc;
+        pr_cw  =  25 * fc; 
+        pr_ccw = -25 * fc; 
 
         % ==> randn
         rdn = randn(N,tm);
@@ -87,8 +87,8 @@ for fc = fcs
 
         % ==> linear drift case
         % ==> case with a bias that grows linearly with t (mean drift)
-        pr_cw_d  =  fc*(0:(tm-1)) + pr_cw; %****
-        pr_ccw_d = -fc*(0:(tm-1)) + pr_ccw; %****
+        pr_cw_d  =  fc*(0:(tm-1)) + pr_cw; %****   10*(0:(tm-1)) + pr_cw;    % 
+        pr_ccw_d = -fc*(0:(tm-1)) + pr_ccw; %**** -10*(0:(tm-1)) + pr_ccw; %
 
         % ==> model 4
         % Linear drift starts during -800ms - -600ms time window
@@ -177,20 +177,20 @@ for fc = fcs
         % ==> for ccw context DVs
         ccw_r = [ccw_dv_cw_r + ccw_dv_ccw_r];
         
-%         % ==> handle DVs that never reached a bound...
-%         % ==> use sign of DV
-%         cw_r(cw_r == 0)   = sign(csensb_cw_d(cw_r==0,end));
-%         ccw_r(ccw_r == 0) = sign(csensb_ccw_d(ccw_r==0,end));
+        % ==> handle DVs that never reached a bound...
+        % ==> use sign of DV
+        cw_r(cw_r == 0)   = sign(csensb_cw_d(cw_r==0,end));
+        ccw_r(ccw_r == 0) = sign(csensb_ccw_d(ccw_r==0,end));
 
-        % ==> coin toss (ct) for zeros (trials that never reached a bound)
-        cw_ct = binornd(1,0.5,length(cw_r(cw_r==0)),1);
-        cw_ct(cw_ct==0) = -1;
-        % ==> coin toss (ccw DVs)
-        ccw_ct = binornd(1,0.5,length(ccw_r(ccw_r==0)),1);
-        ccw_ct(ccw_ct==0) = -1;
-        % ==> populate trials that never reached a bound with 2AFC coin toss (guess)
-        cw_r(cw_r == 0)   = cw_ct;
-        ccw_r(ccw_r == 0) = ccw_ct;
+%         % ==> coin toss (ct) for zeros (trials that never reached a bound)
+%         cw_ct = binornd(1,0.5,length(cw_r(cw_r==0)),1);
+%         cw_ct(cw_ct==0) = -1;
+%         % ==> coin toss (ccw DVs)
+%         ccw_ct = binornd(1,0.5,length(ccw_r(ccw_r==0)),1);
+%         ccw_ct(ccw_ct==0) = -1;
+%         % ==> populate trials that never reached a bound with 2AFC coin toss (guess)
+%         cw_r(cw_r == 0)   = cw_ct;
+%         ccw_r(ccw_r == 0) = ccw_ct;
 
         % ==> incongruent trials (cw context yields a ccw response, e.g. '-1' )
         dvs_i_cw = csensb_cw_d(cw_r==-1,:);

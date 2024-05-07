@@ -910,3 +910,18 @@ axis square;
 figure(); set(gcf,'color','white');
 scatter(db_lcr(14:29), dp_lcr(14:29),75,'ko','filled');
 axis square;
+
+%% ==> ANCOVA
+
+dbz  = [db_lcr_z, db_hcr_z];
+dpz  = [dp_lcr_z, dp_hcr_z];
+aicz = [aic_d_z, aic_d_z];
+
+% ==> median split to return aic grouping variable (gv)
+% aicgv = aicz >= median(aicz);
+
+% => histogram to get grouping variable.
+[~,~,aicgv] = histcounts(aicz,4);
+
+% ==> run ANCOVA
+aoctool(dbz,dpz,aicgv)
