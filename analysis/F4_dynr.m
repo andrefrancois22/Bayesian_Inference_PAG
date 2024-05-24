@@ -328,6 +328,7 @@ for iS = 1:29
     xlabel('orientation')
     ylabel('prop cw')
     drawnow;
+    
     % ==> low dynamic range (and low contrast)
     % ==> count trials in ccw condition (==> <choice>_<context>_<contrast>_<dynamic range>)
     tn_ccw_lo = cw_ccw_lo_lo + ccw_ccw_lo_lo;
@@ -921,7 +922,8 @@ aicz = [aic_d_z, aic_d_z];
 % aicgv = aicz >= median(aicz);
 
 % => histogram to get grouping variable.
-[~,~,aicgv] = histcounts(aicz,4);
+[~,~,aicgv] = histcounts(aicz,8);
 
 % ==> run ANCOVA
 aoctool(dbz,dpz,aicgv)
+
