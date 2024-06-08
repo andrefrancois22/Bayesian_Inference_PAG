@@ -6,77 +6,77 @@ drc = '../data/';
 pfc_functions_dr = '/home/thomas/Desktop/Bayesian_Inference_PAG/simulation/F1/pfc_functions/';
 addpath(pfc_functions_dr)
 
-%% ==> compute DV dynamic range medians for each stimulus type (29, 7 x 2 x 2) e.g. population x orientation x context by contrast
+% ==> compute DV dynamic range medians for each stimulus type (29, 7 x 2 x 2) e.g. population x orientation x context by contrast
 
-% ==> DV dynamic range medians for each stimulus
-DV_dynr_meds = nan(29,7,2,2);
+% % ==> DV dynamic range medians for each stimulus
+% DV_dynr_meds = nan(29,7,2,2);
+% 
+% % ==> what is the session
+% for iS = 1:29 
+% 
+%     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%     % params: matrix with the model parameters [trial x parameter]
+%     params = load([drc,'trial_DV_params_iS_',num2str(iS),'.mat']);
+%     params = params.ps_cat;
+%     fprintf('Finished loading matrix with the model parameters for iS = %d... \n',iS)
+%     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% 
+%     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%     % dvs are model predicted DV trajectories [trial x time] (Category DVs)
+%     dvs = load([drc,'trial_DV_traj_iS_',num2str(iS),'.mat']);
+%     dvs = dvs.dv_cat;
+%     fprintf('Finished loading model predicted DV trajectories (Categorical DVs) for iS = %d... \n',iS)
+%     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% 
+%     % ==> load session data
+%     if iS > 9
+%         load([dataPath,'/dataSet_',num2str(iS),'.mat']);
+%     elseif iS <= 9
+%         load([dataPath,'/dataSet_0',num2str(iS),'.mat']);
+%     end
+%     timeSac = S.dec.timeSac;
+%     % Set time boundaries
+%     fitTimeSacBegin = -800;  % in ms, relative to saccade onset
+%     fitTimeSacEnd   = -50;
+%     [~, sacBegin] = min(abs(timeSac - fitTimeSacBegin));
+%     [~, sacEnd]   = min(abs(timeSac - fitTimeSacEnd));
+% 
+%     % time intervals
+%     t = linspace(timeSac(sacBegin),timeSac(sacEnd),size(dvs,2));
+% 
+%     % ==> choice
+%     cho = S.beh.choiceCat;
+%     % ==> context, contrast, orientation indicator variables
+%     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
+%     % x axis is orientation (the values differ for FN and JP!). Use unique values
+%     or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
+%     
+%     % ==> dynamic range for session
+%     % dynr = max([max(dvs, [], 2) - dvs(:,1), -(min(dvs, [], 2) - dvs(:,1))], [], 2);
+% 
+%     for oi = 1:length(or)
+%         for xi = 1:length(cx)
+%             for ci = 1:length(cr)                
+%                 % ==> contrsuct stimulus index
+%                 I = (ori == or(oi)) & (ctx == cx(xi)) & (ctr == cr(ci));                
+%                 % ==> get DV trajectories indexed by stimulus
+%                 dv = dvs(I,:);
+%                 % ==> compute dynamic range for each trial for DV traj. of
+%                 % that stimulus
+%                 dynr = max([max(dv, [], 2) - dv(:,1), -(min(dv, [], 2) - dv(:,1))], [], 2);
+%                 % ==> compute the median
+%                 md = median(dynr);
+%                 % store the dyn. range median for that stimulus
+%                 DV_dynr_meds(iS, oi, xi, ci) = md;
+%             end
+%         end
+%     end
+%     % ==> update
+%     fprintf('computed all DV dynamic range medians for population %d of %d...\n',iS,29)
+% end
+% fprintf('Done...\n')
 
-% ==> what is the session
-for iS = 1:29 
-
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % params: matrix with the model parameters [trial x parameter]
-    params = load([drc,'trial_DV_params_iS_',num2str(iS),'.mat']);
-    params = params.ps_cat;
-    fprintf('Finished loading matrix with the model parameters for iS = %d... \n',iS)
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % dvs are model predicted DV trajectories [trial x time] (Category DVs)
-    dvs = load([drc,'trial_DV_traj_iS_',num2str(iS),'.mat']);
-    dvs = dvs.dv_cat;
-    fprintf('Finished loading model predicted DV trajectories (Categorical DVs) for iS = %d... \n',iS)
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    % ==> load session data
-    if iS > 9
-        load([dataPath,'/dataSet_',num2str(iS),'.mat']);
-    elseif iS <= 9
-        load([dataPath,'/dataSet_0',num2str(iS),'.mat']);
-    end
-    timeSac = S.dec.timeSac;
-    % Set time boundaries
-    fitTimeSacBegin = -800;  % in ms, relative to saccade onset
-    fitTimeSacEnd   = -50;
-    [~, sacBegin] = min(abs(timeSac - fitTimeSacBegin));
-    [~, sacEnd]   = min(abs(timeSac - fitTimeSacEnd));
-
-    % time intervals
-    t = linspace(timeSac(sacBegin),timeSac(sacEnd),size(dvs,2));
-
-    % ==> choice
-    cho = S.beh.choiceCat;
-    % ==> context, contrast, orientation indicator variables
-    ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
-    % x axis is orientation (the values differ for FN and JP!). Use unique values
-    or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
-    
-    % ==> dynamic range for session
-    % dynr = max([max(dvs, [], 2) - dvs(:,1), -(min(dvs, [], 2) - dvs(:,1))], [], 2);
-
-    for oi = 1:length(or)
-        for xi = 1:length(cx)
-            for ci = 1:length(cr)                
-                % ==> contrsuct stimulus index
-                I = (ori == or(oi)) & (ctx == cx(xi)) & (ctr == cr(ci));                
-                % ==> get DV trajectories indexed by stimulus
-                dv = dvs(I,:);
-                % ==> compute dynamic range for each trial for DV traj. of
-                % that stimulus
-                dynr = max([max(dv, [], 2) - dv(:,1), -(min(dv, [], 2) - dv(:,1))], [], 2);
-                % ==> compute the median
-                md = median(dynr);
-                % store the dyn. range median for that stimulus
-                DV_dynr_meds(iS, oi, xi, ci) = md;
-            end
-        end
-    end
-    % ==> update
-    fprintf('computed all DV dynamic range medians for population %d of %d...\n',iS,29)
-end
-fprintf('Done...\n')
-
-%% ==> dynamic range analysis
+% ==> dynamic range analysis
 close all; clc;
 
 % ==> estimate dynamic range per population?
@@ -84,7 +84,7 @@ dyn_type = 'popu';
 % ==> estimate dynamic range per stimulus?
 % dyn_type = 'stim';
 
-DV_dynr_meds_check = nan(29,7,2,2);
+% DV_dynr_meds_check = nan(29,7,2,2);
 
 % ==> dynamic range function
 dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
@@ -239,7 +239,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim')
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == 1) & (ctr == min(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,2,1) = median(dynr);    
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              %DV_dynr_meds_check(iS,th,2,1) = median(dynr);    
         end
         % ==> cw congruent choice, lo ctr, lo dynr
         cw_cw_lo_lo(th)   = sum(cw_lcr_cng   & ori==or(th) & ldyn);
@@ -253,7 +253,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim')        
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == -1) & (ctr == min(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,1,1) = median(dynr);  
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              %DV_dynr_meds_check(iS,th,1,1) = median(dynr);  
         end
         % ==> cw incongruent choice, lo ctr, lo dynr
         cw_ccw_lo_lo(th)  = sum(ccw_lcr_icg  & ori==or(th) & ldyn);    
@@ -270,7 +270,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim') 
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == 1) & (ctr == max(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,2,2) = median(dynr);            
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              %DV_dynr_meds_check(iS,th,2,2) = median(dynr);            
         end
         % ==> cw congruent choice, hi ctr, lo dynr
         cw_cw_hi_lo(th)   = sum(cw_hcr_cng   & ori==or(th) & ldyn);
@@ -284,7 +284,7 @@ for iS = 1:29
         if strcmp(dyn_type,'stim')         
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == -1) & (ctr == max(ctr)) & ori==or(th),:);
-            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              DV_dynr_meds_check(iS,th,1,2) = median(dynr);            
+            dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));              %DV_dynr_meds_check(iS,th,1,2) = median(dynr);            
         end
         % ==> cw incongruent choice, hi ctr, lo dynr
         cw_ccw_hi_lo(th)  = sum(ccw_hcr_icg  & ori==or(th) & ldyn); 
@@ -423,10 +423,10 @@ for iS = 1:29
     
 end
 
-% ==> quick check
-if strcmp(dyn_type,'stim') 
-    assert(unique(DV_dynr_meds_check == DV_dynr_meds))
-end
+% % ==> quick check
+% if strcmp(dyn_type,'stim') 
+%     assert(unique(DV_dynr_meds_check == DV_dynr_meds))
+% end
 
 % ==> read in important metrics for final analysis
 dvCatPerf = load([drc,'dvCatPerf.mat']);
@@ -440,43 +440,43 @@ aic_d = aic_d.aic_d';
 llr = load([drc,'llr.mat']);
 llr = llr.llr';
 
-%%
-close all; clc;
-ppl = [1:13]; ids = [1:29];
-fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr], [dp_lcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
-
-ppl = [1:13]; ids = [1:29];
-fg = figure(14); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_hcr], [dp_hcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
-
-ppl = [14:29]; ids = [1:29];
-fg = figure(15); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr], [dp_lcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
-
-ppl = [14:29]; ids = [1:29];
-fg = figure(16); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_hcr], [dp_hcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
-
-%% ==> DV choice predictivity, AIC delta analysis etc
-
+% %%
 % close all; clc;
-ppl = [1:29,(1:29)+29]; ids = [1:29,1:29];
-fg = figure(12); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
-
-%%
-% ==> F
-% close all; clc;
-ppl = [1:13,(1:13)+29]; ids = [1:29,1:29];
-fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
-
-% ==> JP
-% close all; clc;
-ppl = [14:29,(14:29)+29]; ids = [1:29,1:29];
-fg = figure(15); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
-pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
+% ppl = [1:13]; ids = [1:29];
+% fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_lcr], [dp_lcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+% 
+% ppl = [1:13]; ids = [1:29];
+% fg = figure(14); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_hcr], [dp_hcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+% 
+% ppl = [14:29]; ids = [1:29];
+% fg = figure(15); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_lcr], [dp_lcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+% 
+% ppl = [14:29]; ids = [1:29];
+% fg = figure(16); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_hcr], [dp_hcr], [aic_d], [llr], [dvCatPerf], ppl, 'lo_hi_ctr', ids);
+% 
+% %% ==> DV choice predictivity, AIC delta analysis etc
+% 
+% % close all; clc;
+% ppl = [1:29,(1:29)+29]; ids = [1:29,1:29];
+% fg = figure(12); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
+% 
+% %%
+% % ==> F
+% % close all; clc;
+% ppl = [1:13,(1:13)+29]; ids = [1:29,1:29];
+% fg = figure(13); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
+% 
+% % ==> JP
+% % close all; clc;
+% ppl = [14:29,(14:29)+29]; ids = [1:29,1:29];
+% fg = figure(15); clf; set(fg,'color','white'); set(fg,'Position',[723 4 1104 958]);
+% pltf([db_lcr;db_hcr], [dp_lcr;dp_hcr], [aic_d;aic_d], [llr;llr], [dvCatPerf;dvCatPerf], ppl, 'lo_hi_ctr', ids);
 
 %% ==> Average delta bias by animal and by contrast (F4G)
 clc;
@@ -633,20 +633,20 @@ errorbar([5,6,7], ...
          'ro');
 ylabel('\Delta bias and \Delta AIC')
      
-figure(19); 
-subplot(1,2,1);
-set(gcf,'color','white');
-scatter(aic_d_z,db_lcr_z,50, 'ko', 'filled');
-title(['r = ', num2str(r_z_lcr), ', p = ',num2str(p_z_lcr)]);
-ylabel('Standardized \Delta bias (z)');
-xlabel('Standardized \Delta AIC (z)');
-axis square;
-subplot(1,2,2);
-scatter(aic_d_z,db_hcr_z,50, 'ko', 'filled');
-title(['r = ', num2str(r_z_hcr), ', p = ',num2str(p_z_hcr)]);
-ylabel('Standardized \Delta bias (z)');
-xlabel('Standardized \Delta AIC (z)');
-axis square;     
+% figure(19); 
+% subplot(1,2,1);
+% set(gcf,'color','white');
+% scatter(aic_d_z,db_lcr_z,50, 'ko', 'filled');
+% title(['r = ', num2str(r_z_lcr), ', p = ',num2str(p_z_lcr)]);
+% ylabel('Standardized \Delta bias (z)');
+% xlabel('Standardized \Delta AIC (z)');
+% axis square;
+% subplot(1,2,2);
+% scatter(aic_d_z,db_hcr_z,50, 'ko', 'filled');
+% title(['r = ', num2str(r_z_hcr), ', p = ',num2str(p_z_hcr)]);
+% ylabel('Standardized \Delta bias (z)');
+% xlabel('Standardized \Delta AIC (z)');
+% axis square;     
 
 %% ==> average delta perceptual uncertainty (F4I)
 clc;
@@ -797,20 +797,20 @@ errorbar([5,6,7], ...
          [zi(lcr_se_ub)-r_z_lcr, zi(hcr_se_ub)-r_z_hcr, zi(se_ub)-rz_dp], ...
          'ro');
      
-figure(22); 
-subplot(1,2,1);
-set(gcf,'color','white');
-scatter(aic_d_z,dp_lcr_z,50, 'ko', 'filled');
-title(['r = ', num2str(r_z_lcr), ', p = ',num2str(p_z_lcr)]);
-ylabel('Standardized \Delta perceptual uncertainty (z)');
-xlabel('Standardized \Delta AIC (z)');
-axis square;
-subplot(1,2,2);
-scatter(aic_d_z,dp_hcr_z,50, 'ko', 'filled');
-title(['r = ', num2str(r_z_hcr), ', p = ',num2str(p_z_hcr)]);
-ylabel('Standardized \Delta perceptual uncertainty (z)');
-xlabel('Standardized \Delta AIC (z)');
-axis square;
+% figure(22); 
+% subplot(1,2,1);
+% set(gcf,'color','white');
+% scatter(aic_d_z,dp_lcr_z,50, 'ko', 'filled');
+% title(['r = ', num2str(r_z_lcr), ', p = ',num2str(p_z_lcr)]);
+% ylabel('Standardized \Delta perceptual uncertainty (z)');
+% xlabel('Standardized \Delta AIC (z)');
+% axis square;
+% subplot(1,2,2);
+% scatter(aic_d_z,dp_hcr_z,50, 'ko', 'filled');
+% title(['r = ', num2str(r_z_hcr), ', p = ',num2str(p_z_hcr)]);
+% ylabel('Standardized \Delta perceptual uncertainty (z)');
+% xlabel('Standardized \Delta AIC (z)');
+% axis square;
 
 %% ==> correlations between db and dp
 
@@ -852,7 +852,7 @@ sdJh_ub = z(rJhpdpu) + 1/sqrt(13); sdJh_lb = z(rJhpdpu) - 1/sqrt(13);
 % so the ~distance~ above r for POS(i) is z(-1)(SD_UB) - r
 % (upper bound correlation minus actual correlation)
 
-figure(21); set(gcf,'color','white');
+figure(23); set(gcf,'color','white');
 hold on; hold all;
 % ==> monkey F 
 errorbar([1,2], ...
@@ -891,25 +891,27 @@ errorbar([5,6,7], ...
          [zi(lcr_se_ub)-r_z_lcr, zi(hcr_se_ub)-r_z_hcr, zi(se_ub)-rz_dp], ...
          'ro');
      
-figure(22); 
-subplot(1,2,1);
-set(gcf,'color','white');
-scatter(aic_d_z,dp_lcr_z,50, 'ko', 'filled');
-title(['r = ', num2str(r_z_lcr), ', p = ',num2str(p_z_lcr)]);
-ylabel('Standardized \Delta perceptual uncertainty (z)');
-xlabel('Standardized \Delta AIC (z)');
-axis square;
-subplot(1,2,2);
-scatter(aic_d_z,dp_hcr_z,50, 'ko', 'filled');
-title(['r = ', num2str(r_z_hcr), ', p = ',num2str(p_z_hcr)]);
-ylabel('Standardized \Delta perceptual uncertainty (z)');
-xlabel('Standardized \Delta AIC (z)');
-axis square;
+% figure(24); 
+% subplot(1,2,1);
+% set(gcf,'color','white');
+% scatter(aic_d_z,dp_lcr_z,50, 'ko', 'filled');
+% title(['r = ', num2str(r_z_lcr), ', p = ',num2str(p_z_lcr)]);
+% ylabel('Standardized \Delta perceptual uncertainty (z)');
+% xlabel('Standardized \Delta AIC (z)');
+% axis square;
+% subplot(1,2,2);
+% scatter(aic_d_z,dp_hcr_z,50, 'ko', 'filled');
+% title(['r = ', num2str(r_z_hcr), ', p = ',num2str(p_z_hcr)]);
+% ylabel('Standardized \Delta perceptual uncertainty (z)');
+% xlabel('Standardized \Delta AIC (z)');
+% axis square;
 
 %% ==> example plot
 
 figure(); set(gcf,'color','white');
 scatter(db_lcr(14:29), dp_lcr(14:29),75,'ko','filled');
+xlabel('Difference in decision bias');
+ylabel('Difference in slope');
 axis square;
 
 %% ==> ANCOVA
