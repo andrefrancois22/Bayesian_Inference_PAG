@@ -550,7 +550,7 @@ zJhi = zi(z(rJh));
 % assert(zJhi == tanh(atanh(rJh)));
 
 % => standard deviation (1/sqrt(N - 3))
-% => monkey F (N = 13), so SD denom = sqrt(N-3)
+% => monkey F (N = 13), so SD denom = sqrt(N)
 sdFl_ub = z(rFl) + 1/sqrt(10); sdFl_lb = z(rFl) - 1/sqrt(10); 
 sdFh_ub = z(rFh) + 1/sqrt(10); sdFh_lb = z(rFh) - 1/sqrt(10);
 % => monkey J (N = 16), so SD denom = sqrt(N-3)
@@ -716,10 +716,10 @@ zJhi = zi(z(rJhpdpu));
 % assert(zJhi == tanh(atanh(rJh)));
 
 % => standard deviation (1/sqrt(N - 3))
-% => monkey F (N = 13), so SD denom = sqrt(N-3)
+% => monkey F (N = 13), so SD denom = sqrt(10)
 sdFl_ub = z(rFlpdpu) + 1/sqrt(10); sdFl_lb = z(rFlpdpu) - 1/sqrt(10); 
 sdFh_ub = z(rFhpdpu) + 1/sqrt(10); sdFh_lb = z(rFhpdpu) - 1/sqrt(10);
-% => monkey J (N = 16), so SD denom = sqrt(N-3)
+% => monkey J (N = 16), so SD denom = sqrt(13)
 sdJl_ub = z(rJlpdpu) + 1/sqrt(13); sdJl_lb = z(rJlpdpu) - 1/sqrt(13); 
 sdJh_ub = z(rJhpdpu) + 1/sqrt(13); sdJh_lb = z(rJhpdpu) - 1/sqrt(13);
 
@@ -829,10 +829,10 @@ zJli = zi(z(rJlpdpu));
 zJhi = zi(z(rJhpdpu));
 
 % => standard deviation (1/sqrt(N - 3))
-% => monkey F (N = 13), so SD denom = sqrt(N-3)
+% => monkey F (N = 13), so SD denom = sqrt(10)
 sdFl_ub = z(rFlpdpu) + 1/sqrt(10); sdFl_lb = z(rFlpdpu) - 1/sqrt(10); 
 sdFh_ub = z(rFhpdpu) + 1/sqrt(10); sdFh_lb = z(rFhpdpu) - 1/sqrt(10);
-% => monkey J (N = 16), so SD denom = sqrt(N-3)
+% => monkey J (N = 16), so SD denom = sqrt(13)
 sdJl_ub = z(rJlpdpu) + 1/sqrt(13); sdJl_lb = z(rJlpdpu) - 1/sqrt(13); 
 sdJh_ub = z(rJhpdpu) + 1/sqrt(13); sdJh_lb = z(rJhpdpu) - 1/sqrt(13);
 

@@ -258,43 +258,42 @@ for fc = fcs
     fprintf('finished stimulus orientation %d...\n',mus(or))
 end
 
-
-figure(5); set(gcf,'color','white'); set(gcf,'Position',[273 211 971 726])
-subplot(1,2,1);
-hold on; hold all;
-% ==> cw context
-plot(t,mean(dvs_i_cw,1)','b--'); 
-plot(t,mean(dvs_c_cw,1)','b-')
-scatter(t(1),mean(dvs_i_cw(:,1),1)', 40, 'bo'); 
-scatter(t(1),mean(dvs_c_cw(:,1),1)', 40, 'bo','filled');
-% ==> ccw context
-plot(t,mean(dvs_i_ccw,1)','r--'); 
-plot(t,mean(dvs_c_ccw,1)','r-'); 
-scatter(t(1),mean(dvs_i_ccw(:,1),1)', 40, 'ro'); 
-scatter(t(1),mean(dvs_c_ccw(:,1),1)', 40, 'ro','filled');
-plot(t,zeros(200,1),'k--')
-legend('cw incongruent','cw congruent', ...
-       'cw incongruent DV start','cw congruent DV start', ...
-       'ccw incongruent','ccw congruent', ...
-       'ccw incongruent DV start','ccw congruent DV start', ...
-       'Fontsize',6)
-xlim([t(1)-50,t(end)])   
-ylim([-20,20]);
-xlabel('Time');
-ylabel('Simulated DV (average)');
-title(['Simulated DV (average) stimulus: ',num2str(or)])
-
-
-ax = subplot(1,2,2);
-hold  on; hold all;
-errorbar([1,2],[mean(dynr_i_cw), mean(dynr_c_cw)], [std(dynr_i_cw), std(dynr_c_cw)],'b.-')
-errorbar([3,4],[mean(dynr_i_ccw),mean(dynr_c_ccw)],[std(dynr_i_ccw),std(dynr_c_ccw)],'r.-')
-xlim([0,5]);
-xlabel('Context and choice congruence');
-ylabel('Dynamic range (average)');
-ax.XTick = [1,2,3,4];
-ax.XTickLabel = {'cw (incongruent)', 'cw (congruent)', 'ccw (incongruent)', 'ccw (congruent)'};
-ax.XTickLabelRotation = 45;
+% figure(5); set(gcf,'color','white'); set(gcf,'Position',[273 211 971 726])
+% subplot(1,2,1);
+% hold on; hold all;
+% % ==> cw context
+% plot(t,mean(dvs_i_cw,1)','b--'); 
+% plot(t,mean(dvs_c_cw,1)','b-')
+% scatter(t(1),mean(dvs_i_cw(:,1),1)', 40, 'bo'); 
+% scatter(t(1),mean(dvs_c_cw(:,1),1)', 40, 'bo','filled');
+% % ==> ccw context
+% plot(t,mean(dvs_i_ccw,1)','r--'); 
+% plot(t,mean(dvs_c_ccw,1)','r-'); 
+% scatter(t(1),mean(dvs_i_ccw(:,1),1)', 40, 'ro'); 
+% scatter(t(1),mean(dvs_c_ccw(:,1),1)', 40, 'ro','filled');
+% plot(t,zeros(200,1),'k--')
+% legend('cw incongruent','cw congruent', ...
+%        'cw incongruent DV start','cw congruent DV start', ...
+%        'ccw incongruent','ccw congruent', ...
+%        'ccw incongruent DV start','ccw congruent DV start', ...
+%        'Fontsize',6)
+% xlim([t(1)-50,t(end)])   
+% ylim([-20,20]);
+% xlabel('Time');
+% ylabel('Simulated DV (average)');
+% title(['Simulated DV (average) stimulus: ',num2str(or)])
+% 
+% 
+% ax = subplot(1,2,2);
+% hold  on; hold all;
+% errorbar([1,2],[mean(dynr_i_cw), mean(dynr_c_cw)], [std(dynr_i_cw), std(dynr_c_cw)],'b.-')
+% errorbar([3,4],[mean(dynr_i_ccw),mean(dynr_c_ccw)],[std(dynr_i_ccw),std(dynr_c_ccw)],'r.-')
+% xlim([0,5]);
+% xlabel('Context and choice congruence');
+% ylabel('Dynamic range (average)');
+% ax.XTick = [1,2,3,4];
+% ax.XTickLabel = {'cw (incongruent)', 'cw (congruent)', 'ccw (incongruent)', 'ccw (congruent)'};
+% ax.XTickLabelRotation = 45;
 
 % ==> correlation between simulated delta bias and simulated delta
 % uncertainty
