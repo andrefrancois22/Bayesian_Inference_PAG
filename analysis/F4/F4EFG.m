@@ -46,7 +46,7 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     ax = gca;      
     title(['\Delta ', metric, ' results'])
     ylabel(['\Delta ', metric])
-    ax.XTickLabel = {'F-lo','F-hi','J-lo','J-hi','lo','hi','all'}; 
+    ax.XTickLabel = {[],'F-lo','F-hi','J-lo','J-hi','lo','hi','all'}; 
     xlabel('Monkey and Stimulus Contrast Condition')    
     
     % ==> wilcoxon tests
@@ -69,6 +69,7 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     rJl = corr(d(14:end,1),aic_d(14:end));
     rJh = corr(d(14:end,2),aic_d(14:end));
 
+    % ==> error bounds for plots in panel
     % => standard deviation (1/sqrt(N - 3))
     % => monkey F (N = 13), so SD denom = sqrt(10)
     sdFl_ub = z(rFl) + 1/sqrt(10); sdFl_lb = z(rFl) - 1/sqrt(10); 
@@ -155,7 +156,7 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     ax = gca;    
     title(['\Delta ', metric, ' results'])    
     ylabel(['\Delta ', metric, ' and \Delta AIC - Association (r) value'])
-    ax.XTickLabel = {'F-lo','F-hi','J-lo','J-hi','lo','hi','all'};   
+    ax.XTickLabel = {[],'F-lo','F-hi','J-lo','J-hi','lo','hi','all'};   
     xlabel('Monkey and Stimulus Contrast Condition')
 
 end

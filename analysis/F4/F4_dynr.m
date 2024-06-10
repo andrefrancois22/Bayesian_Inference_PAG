@@ -51,13 +51,6 @@ figure(3); set(gcf,'color','white'); set(gcf,'Position',[86 282 921 668]);
 for iS = 1:29 
 
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % params: matrix with the model parameters [trial x parameter]
-    params = load([drc,'trial_DV_params_iS_',num2str(iS),'.mat']);
-    params = params.ps_cat;
-    fprintf('Finished loading matrix with the model parameters for iS = %d... \n',iS)
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % dvs are model predicted DV trajectories [trial x time] (Category DVs)
     dvs = load([drc,'trial_DV_traj_iS_',num2str(iS),'.mat']);
     dvs = dvs.dv_cat;
@@ -70,15 +63,6 @@ for iS = 1:29
     elseif iS <= 9
         load([dataPath,'/dataSet_0',num2str(iS),'.mat']);
     end
-    timeSac = S.dec.timeSac;
-    % Set time boundaries
-    fitTimeSacBegin = -800;  % in ms, relative to saccade onset
-    fitTimeSacEnd   = -50;
-    [~, sacBegin] = min(abs(timeSac - fitTimeSacBegin));
-    [~, sacEnd]   = min(abs(timeSac - fitTimeSacEnd));
-
-    % time intervals
-    t = linspace(timeSac(sacBegin),timeSac(sacEnd),size(dvs,2));
 
     % ==> choice
     cho = S.beh.choiceCat;
@@ -87,10 +71,23 @@ for iS = 1:29
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
     
+    % ==> split by dynamic range over entire population DVs
     if strcmp(dyn_type,'popu')
         % ==> dynamic range for session
         dynr = dynf(dvs); ldyn = (dynr(:,1) <  median(dynr)); hdyn = (dynr(:,1) >= median(dynr));
     end
+    
+    %for bh  (1 or 2) -> (-1 or 1)
+        %for xc (1 or 2) -> (-1 or 1)
+            %for rc (1 or 2) -> (min or max)
+                %for sp (1 or 2) -> ldyn/hdyn
+                
+                    % idxs{bh}{xc}{rc}{sp} = (ctx == cx(xc)) & (ctr == cr)
+                
+                %end
+            %end
+        %end
+    %end
     
     % ==> cw context (congruent choices)
     % ==> cw context & lo contrast
@@ -156,6 +153,7 @@ for iS = 1:29
         
         % ==> low contrast trials only ==================================================================================================================
         % ==> low dynamic range split ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
+        % ==> split by dynamic range conditioned on identical stimulus values
         if strcmp(dyn_type,'stim')
             % ==> dynamic range for session % => indexing variables - dynamic range
             dv = dvs((ctx == 1) & (ctr == min(ctr)) & ori==or(th),:);
@@ -320,119 +318,22 @@ llr = llr.llr';
 % ==> correlation plots (delta perceptual uncertainty and delta AIC
 [~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty');
 
+% ==> correlations between db and dp
+F5(db, dp);
 
-%% ==> correlations between db and dp
-
-rFl = corr(db(1:13,1), dp(1:13,1));
-rFh = corr(db(1:13,2), dp(1:13,2));
-
-rJl = corr(db(14:end,1), dp(14:end,1));
-rJh = corr(db(14:end,2), dp(14:end,2));
-
-% zFli = zi(z(rFl));
-% zFhi = zi(z(rFh));
-% 
-% zJli = zi(z(rJl));
-% zJhi = zi(z(rJh));
-
-% => standard deviation (1/sqrt(N - 3))
-% => monkey F (N = 13), so SD denom = sqrt(10)
-sdFl_ub = z(rFl) + 1/sqrt(10); sdFl_lb = z(rFl) - 1/sqrt(10); 
-sdFh_ub = z(rFh) + 1/sqrt(10); sdFh_lb = z(rFh) - 1/sqrt(10);
-% => monkey J (N = 16), so SD denom = sqrt(13)
-sdJl_ub = z(rJl) + 1/sqrt(13); sdJl_lb = z(rJl) - 1/sqrt(13); 
-sdJh_ub = z(rJh) + 1/sqrt(13); sdJh_lb = z(rJh) - 1/sqrt(13);
-
-%NOTE: (errorbar(X,Y,NEG(i),POS(i)))
-% ==> errorbar matlab native plot function allows NEG(i), POS(i), which are ~distances~ above and below
-% correlations for drawing error bars in the plot. So these have to be computed as follows:
-
-% => NEG(i) is correlation r - z^(-1)(SD_LB), where SD_LB is the lower
-% bound correlation in z coordinates, e.g. 
-% ==> SD_LB = z(r) - 1/sqrt(N-3)
-% so the ~distance~ below r for NEG(i) is r - z^(-1)(SD_LB)
-% (actual correlation minus the lower bound correlation)
-
-% => POS(i) is correlation z(-1)(SD_UB), where SD_UB is the higher 
-% bound correlation in z coordinates, e.g.
-% ==> SD_UB = r(z) + 1/sqrt(N-3)
-% so the ~distance~ above r for POS(i) is z(-1)(SD_UB) - r
-% (upper bound correlation minus actual correlation)
-
-figure; set(gcf,'color','white');
-hold on; hold all;
-% ==> monkey F 
-errorbar([1,2], ...
-         [rFl, rFh], ... % ==> original correlations
-         [rFl-zi(sdFl_lb), rFh-zi(sdFh_lb)],[zi(sdFl_ub)-rFl, zi(sdFh_ub)-rFh] , ...
-         'o','color','k');
-% ==> monkey J
-errorbar([3,4], ...
-         [rJl, rJh], ... % ==> original correlations
-         [rJl-zi(sdJl_lb), rJh-zi(sdJh_lb)], [zi(sdJl_ub)-rJl, zi(sdJh_ub)-rJh] , ...
-         'ko'); 
-xlim([0,7]);
-ylim([-0.1,1]);
-
-% ==> z-scores across animals
-
-% ==> correlation
-[r_z_lcr, p_z_lcr] = corr(db_lcr_z',dp_lcr_z');
-[r_z_hcr, p_z_hcr] = corr(db_hcr_z',dp_hcr_z');
-
-% ==> correlation across all contrasts and animals
-[rz_dp, pz_dp] = corr([db_lcr_z,db_hcr_z]',[dp_lcr_z, dp_hcr_z]');
-
-lcr_se_lb = z(r_z_lcr) - 1/sqrt(26); 
-lcr_se_ub = z(r_z_lcr) + 1/sqrt(26);
-
-hcr_se_lb = z(r_z_hcr) - 1/sqrt(26); 
-hcr_se_ub = z(r_z_hcr) + 1/sqrt(26);
-
-se_lb = z(rz_dp) - 1/sqrt(29*2 - 3); 
-se_ub = z(rz_dp) + 1/sqrt(29*2 - 3);
-
-errorbar([5,6,7], ...
-         [r_z_lcr, r_z_hcr, rz_dp], ...
-         [r_z_lcr-zi(lcr_se_lb), r_z_hcr-zi(hcr_se_lb), rz_dp-zi(se_lb)], ... 
-         [zi(lcr_se_ub)-r_z_lcr, zi(hcr_se_ub)-r_z_hcr, zi(se_ub)-rz_dp], ...
-         'ro');
-     
-% figure(24); 
-% subplot(1,2,1);
-% set(gcf,'color','white');
-% scatter(aic_d_z,dp_lcr_z,50, 'ko', 'filled');
-% title(['r = ', num2str(r_z_lcr), ', p = ',num2str(p_z_lcr)]);
-% ylabel('Standardized \Delta perceptual uncertainty (z)');
-% xlabel('Standardized \Delta AIC (z)');
-% axis square;
-% subplot(1,2,2);
-% scatter(aic_d_z,dp_hcr_z,50, 'ko', 'filled');
-% title(['r = ', num2str(r_z_hcr), ', p = ',num2str(p_z_hcr)]);
-% ylabel('Standardized \Delta perceptual uncertainty (z)');
-% xlabel('Standardized \Delta AIC (z)');
-% axis square;
-
-%% ==> example plot
-
+% ==> example plot
 figure(); set(gcf,'color','white');
 scatter(db(14:29,1), dp(14:29,1),75,'ko','filled');
 xlabel('Difference in decision bias');
 ylabel('Difference in slope');
 axis square;
 
-%% ==> ANCOVA
-
-dbz  = [db_lcr_z, db_hcr_z];
-dpz  = [dp_lcr_z, dp_hcr_z];
-aicz = [aic_d_z, aic_d_z];
-
-% ==> median split to return aic grouping variable (gv)
-% aicgv = aicz >= median(aicz);
-
-% => histogram to get grouping variable.
-[~,~,aicgv] = histcounts(aicz,8);
-
-% ==> run ANCOVA
-aoctool(dbz,dpz,aicgv)
+% % ==> ANCOVA
+% dbz  = [db_lcr_z, db_hcr_z];
+% dpz  = [dp_lcr_z, dp_hcr_z];
+% aicz = [aic_d_z, aic_d_z];
+% % => histogram to get grouping variable.
+% [~,~,aicgv] = histcounts(aicz,8);
+% % ==> run ANCOVA
+% aoctool(dbz,dpz,aicgv)
 
