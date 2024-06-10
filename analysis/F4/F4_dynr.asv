@@ -69,25 +69,69 @@ for iS = 1:29
     % ==> context, contrast, orientation indicator variables
     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
     % x axis is orientation (the values differ for FN and JP!). Use unique values
-    or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
+    or = sort(unique(ori),'ascend')'; cx = sort(unique(ctx),'ascend')'; cr = sort(unique(ctr),'ascend')'; bhs = sort(unique(cho),'ascend')';
+
+
+% ==> Psychometric functions
+PF = cell([2,2]);
+% ==>
+% ==> counts
+% (<choice>_<context>_<contrast>_<dynamic range split>_<orientation>)
+cnts = cell([2,2,2,2,2]);
+
+% ==> cell array containing indexing vectors
+% (<choice>_<context>_<contrast>_<dynamic range split>)
+idxs = cell([2,2,2,2]);
     
-    % ==> split by dynamic range over entire population DVs
-    if strcmp(dyn_type,'popu')
-        % ==> dynamic range for session
-        dynr = dynf(dvs); ldyn = (dynr(:,1) <  median(dynr)); hdyn = (dynr(:,1) >= median(dynr));
+% ==> split by dynamic range over entire population DVs
+if strcmp(dyn_type,'popu')
+    % ==> dynamic range for session
+    dynr = dynf(dvs); ldyn = (dynr(:,1) <  median(dynr)); hdyn = (dynr(:,1) >= median(dynr));
+end
+
+% ==> dynamic range split indices (first column indexes low, second, high)
+dri = [ldyn,hdyn];
+
+for bh = 1:length(bhs)             %-> behavioral choice (-1 or 1)
+    for xc = 1:length(cx)          %-> prior context     (-1 or 1)
+        for rc = 1:length(cr)      %-> stimulus contrast (min or max -> sorted in ascending order)
+            for sp = 1:2           %-> dynamic range split (lo or hi) ldyn/hdyn                           
+
+                % ==> indexing vector for counts
+                idxs{bh}{xc}{rc}{sp} = ((ctx == cx(xc)) & (ctr == cr(rc)) & (cho == bhs(bh)) & dri(:,sp));
+                
+                % ==> stimulus orientation (7 values)
+                for th = 1:length(or)
+                    
+                    % ==> option: split by dynamic range conditioned on identical stimulus values
+                    if strcmp(dyn_type,'stim') 
+                        % ==> dynamic range for session % => indexing variables - dynamic range
+                        dv = dvs((ctx == cx(xc)) & (ctr == cr(rc)) & ori==or(th),:);
+                        dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));        
+                         % ==> dynamic range split indices (first column indexes low, second, high)
+                        dri = [ldyn,hdyn];                      
+                    end     
+                    
+                    % ==> tally counts
+                    cnts{bh}{xc}{rc}{sp}{th} = sum(idxs{bh}{xc}{rc}{sp} & ori==or(th));
+                end                    
+            end
+        end
+    end    
+end
+
+for
+    for
+                % ==> PF curve fit
+                fprintf('computing psychometric functions...\n')    
+                % ==> low dynamic range cases (low contrast stimulus trials)
+                
+                [PF{}{}, PFp{}{}] = PF_fit_fun([cnts{1}{2}{1}{1}{:}], [cnts{1}{1}{1}{1}{:}], [cnts{2}{2}{1}{1}{:}], [cnts{2}{1}{1}{1}{:}], or, startVec_M1, LB_M1, UB_M1, options);
+ 
+                        
     end
-    
-    %for choice 
-        %for ctx
-            %for ctr
-                %for ldyn/hdyn
-                
-                    % idx{}{}{}{}
-                
-                %end
-            %end
-        %end
-    %end
+end
+
     
     % ==> cw context (congruent choices)
     % ==> cw context & lo contrast

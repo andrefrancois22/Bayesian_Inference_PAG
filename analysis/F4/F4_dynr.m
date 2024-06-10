@@ -1,4 +1,5 @@
 clear all; close all; clc;
+
 % ==> directories
 dataPath     = '/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data';
 drc = '../../data/';
@@ -69,25 +70,68 @@ for iS = 1:29
     % ==> context, contrast, orientation indicator variables
     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
     % x axis is orientation (the values differ for FN and JP!). Use unique values
-    or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
+    or = sort(unique(ori),'ascend')'; cx = sort(unique(ctx),'ascend')'; cr = sort(unique(ctr),'ascend')'; bhs = sort(unique(cho),'ascend')';
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% ==> Psychometric functions (four per session)
+PF = cell([29,2,2]);
+% ==> PF parameters
+PFp = cell([29,2,2]);
+% ==> counts
+% (<choice>_<context>_<contrast>_<dynamic range split>_<orientation>)
+cnts = cell([2,2,2,2,2]);
+
+% ==> cell array containing indexing vectors
+% (<choice>_<context>_<contrast>_<dynamic range split>)
+idxs = cell([2,2,2,2]);
     
-    % ==> split by dynamic range over entire population DVs
-    if strcmp(dyn_type,'popu')
-        % ==> dynamic range for session
-        dynr = dynf(dvs); ldyn = (dynr(:,1) <  median(dynr)); hdyn = (dynr(:,1) >= median(dynr));
+% ==> split by dynamic range over entire population DVs
+if strcmp(dyn_type,'popu')
+    % ==> dynamic range for session
+    dynr = dynf(dvs); ldyn = (dynr(:,1) <  median(dynr)); hdyn = (dynr(:,1) >= median(dynr));
+end
+
+% ==> dynamic range split indices (first column indexes low, second, high)
+dri = [ldyn,hdyn];
+
+for bh = 1:length(bhs)             %-> behavioral choice (-1 or 1)
+    for xc = 1:length(cx)          %-> prior context     (-1 or 1)
+        for rc = 1:length(cr)      %-> stimulus contrast (min or max) (sorted in ascending order)
+            for sp = 1:2           %-> dynamic range split (lo or hi) ldyn/hdyn                           
+
+                % ==> indexing vector for counts
+                idxs{bh}{xc}{rc}{sp} = ((ctx == cx(xc)) & (ctr == cr(rc)) & (cho == bhs(bh)));
+                
+                % ==> stimulus orientation (7 values)
+                for th = 1:length(or)
+                    
+                    % ==> option: split by dynamic range conditioned on identical stimulus values
+                    if strcmp(dyn_type,'stim') 
+                        % ==> dynamic range for session % => indexing variables - dynamic range
+                        dv = dvs((ctx == cx(xc)) & (ctr == cr(rc)) & ori==or(th),:);
+                        dynr = dynf(dv); ldyn=(dynf(dvs) <  median(dynr)); hdyn=(dynf(dvs) >= median(dynr));        
+                        % ==> dynamic range split indices (first column indexes low, second, high)
+                        dri = [ldyn,hdyn];                      
+                    end     
+                    
+                    % ==> tally counts
+                    cnts{bh}{xc}{rc}{sp}{th} = sum(idxs{bh}{xc}{rc}{sp} & ori==or(th) & dri(:,sp));
+                end                    
+            end
+        end
+    end    
+end
+% ==> fit psychometric functions for four PFs (by contrast, and DV dynamic range)
+for rc = 1:length(cr)
+    for sp = 1:2      
+        % ==> PF curve fit   
+        [PF{iS}{rc}{sp}, PFp{iS}{rc}{sp}] = PF_fit_fun([cnts{1}{2}{rc}{sp}{:}], [cnts{1}{1}{rc}{sp}{:}], [cnts{2}{2}{rc}{sp}{:}], [cnts{2}{1}{rc}{sp}{:}], or, startVec_M1, LB_M1, UB_M1, options);                       
     end
-    
-    %for bh  (1 or 2) -> (-1 or 1)
-        %for xc (1 or 2) -> (-1 or 1)
-            %for rc (1 or 2) -> (min or max)
-                %for sp (1 or 2) -> ldyn/hdyn
-                
-                    % idxs{bh}{xc}{rc}{sp} = (ctx == cx(xc)) & (ctr == cr)
-                
-                %end
-            %end
-        %end
-    %end
+end
+% ==> update in the console
+fprintf('Computed psychometric functions for session %d of %d...\n',iS,29)
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     % ==> cw context (congruent choices)
     % ==> cw context & lo contrast
@@ -296,7 +340,8 @@ for iS = 1:29
     % ==> save PF curve fits
     PFs_predPF_dynr_lo_hcr{iS} = PF_ldyn_hcr;
     PFs_predPF_dynr_hi_hcr{iS} = PF_hdyn_hcr;      
-    
+   
+%     keyboard
 end
 
 % ==> read in important metrics for final analysis
