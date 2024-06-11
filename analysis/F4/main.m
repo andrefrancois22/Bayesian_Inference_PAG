@@ -129,22 +129,16 @@ for iS = 1:29
             [PF{iS}{rc}{sp}, PFp{iS}{rc}{sp}] = PF_fit_fun([cnts{1}{2}{rc}{sp}{:}], [cnts{1}{1}{rc}{sp}{:}], [cnts{2}{2}{rc}{sp}{:}], [cnts{2}{1}{rc}{sp}{:}], ...
              or, startVec_M1, LB_M1, UB_M1, options);                       
         end
+        % ==> delta bias (use PF fit parameter vectors)
+        db(iS,rc) = (PFp{iS}{rc}{1}(5) - PFp{iS}{rc}{1}(4)) - (PFp{iS}{rc}{2}(5) - PFp{iS}{rc}{2}(4));   
+        % ==> delta perceptual uncertainty (use PF fit parameter vectors)
+        dp(iS,rc)   = PFp{iS}{rc}{1}(3) - PFp{iS}{rc}{2}(3);         
     end
     % ==> update in the console
-    fprintf('Computed psychometric functions for session %d of %d...\n',iS,29)     
-                 
-    % ==> delta bias 
-    db(iS,rc) = (PFp{iS}{rc}{1}(5) - PFp{iS}{rc}{1}(4)) - (PFp{iS}{rc}{2}(5) - PFp{iS}{1}{2}(4));   
-    % ==> delta perceptual uncertainty
-    dp(iS,rc)   = PFp{iS}{rc}{1}(3) - PFp{iS}{rc}{2}(3); 
-
-%     % ==> delta bias
-%     db(iS,2) = (PFp{iS}{2}{1}(5) - PFp{iS}{2}{1}(4)) - (PFp{iS}{2}{2}(5) - PFp{iS}{2}{2}(4));     
-%     % ==> delta perceptual uncertainty
-%     dp(iS,2)   = PFp{iS}{2}{1}(3) - PFp{iS}{2}{2}(3);  
-
+    fprintf('Computed psychometric functions for session %d of %d...\n',iS,29)                       
 end
 
+%%
 % ==> Average delta bias by animal and by contrast 
 % ==> correlation plots (delta bias and delta AIC) 
 [~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias');
@@ -153,9 +147,11 @@ end
 % ==> correlation plots (delta perceptual uncertainty and delta AIC
 [~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty');
 
+%%
 % ==> correlations between db and dp
 F5(db, dp);
 
+%%
 % ==> example plot
 figure(); set(gcf,'color','white');
 scatter(db(14:29,1), dp(14:29,1),75,'ko','filled');
@@ -163,8 +159,9 @@ xlabel('Difference in decision bias');
 ylabel('Difference in slope');
 axis square;
 
+%%
 % ==> Useful supplementary plots
-% => draw all PF curves and trial proportions for each session
+% => draw all PF curves and trial proportions for each session (4 PFs for each session)
 SI_plots();
 
 % % ==> ANCOVA
@@ -175,4 +172,3 @@ SI_plots();
 % [~,~,aicgv] = histcounts(aicz,8);
 % % ==> run ANCOVA
 % aoctool(dbz,dpz,aicgv)
-
