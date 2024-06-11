@@ -16,6 +16,8 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     z = @(r) (1/2)*log((1 + r)/(1 - r));
     % ==> inverse of the z transformation
     zi = @(z) (exp(2*z) - 1)/(exp(2*z) + 1);
+    % ==> normalization function
+    normf = @(x) (x - mean(x))/std(x);    
 
     % ==> plot average delta Bias
     figure; set(gcf,'color','white'); set(gcf,'Position',[675 560 1014 402]);
@@ -109,21 +111,17 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
 
     % ==> z-scores across animals
     dz = nan(29,2);
-
-    % ==> Animal F
-    % ==> low contrast
-    dz(1:13,1) = (d(1:13,1) - mean(d(1:13,1)))/std(d(1:13,1));
-    % ==> high contrast
-    dz(1:13,2) = (d(1:13,2) - mean(d(1:13,2)))/std(d(1:13,2)); 
-    % ==> Animal J
-    % ==> low contrast
-    dz(14:29,1) = (d(14:29,1) - mean(d(14:29,1)))/std(d(14:29,1));
-    % ==> high contrast
-    dz(14:29,2) = (d(14:29,2) - mean(d(14:29,2)))/std(d(14:29,2)); 
+    % ==> low & high contrast
+    for c = 1:2
+        % ==> animal F
+        dz(1:13,c)  = normf(d(1:13,c));
+        % ==> animal J
+        dz(14:29,c) = normf(d(14:29,c));
+    end
 
     % ==> standardize aic by monkey
-    aic_d_z(1:13)  = (aic_d(1:13)  - mean(aic_d(1:13)))/std(aic_d(1:13));
-    aic_d_z(14:29) = (aic_d(14:29) - mean(aic_d(14:29)))/std(aic_d(14:29));
+    aic_d_z(1:13)  = normf(aic_d(1:13));  
+    aic_d_z(14:29) = normf(aic_d(14:29)); 
     
     % ==> correlation
     [r_z_lcr, ~] = corr(aic_d_z',dz(:,1));

@@ -138,6 +138,7 @@ for iS = 1:29
     fprintf('Computed psychometric functions for session %d of %d...\n',iS,29)                       
 end
 
+%%
 % ==> Average delta bias by animal and by contrast 
 % ==> correlation plots (delta bias and delta AIC) 
 [~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias');
@@ -146,9 +147,11 @@ end
 % ==> correlation plots (delta perceptual uncertainty and delta AIC
 [~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty');
 
+%%
 % ==> correlations between db and dp
 F5(db, dp);
 
+%%
 % ==> example plot
 figure(); set(gcf,'color','white');
 scatter(db(14:29,1), dp(14:29,1),75,'ko','filled');
@@ -156,6 +159,7 @@ xlabel('Difference in decision bias');
 ylabel('Difference in slope');
 axis square;
 
+%%
 % ==> Useful supplementary plots
 % => draw all PF curves and trial proportions for each session (4 PFs for each session)
 SI_plots();
