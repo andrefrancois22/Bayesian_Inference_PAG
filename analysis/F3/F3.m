@@ -5,87 +5,30 @@ drc = '../../data/';
 
 figure(); set(gcf,'Color','w');
 
-% => cw cases
-Fmu_cw_lo = nan(13,2);
-Fmu_cw_hi = nan(13,2);
-
-Jmu_cw_lo = nan(16,2);
-Jmu_cw_hi = nan(16,2);
-
-% => ccw cases
-Fmu_ccw_lo = nan(13,2);
-Fmu_ccw_hi = nan(13,2);
-
-Jmu_ccw_lo = nan(16,2);
-Jmu_ccw_hi = nan(16,2);
-
-% ==> for storing all neutral DV trajectories
-% => cw cases
-F_cw_lo = nan(13,200);
-F_cw_hi = nan(13,200);
-J_cw_lo = nan(16,200);
-J_cw_hi = nan(16,200);
-
-% => ccw cases
-F_ccw_lo = nan(13,200);
-F_ccw_hi = nan(13,200);
-J_ccw_lo = nan(16,200);
-J_ccw_hi = nan(16,200);
-
-% ==> store individual trial values
-% ==> context cw (ctx == 1)
-vcwlosF = [];
-% ==> context ccw (ctx == -1)
-vccwlosF = [];    
-% ==> context cw (ctx == 1)
-vcwhisF = [];
-% ==> context ccw (ctx == -1)
-vccwhisF = [];     
-
-% ==> store individual trial values
-% ==> context cw (ctx == 1)
-vcwlosJ = [];
-% ==> context ccw (ctx == -1)
-vccwlosJ = [];    
-% ==> context cw (ctx == 1)
-vcwhisJ = [];
-% ==> context ccw (ctx == -1)
-vccwhisJ = [];        
-
-% % ==> store raw DV averages
-% J_cw_lo_raw_DVs = [];
-% J_cw_hi_raw_DVs = [];
-% J_ccw_lo_raw_DVs = [];
-% J_ccw_hi_raw_DVs = [];
-% 
-% % ==> store raw DV averages
-% F_cw_lo_raw_DVs = [];
-% F_cw_hi_raw_DVs = [];
-% F_ccw_lo_raw_DVs = [];
-% F_ccw_hi_raw_DVs = [];
+% ==> index vectors
+idv  = cell(29,2,2);
+% ==> dv values in early and late time windows
+dvw  = cell(29,2,2);
+% ==> raw DV values
+dvsr = cell(29,2,2);
+% ==> DV model fit values
+dvsm = cell(29,2,2);
 
 % ==> what is the session
-for iSfln = 1:29 
-
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % params: matrix with the model parameters [trial x parameter]
-    params = load([drc,'trial_DV_params_iS_',num2str(iSfln),'.mat']);
-    params = params.ps_cat;
-    fprintf('Finished loading matrix with the model parameters for iS = %d... \n',iSfln)
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for iS = 1:29 
 
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % dvs are model predicted DV trajectories [trial x time] (Category DVs)
-    dvs = load([drc,'trial_DV_traj_iS_',num2str(iSfln),'.mat']);
+    dvs = load([drc,'trial_DV_traj_iS_',num2str(iS),'.mat']);
     dvs = dvs.dv_cat;
-    fprintf('Finished loading model predicted DV trajectories (Categorical DVs) for iS = %d... \n',iSfln)
+    fprintf('Finished loading model predicted DV trajectories (Categorical DVs) for iS = %d... \n',iS)
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % ==> load session data
-    if iSfln > 9
-        load([dataPath,'/dataSet_',num2str(iSfln),'.mat']);
-    elseif iSfln <= 9
-        load([dataPath,'/dataSet_0',num2str(iSfln),'.mat']);
+    if iS > 9
+        load([dataPath,'/dataSet_',num2str(iS),'.mat']);
+    elseif iS <= 9
+        load([dataPath,'/dataSet_0',num2str(iS),'.mat']);
     end
     timeSac = S.dec.timeSac;
     % Set time boundaries
@@ -113,126 +56,73 @@ for iSfln = 1:29
     % ==> context, contrast, orientation indicator variables
     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
     % x axis is orientation (the values differ for FN and JP!). Use unique values
-    or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
-    
-    % indices
-    idxcwlo =  (ori == 0) & (ctx == cx(2)) & (ctr == cr(1));
-    idxccwlo = (ori == 0) & (ctx == cx(1)) & (ctr == cr(1));
-    
-    idxcwhi =  (ori == 0) & (ctx == cx(2)) & (ctr == cr(2));
-    idxccwhi = (ori == 0) & (ctx == cx(1)) & (ctr == cr(2));    
-    
-    % ==> context cw (ctx == 1)
-    vcwlo  = dvs(idxcwlo,:);
-    % ==> context ccw (ctx == 1)
-    vccwlo = dvs(idxccwlo,:);    
-    % ==> context cw (ctx == 1)
-    vcwhi  = dvs(idxcwhi,:);
-    % ==> context ccw (ctx == 1)
-    vccwhi = dvs(idxccwhi,:);                   
+    or = sort(unique(ori),'ascend')'; cx = sort(unique(ctx),'ascend')'; cr = sort(unique(ctr),'ascend')';            
     
     % ==> true dcCalAll (raw) values
     dvs_raw = S.dec.dvCatAll;
       
-    subplot(5,6,iSfln);
+    for rc = 1:length(cr)
+        for xc = 1:length(cx)
+            % ==> index vector
+            idv{iS,xc,rc} = (ori == 0) & (ctx == cx(xc)) & (ctr == cr(rc));
+            
+            % ==> store raw DV values
+            dvsr{iS,xc,rc} = dvs_raw(idv{iS,xc,rc},:);
+            
+            % ==> store model fit DV values
+            dvsm{iS,xc,rc} = dvs(idv{iS,xc,rc},:);
+            
+            % ==> store averages in two time windows
+            dvw{iS,xc,rc} = [mean(mean(dvsm{iS,xc,rc}(:,il2:iu2),1),2), mean(mean(dvsm{iS,xc,rc}(:,il:iu),1),2)];
+             
+        end
+    end
+    
+    mrks = {'-',':'}; clrs = {'r','b'};
+    subplot(5,6,iS);
     hold on; hold all;    
-    plot(t,mean(vcwlo,1),  'r:');
-    plot(t,mean(vccwlo,1), 'b:');
-    plot(t,mean(vcwhi,1),  'r-');
-    plot(t,mean(vccwhi,1), 'b-');    
+    for rc = 1:length(cr)
+        for xc = 1:length(cx)
+            % ==> plot DV curves
+            plot(t, mean(dvsm{iS,xc,rc}), [mrks{rc}, clrs{xc}]);
+        end
+    end
     ylim([-1,1]);
-    drawnow;
-
-    % => if Monkey F
-    if iSfln <= 13
-        % ==> store averages in two time windows
-        % => lo contrast       
-        Fmu_cw_lo(iSfln,:)  = [mean(mean(vcwlo(:,il2:iu2),1),2), mean(mean(vcwlo(:,il:iu),1),2)];
-        % => hi contrast
-        Fmu_cw_hi(iSfln,:)  = [mean(mean(vcwhi(:,il2:iu2),1),2), mean(mean(vcwhi(:,il:iu),1),2)];        
-        % => lo contrast
-        Fmu_ccw_lo(iSfln,:) = [mean(mean(vccwlo(:,il2:iu2),1),2), mean(mean(vccwlo(:,il:iu),1),2)];
-        % => hi contrast
-        Fmu_ccw_hi(iSfln,:) = [mean(mean(vccwhi(:,il2:iu2),1),2), mean(mean(vccwhi(:,il:iu),1),2)];    
-        
-        % ==> store average DV trajectories        
-        F_cw_lo(iSfln,:)  = mean(vcwlo,1);    
-        F_cw_hi(iSfln,:)  = mean(vcwhi,1);  
-        F_ccw_lo(iSfln,:) = mean(vccwlo,1);    
-        F_ccw_hi(iSfln,:) = mean(vccwhi,1);  
-        
-%         % ==> store averages of raw DVs 
-%         F_cw_lo_raw_DVs(iSfln,:)  = mean(dvs_raw(idxcwlo,:),1);
-%         F_cw_hi_raw_DVs(iSfln,:)  = mean(dvs_raw(idxcwhi,:),1);
-%         F_ccw_lo_raw_DVs(iSfln,:) = mean(dvs_raw(idxccwlo,:),1);
-%         F_ccw_hi_raw_DVs(iSfln,:) = mean(dvs_raw(idxccwhi,:),1);        
-        
-        % ==> store all single trial dv (model fit) initial offsets 
-        % normalized by average dynamic range
-        vcwlosF  = [vcwlosF;  vcwlo];
-        vccwlosF = [vccwlosF; vccwlo];
-        vcwhisF  = [vcwhisF;  vcwhi];
-        vccwhisF = [vccwhisF; vccwhi];      
-        
-    % => if Monkey J    
-    elseif iSfln >= 14
-        % ==> store averages in two time windows        
-        % => lo contrast
-        Jmu_cw_lo(iSfln -13,:)  = [mean(mean(vcwlo(:,il2:iu2),1),2), mean(mean(vcwlo(:,il:iu),1),2)];
-        % => hi contrast
-        Jmu_cw_hi(iSfln -13,:)  = [mean(mean(vcwhi(:,il2:iu2),1),2), mean(mean(vcwhi(:,il:iu),1),2)];        
-        % => lo contrast
-        Jmu_ccw_lo(iSfln -13,:) = [mean(mean(vccwlo(:,il2:iu2),1),2), mean(mean(vccwlo(:,il:iu),1),2)];
-        % => hi contrast
-        Jmu_ccw_hi(iSfln -13,:) = [mean(mean(vccwhi(:,il2:iu2),1),2), mean(mean(vccwhi(:,il:iu),1),2)];      
-        
-        % ==> store average DV trajectories (model fits)       
-        J_cw_lo(iSfln  -13,:) = mean(vcwlo,1);    
-        J_cw_hi(iSfln  -13,:) = mean(vcwhi,1);  
-        J_ccw_lo(iSfln -13,:) = mean(vccwlo,1);    
-        J_ccw_hi(iSfln -13,:) = mean(vccwhi,1);    
-        
-%         % ==> store averages of raw DVs 
-%         J_cw_lo_raw_DVs(iSfln  -13,:)  = mean(dvs_raw(idxcwlo,:),1);
-%         J_cw_hi_raw_DVs(iSfln  -13,:)  = mean(dvs_raw(idxcwhi,:),1);
-%         J_ccw_lo_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxccwlo,:),1);
-%         J_ccw_hi_raw_DVs(iSfln  -13,:) = mean(dvs_raw(idxccwhi,:),1);
-        
-        % ==> store all single trial dv (model fit) initial offsets 
-        % normalized by average dynamic range
-        vcwlosJ  = [vcwlosJ;  vcwlo];
-        vccwlosJ = [vccwlosJ; vccwlo];
-        vcwhisJ  = [vcwhisJ;  vcwhi];
-        vccwhisJ = [vccwhisJ; vccwhi];     
-        
-    end    
+    drawnow; 
 end
 
 %%
 % ==> histograms for F3
 
-% ==> make F3C histograms
-F3C();
+% ==> F3A (J210906 low contrast, zero signal stimuli)
+F3A();
 
 %%
 % ==> just DV graphs for low contrast (F3B)
 F3B();
 
 %%
-% ==> F3D scatterplots
-F3D();
+% ==> make F3C histograms
+F3C();
 
 %% 
-% ==> F3A (J210906 low contrast, zero signal stimuli)
-F3A();
+% ==> F3D scatterplots
+F3D();
     
 %% ==> estimate the slope of the line in F3 scatterplot
 
 % ==> Noisy x and y variables - use first eigenvector
+for xc = 1:length(cx)
+    for rc = 1:length(cr)
+        % ==> scatter early and late dv values
+        v = vertcat(dvw{rgs{m},xc,rc});
+    end
+end
+            
+F = vertcat(dvw{1:13,xc,rc});
+J = vertcat(dvw{14:29,xc,rc});
 
-F = [Fmu_cw_lo; Fmu_cw_hi; Fmu_ccw_lo; Fmu_ccw_hi];
-J = [Jmu_cw_lo; Jmu_cw_hi; Jmu_ccw_lo; Jmu_ccw_hi];
-FJ = [F;J];
+FJ = vertcat(dvw{:,xc,rc});
 
 % ==> covariance matrices
 covF = cov(F);
@@ -270,9 +160,9 @@ title(['First PC slope (rad): ', num2str(TH)])
 
 % ==> Noisy x and y variables - use first eigenvector
 
-F = [Fmu_cw_lo; Fmu_cw_hi; Fmu_ccw_lo; Fmu_ccw_hi];
-J = [Jmu_cw_lo; Jmu_cw_hi; Jmu_ccw_lo; Jmu_ccw_hi];
-FJ = [F;J];
+% F = [Fmu_cw_lo; Fmu_cw_hi; Fmu_ccw_lo; Fmu_ccw_hi];
+% J = [Jmu_cw_lo; Jmu_cw_hi; Jmu_ccw_lo; Jmu_ccw_hi];
+% FJ = [F;J];
 
 % ==> covariance matrices
 covF = cov(F);

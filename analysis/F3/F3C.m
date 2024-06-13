@@ -1,84 +1,54 @@
 % ==> histograms for F3C
 close all; clc;
 
-% ==> all CW offset values for vertical stimulus - across hi and lo contrasts
-cwsF  = [vcwlosF; vcwhisF];   
-% ==> initial offset
-cwsFi  = cwsF(:,1);
-% ==> all CCW offset values for vertical stimulus - across hi and lo contrasts
-ccwsF = [vccwlosF; vccwhisF]; 
-% ==> initial offset
-ccwsFi = ccwsF(:,1);
+Fvs = cell(1,2);
+Jvs = cell(1,2);
 
-% ==> all CW offset values for vertical stimulus - across hi and lo contrasts
-cwsJ  = [vcwlosJ; vcwhisJ];   
-% ==> initial offset
-cwsJi  = cwsJ(:,1);
-% ==> all CCW offset values for vertical stimulus - across hi and lo contrasts
-ccwsJ = [vccwlosJ; vccwhisJ]; 
-% ==> initial offset
-ccwsJi = ccwsJ(:,1);
+% ==> store model fits (within appropriate time window)
+for xc = 1:length(cx)
+    % ==> all dv model fit values
+    Fv = vertcat(dvsm{1:13,xc,:});
+    % ==> Monkey F all values for vertical stimulus - across hi and lo contrasts       
+    Fvs{xc} = mean(Fv(:, il2:iu2),2); 
+ 
+    % ==> all dv model fit values
+    Jv = vertcat(dvsm{14:29,xc,:});   
+    % ==> Monkey J all values for vertical stimulus - across hi and lo contrasts    
+    Jvs{xc} = mean(Jv(:, il2:iu2),2); 
+end
 
-% ==>
-cwsF_mu  = mean(cwsF(:,il2:iu2),2);
-ccwsF_mu = mean(ccwsF(:,il2:iu2),2);
+% ==> all data 
+vs = {Fvs;Jvs};
 
-cwsJ_mu  = mean(cwsJ(:,il2:iu2),2);
-ccwsJ_mu = mean(ccwsJ(:,il2:iu2),2);
+% => contexts
+cxp = {'ccw','cw'};
+% => Monkeys
+M = {'F','J'};
+% => Monkey colors
+clrs = {[1,0.75,0],[0.15,0.75,0.5]};
 
 % ==> edges
 edgs = -1.5:0.1:1.5;
 
 fg = figure(); set(fg,'color','white'); set(fg, 'Position',[675 421 660 541])
-subplot(2,2,1);
-hFcw = histogram(cwsF_mu,edgs,'facecolor',[0.15,0.75,0.5]); hold on; hold all;
-plot(zeros(1,max(hFcw.Values)),1:max(hFcw.Values),'r--','linewidth',2)
-title('Animal F: cw prior context')
-xlabel('Signed DV initial offset')
-ylabel('Frequency')
-drawnow;
-subplot(2,2,2);
-hFccw = histogram(ccwsF_mu,edgs,'facecolor',[0.15,0.75,0.5]); hold on; hold all;
-plot(zeros(1,max(hFccw.Values)),1:max(hFccw.Values),'r--','linewidth',2)
-title('Animal F: ccw prior context')
-xlabel('Signed DV initial offset')
-ylabel('Frequency')
-drawnow;
- 
-subplot(2,2,3);
-hJcw = histogram(cwsJ_mu,edgs,'facecolor',[1,0.5,0]); hold on; hold all;
-plot(zeros(1,max(hJcw.Values)),1:max(hJcw.Values),'r--','linewidth',2)
-title('Animal J: cw prior context')
-xlabel('Signed DV initial offset')
-ylabel('Frequency')
-drawnow;
-subplot(2,2,4);
-hJccw = histogram(ccwsJ_mu,edgs,'facecolor',[1,0.5,0]); hold on; hold all;
-plot(zeros(1,max(hJccw.Values)),1:max(hJccw.Values),'r--','linewidth',2)
-title('Animal J: ccw prior context')
-xlabel('Signed DV initial offset')
-ylabel('Frequency')
-drawnow;
 
-% ==> 
-% ==> signrank wilcoxon test
-[p_cwJ,~]  = signrank(cwsJ_mu);
-[p_ccwJ,~] = signrank(ccwsJ_mu);
-
-[p_cwF,~]  = signrank(cwsF_mu);
-[p_ccwF,~] = signrank(ccwsF_mu);
-
-fprintf('Wilcoxon test p values evaluating initial offsets in the vertical stimulus condition...\n')
-fprintf('Wilcoxon test for animal F cw cases, p = %d...\n', p_cwF)
-fprintf('Wilcoxon test for animal F ccw cases, p = %d...\n', p_ccwF)
-
-
-fprintf('Wilcoxon test for animal J cw cases, p = %d...\n', p_cwJ)
-fprintf('Wilcoxon test for animal J ccw cases, p = %d...\n', p_ccwJ)
- 
-% ==> ranksum
-[PJ,~] = ranksum(cwsJ_mu,ccwsJ_mu)
-
-[PF,~] = ranksum(cwsF_mu,ccwsF_mu)
-
-% ==> restrict to the low contrast trials and repeat ranksum
+sbp = 1;
+for m = 1:length(M)
+    for xc = 1:length(cx)
+        subplot(2,2,sbp);
+        h = histogram(vs{m}{xc},edgs,'facecolor',clrs{m}, 'edgecolor','w'); hold on; hold all;
+        plot(zeros(1,max(h.Values)),1:max(h.Values),'r--','linewidth',2)
+        title(['Animal ', M{m}, ': ', cxp{xc}, ' prior context'])
+        xlabel('Signed DV initial offset')
+        ylabel('Frequency')
+        drawnow;
+        sbp = sbp + 1;
+        
+        % ==> output wilcoxon signed test results
+        [p,~] = signrank(vs{m}{xc});
+        fprintf('Wilcoxon test for animal %s, %s cases, p = %d...\n',M{m}, cxp{xc}, p);
+    end
+    % ==> ranksum test
+    [p,~] = ranksum(vs{m}{2}, vs{m}{1});
+    fprintf('ranksum test for animal %s, p = %d...\n\n',M{m}, p);
+end
