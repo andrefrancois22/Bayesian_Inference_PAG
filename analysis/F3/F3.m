@@ -3,6 +3,7 @@ clear all; close all; clc;
 dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
 drc = '../../data/';
 
+% ==> draw figure
 figure(); set(gcf,'Color','w');
 
 % ==> index vectors
@@ -110,19 +111,11 @@ F3C();
 F3D();
     
 %% ==> estimate the slope of the line in F3 scatterplot
+       
+F = vertcat(dvw{1:13,:,:});
+J = vertcat(dvw{14:29,:,:});
 
-% ==> Noisy x and y variables - use first eigenvector
-for xc = 1:length(cx)
-    for rc = 1:length(cr)
-        % ==> scatter early and late dv values
-        v = vertcat(dvw{rgs{m},xc,rc});
-    end
-end
-            
-F = vertcat(dvw{1:13,xc,rc});
-J = vertcat(dvw{14:29,xc,rc});
-
-FJ = vertcat(dvw{:,xc,rc});
+FJ = [J;F];
 
 % ==> covariance matrices
 covF = cov(F);
@@ -143,7 +136,7 @@ muFJ = mean(FJ)';
 [TH,~] = cart2pol(V(1,I(2)),V(2,I(2)));
 
 % ==> visualize first eigenvector over distribution
-figure(1); clf; set(gcf,'Color','w');
+figure(); clf; set(gcf,'Color','w');
 scatter(FJ(:,1),FJ(:,2),'ko','filled');
 hold on; hold all;
 plot([muFJ(1),V(1,I(2))],[muFJ(2),V(2,I(2))],'r-')
@@ -157,12 +150,6 @@ ylabel('Average (-500ms to -300ms) window');
 title(['First PC slope (rad): ', num2str(TH)])
 
 %% ==> random sampling
-
-% ==> Noisy x and y variables - use first eigenvector
-
-% F = [Fmu_cw_lo; Fmu_cw_hi; Fmu_ccw_lo; Fmu_ccw_hi];
-% J = [Jmu_cw_lo; Jmu_cw_hi; Jmu_ccw_lo; Jmu_ccw_hi];
-% FJ = [F;J];
 
 % ==> covariance matrices
 covF = cov(F);

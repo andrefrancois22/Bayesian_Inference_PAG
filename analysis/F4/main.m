@@ -125,7 +125,7 @@ for iS = 1:29
     % ==> fit psychometric functions for four PFs (by contrast, and DV dynamic range)
     for rc = 1:length(cr)
         for sp = 1:2      
-            % ==> PF curve fit ~ input counts in correct order, orientations, initial parameter settings, options etc.
+            % ==> PF curve fit ~ input counts, orientations, initial parameter settings, options etc.
             [PF{iS}{rc}{sp}, PFp{iS}{rc}{sp}] = PF_fit_fun([cnts{1}{2}{rc}{sp}{:}], [cnts{1}{1}{rc}{sp}{:}], [cnts{2}{2}{rc}{sp}{:}], [cnts{2}{1}{rc}{sp}{:}], ...
              or, startVec_M1, LB_M1, UB_M1, options);                       
         end

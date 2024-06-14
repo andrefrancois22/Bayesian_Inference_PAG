@@ -1,3 +1,5 @@
+
+% ==> choose a good example (iS == 23 in the manuscript)
 iS = 23;
 % ==> load data for that one example
 fprintf('loading data for session %d... \n',iS);

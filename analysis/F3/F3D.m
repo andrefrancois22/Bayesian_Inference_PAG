@@ -1,5 +1,5 @@
 
-% => Monkey colors
+% => monkey colors
 clrs = {[1,0.75,0],[0.15,0.75,0.5]};
 % => monkey session ranges
 rgs = {1:13,14:29};
