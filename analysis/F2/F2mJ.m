@@ -2,7 +2,7 @@
 
 clear all; close all; clc;
 dataPath = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
-drc = '../data/';
+drc = '../../data/';
 
 % =========================
 % ==> Monkey sessions

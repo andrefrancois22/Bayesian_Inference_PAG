@@ -1,7 +1,7 @@
 clear all; close all; clc;
 % ==> directories
 dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
-drc = '../data/';
+drc = '../../data/';
 
 %% ==> compute DV peak averages by orientation
 
@@ -119,7 +119,7 @@ for iSfln =  1:29
         yh2 = @(p) (p(1)*x + p(2) + p(3));
         % ==> MSE objective for both lines
         objective = @(p) sum( (yh1(p) - y(1,:)).^2 + (yh2(p) - y(2,:)).^2 );
-        % ==> overkill - could probably use normal equations optim params...
+        % ==> fmincon...
         p_opt = fmincon(objective,p0);
         % => inspect loss
         lss(iSfln,k) = objective(p_opt);        
@@ -284,32 +284,32 @@ mdbJ = median(bdiff(14:end));
 %% ==> F2 - slope Hi v slope Lo, and bias Hi v bias Lo
 
 close all; clc;
-fg = figure(); set(fg,'color','white'); fg.Position = [139 604 1541 358];
-subplot(1,4,1); 
+fg = figure(); set(fg,'color','white'); fg.Position = [134 547 893 403];
+subplot(1,2,1); 
 scatter(slope(14:end,1),slope(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([0,0.6]); xlim([0,0.6]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
 ylabel('Slope high contrast')
-title('Monkey JP')
-subplot(1,4,2); 
+% title('Monkey JP')
+subplot(1,2,1); 
 scatter(slope(1:13,1),slope(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([0,0.4]); xlim([0,0.4]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
 ylabel('Slope high contrast')
-title('Monkey F')
-subplot(1,4,3); 
+% title('Monkey F')
+subplot(1,2,2); 
 scatter(bv(14:end,1),bv(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([-0.4,1.1]); xlim([-0.4,1.1]);
 hold on; hold all;
 plot(linspace(-0.4,1,10),linspace(-0.4,1,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
-title('Monkey JP')
-subplot(1,4,4); 
+% title('Monkey JP')
+subplot(1,2,2); 
 scatter(bv(1:13,1),bv(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([-0.1,0.65]); xlim([-0.1,0.65]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
-title('Monkey F')
+% title('Monkey F')

@@ -1,5 +1,4 @@
 % ==> histograms for F3C
-close all; clc;
 
 Fvs = cell(1,2);
 Jvs = cell(1,2);
