@@ -126,15 +126,17 @@ ll0 = cell([29,1]);
 for iS = Sn
     for xc = 1:length(cx)
         for rc = 1:length(cr)
-            % ====> condition 11 (context 1 - low contrast)
+
             % ==> logistic regression (ori and alpha)
             [b1{iS,xc,rc},~,~] = glmfit(X{iS,xc,rc}(:,oidx_m1), Y{iS,xc,rc},'binomial','link','logit');    
             % => yhat (model 1)
             yh1{iS,xc,rc} = glmval(b1{iS,xc,rc}, X{iS,xc,rc}(:,oidx_m1),'logit');
+            
             % ==> Null model (just orientation)
             [b0{iS,xc,rc},~,~] = glmfit(X{iS,xc,rc}(:,oidx_m0), Y{iS,xc,rc},'binomial','link','logit');    
             % => yhat (model 0)
             yh0{iS,xc,rc} = glmval(b0{iS,xc,rc}, X{iS,xc,rc}(:,oidx_m0),'logit');
+            
             % => for computing log likelihood (model 1)
             m1ll{iS,xc,rc} = log(yh1{iS,xc,rc}).*Y{iS,xc,rc} + log(1 - yh1{iS,xc,rc}).*(1 - Y{iS,xc,rc});
             % => for computing log likelihood (model 0)
