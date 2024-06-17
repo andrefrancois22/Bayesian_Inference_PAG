@@ -12,6 +12,13 @@ mrx = nan(29,2,2,7);
 for iS = 1:29 
 
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    % params: matrix with the model parameters [trial x parameter]
+    params = load([drc,'trial_DV_params_iS_',num2str(iS),'.mat']);
+    params = params.ps_cat;
+    fprintf('Finished loading matrix with the model parameters for iS = %d... \n',iS)
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % dvs are model predicted DV trajectories [trial x time] (Category DVs)
     dvs = load([drc,'trial_DV_traj_iS_',num2str(iS),'.mat']);
     dvs = dvs.dv_cat;
@@ -29,9 +36,7 @@ for iS = 1:29
     cho = S.beh.choiceCat;
     % ==> context, contrast, orientation indicator variables
     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
-    % x axis is orientation (the values differ for FN and JP!). Use unique values
-    or = sort(unique(ori),'ascend')'; cx = sort(unique(ctx),'ascend')'; cr = sort(unique(ctr),'ascend')';
-    
+
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
     % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV (signed) peak ~~~~~~~~~~~~~~~~~~~~~~~ %
     % ==> get max (maximum is either the positive peak if it's highest, or abs of negative peak if it's lowest)
@@ -42,6 +47,8 @@ for iS = 1:29
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
 
+    % x axis is orientation (the values differ for FN and JP!). Use unique values
+    or = unique(ori)'; cx = unique(ctx)'; cr = unique(ctr)';
     % => store averages for each stimulus condition
     % => loop through two context conditions
     for j = 1:length(cx)
@@ -181,27 +188,31 @@ mdbF = median(bdiff(1:13));
 mdbJ = median(bdiff(14:end));
 
 % ==> F2 - slope Hi v slope Lo, and bias Hi v bias Lo
+close all; clc;
 fg = figure(); set(fg,'color','white'); fg.Position = [134 547 893 403];
 subplot(1,2,1); 
-scatter(slope(14:end,1),slope(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; %ylim([0,0.6]); xlim([0,0.6]);
+scatter(slope(14:end,1),slope(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([0,0.6]); xlim([0,0.6]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
 ylabel('Slope high contrast')
+
 subplot(1,2,1); 
-scatter(slope(1:13,1),slope(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; %ylim([0,0.4]); xlim([0,0.4]);
+scatter(slope(1:13,1),slope(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([0,0.4]); xlim([0,0.4]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Slope low contrast')
 ylabel('Slope high contrast')
+
 subplot(1,2,2); 
-scatter(bv(14:end,1),bv(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; %ylim([-0.4,1.1]); xlim([-0.4,1.1]);
+scatter(bv(14:end,1),bv(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; ylim([-0.4,1.1]); xlim([-0.4,1.1]);
 hold on; hold all;
 plot(linspace(-0.4,1,10),linspace(-0.4,1,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
+
 subplot(1,2,2); 
-scatter(bv(1:13,1),bv(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; %ylim([-0.1,0.65]); xlim([-0.1,0.65]);
+scatter(bv(1:13,1),bv(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; ylim([-0.1,0.65]); xlim([-0.1,0.65]);
 hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Bias low contrast')
