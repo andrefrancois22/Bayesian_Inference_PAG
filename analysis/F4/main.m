@@ -17,7 +17,7 @@ dvCatPerf = load([drc,'dvCatPerf.mat']);
 dvCatPerf = dvCatPerf.dvCatPerf';
 % ==> AIC Delta (from DV peak glm analysis in F2)
 aic_d = load([drc,'aic_d.mat']);
-aic_d = aic_d.aic_d';
+aic_d = aic_d.aic_d;
 % ==> log-likelihood ratios (from DV peak glm analysis in F2)
 llr = load([drc,'llr.mat']);
 llr = llr.llr';

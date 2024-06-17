@@ -5,7 +5,7 @@ drc = '../../data/';
 
 % ==> compute DV peak averages by orientation
 
-% => pairwise combinations 
+% => initialize matrix containing values
 mrx = nan(29,2,2,7);
 
 % ==> what is the session
@@ -35,7 +35,7 @@ for iS = 1:29
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
     % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV (signed) peak ~~~~~~~~~~~~~~~~~~~~~~~ %
     % ==> get max (maximum is either the positive peak if it's highest, or abs of negative peak if it's lowest)
-    mx = [max(dvs, [], 2), abs(min(dvs, [], 2))];
+    mx  = [max(dvs, [], 2), abs(min(dvs, [], 2))];
     mxv = max(mx, [], 2);
     % => signed
     mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));
@@ -206,4 +206,3 @@ hold on; hold all;
 plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
 xlabel('Bias low contrast')
 ylabel('Bias high contrast')
-
