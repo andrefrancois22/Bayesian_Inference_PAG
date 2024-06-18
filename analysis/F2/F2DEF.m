@@ -108,7 +108,6 @@ for iS =  1:29
         fprintf('completed linear model fit for context %d and contrast %k...\n',j,k)           
         % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
         % ==> for visibility to inspect curve fits
         subplot(1,2,k)
         for j = 1:length(cx)  
