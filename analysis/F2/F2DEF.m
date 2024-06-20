@@ -34,7 +34,10 @@ for iS = 1:29
     
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %
     % ~~~~~~~~~~~~~~~~~~~~~~~~ Cat DV (signed) peak ~~~~~~~~~~~~~~~~~~~~~~~ %
-    % ==> get max (maximum is either the positive peak if it's highest, or abs of negative peak if it's lowest)
+    % ==> get max (maximum is either the positive peak if it's highest, 
+    % or abs of negative peak if it's lowest), but retain signed peaks.
+    % **** NOTE: the initial offset value may be selected if its ****
+    % **** absolute value is greater than any subsequent peaks   ****
     mx  = [max(dvs, [], 2), abs(min(dvs, [], 2))];
     mxv = max(mx, [], 2);
     % => signed
@@ -100,7 +103,7 @@ for iS =  1:29
         % ==> the bias is the vertical offset (optimal parameter 3 p(3))
         bv(iS,k)  = p_opt(3);
         % ==> uncertainty is slope
-        puv(iS,k) = 1 / p_opt(1); %**** of course it's the inverse! ==> shallower slope is ~larger~ likelihood width      
+        puv(iS,k) = 1 / p_opt(1); %**** it's the inverse! ==> shallower slope is ~larger~ likelihood width      
         % ==> store slopes
         slope(iS,k) = p_opt(1);
 

@@ -1,13 +1,13 @@
 clear all; close all; clc;
 % ==> directories
 dataPath     = strcat('/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data');
-drc = '../../../data/';
+drc = '../../data/';
 
 % ==> all sessions
 Sn = 1:29;
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% ==> load dvCatperf data
+% ==> load dvCatperf data (for comparison to Delta AIC)
 dvCatPerf = load([drc,'dvCatPerf.mat'],'dvCatPerf');
 dvCatPerf = dvCatPerf.dvCatPerf;
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,13 +31,6 @@ Y = cell([29,2,2]);
 
 % ==> what is the session
 for iS = Sn
-
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    % params: matrix with the model parameters [trial x parameter]
-    params = load([drc,'trial_DV_params_iS_',num2str(iS),'.mat']);
-    params = params.ps_cat;
-    fprintf('Finished loading matrix with the model parameters for iS = %d... \n',iS)
-    % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     % dvs are model predicted DV trajectories [trial x time] (Category DVs)
@@ -87,6 +80,7 @@ for iS = Sn
 end
 
 %% 
+clc;
 
 % ==> log-likelihood ratio
 llr = nan(1,29);
