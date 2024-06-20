@@ -139,6 +139,7 @@ for iS = 1:29
 end
 
 %%
+close all;
 % ==> Average delta bias by animal and by contrast 
 % ==> correlation plots (delta bias and delta AIC) 
 [~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias');
@@ -148,13 +149,17 @@ end
 [~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty');
 
 %%
+close all;
 % ==> correlations between db and dp
 F5(db, dp);
 
 %%
 % ==> example plot
+% => Monkey colors
+mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
+rgs = {1:13,14:29};
 figure(); set(gcf,'color','white');
-scatter(db(14:29,1), dp(14:29,1),75,'ko','filled');
+scatter(db(rgs{2},1), dp(rgs{2},1),75,'o','filled','markerfacecolor',mclrs{2},'markeredgecolor','w');
 xlabel('Difference in decision bias');
 ylabel('Difference in slope');
 axis square;

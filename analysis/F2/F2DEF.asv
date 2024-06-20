@@ -38,7 +38,7 @@ for iS = 1:29
     % or abs of negative peak if it's lowest), but retain signed peaks.
     % **** NOTE: the initial offset value may be selected if its ****
     % **** absolute value is greater than any subsequent peaks   ****
-    mx = [max(dvs, [], 2), abs(min(dvs, [], 2))];
+    mx  = [max(dvs, [], 2)-dvs(:,1), abs(min(dvs, [], 2))]; %[max(dvs, [], 2), abs(min(dvs, [], 2))];
     mxv = max(mx, [], 2);
     % => signed
     mxv(mx(:,1) <= mx(:,2)) = -mxv(mx(:,1) <= mx(:,2));

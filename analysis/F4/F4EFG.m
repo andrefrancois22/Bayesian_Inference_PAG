@@ -18,38 +18,6 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     zi = @(z) (exp(2*z) - 1)/(exp(2*z) + 1);
     % ==> normalization function
     normf = @(x) (x - mean(x))/std(x);    
-
-    % ==> plot average delta Bias
-    figure; set(gcf,'color','white'); set(gcf,'Position',[675 560 1014 402]);
-    subplot(1,2,1);
-    hold on; hold all;
-    % ==> monkey F - lo & hi contrast
-    errorbar([1,2], ...
-             [mean(d(1:13,1)), mean(d(1:13,2))], ...
-             [std(d(1:13,1))/sqrt(13), std(d(1:13,2))/sqrt(13)] , ...
-             'o','color','k');
-    % ==> monkey J - lo & hi contrast
-    errorbar([3,4], ...
-             [mean(d(14:end,1)), mean(d(14:end,2))], ...
-             [std(d(14:end,1))/sqrt(16), std(d(14:end,2))/sqrt(16)] , ...
-             'ko');     
-    % ==> lo & hi contrast     
-    errorbar([5,6], ...
-             [mean(d(:,1)), mean(d(:,2))], ...
-             [std(d(:,1))/sqrt(length(d(:,1))), std(d(:,2))/sqrt(length(d(:,2)))] , ...
-             'ko');
-    % ==> all
-    errorbar([7], ...
-             [mean([d(:)])], ...
-             [std([d(:)])/sqrt(length(d(:))*2)], ...
-             'ko');
-    xlim([0,7]);
-    % => axis labels
-    ax = gca;      
-    title(['\Delta ', metric, ' results'])
-    ylabel(['\Delta ', metric])
-    ax.XTickLabel = {[],'F-lo','F-hi','J-lo','J-hi','lo','hi','all'}; 
-    xlabel('Monkey and Stimulus Contrast Condition')    
     
     % ==> wilcoxon tests
     % => low contrast cases
@@ -62,7 +30,41 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     [pl,~] = signrank(d(:,1));
     [ph,~] = signrank(d(:,2));
     % => all
-    [pall,~] = signrank([d(:)]);
+    [pall,~] = signrank([d(:)]);    
+
+    % => Monkey colors
+    mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
+    % ==> plot average delta Bias
+    figure; set(gcf,'color','white'); set(gcf,'Position',[675 560 1014 402]);
+    subplot(1,2,1);
+    hold on; hold all;
+    % ==> monkey F - lo & hi contrast
+    errorbar([4,5], ...
+             [mean(d(1:13,1)), mean(d(1:13,2))], ...
+             [std(d(1:13,1))/sqrt(13), std(d(1:13,2))/sqrt(13)] , ...
+             's','color',mclrs{1});
+    % ==> monkey J - lo & hi contrast
+    errorbar([2,3], ...
+             [mean(d(14:end,1)), mean(d(14:end,2))], ...
+             [std(d(14:end,1))/sqrt(16), std(d(14:end,2))/sqrt(16)] , ...
+             's','color',mclrs{2});     
+    % ==> lo & hi contrast     
+    errorbar([6,7], ...
+             [mean(d(:,1)), mean(d(:,2))], ...
+             [std(d(:,1))/sqrt(length(d(:,1))), std(d(:,2))/sqrt(length(d(:,2)))] , ...
+             'ks');
+    % ==> all
+    errorbar([1], ...
+             [mean([d(:)])], ...
+             [std([d(:)])/sqrt(length(d(:))*2)], ...
+             'ks');
+    xlim([0,7]);
+    % => axis labels
+    ax = gca;      
+    title(['\Delta ', metric, ' results'])
+    ylabel(['\Delta ', metric])
+    ax.XTickLabel = {[],'all','J-lo','J-hi','F-lo','F-hi','lo','hi'};  
+    xlabel('Monkey and Stimulus Contrast Condition')        
 
     % => Monkey F
     rFl = corr(d(1:13,1),aic_d(1:13));
@@ -99,15 +101,15 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     subplot(1,2,2);
     hold on; hold all;
     % ==> monkey F 
-    errorbar([1,2], ...
+    errorbar([4,5], ...
              [rFl, rFh], ... % ==> original correlations
              [rFl-zi(sdFl_lb), rFh-zi(sdFh_lb)],[zi(sdFl_ub)-rFl, zi(sdFh_ub)-rFh] , ...
-             'o','color','k');
+             's','color',mclrs{1});
     % ==> monkey J
-    errorbar([3,4], ...
+    errorbar([2,3], ...
              [rJl, rJh], ... % ==> original correlations
              [rJl-zi(sdJl_lb), rJh-zi(sdJh_lb)], [zi(sdJl_ub)-rJl, zi(sdJh_ub)-rJh] , ...
-             'ko'); 
+             's','color',mclrs{2}); 
 
     % ==> z-scores across animals
     dz = nan(29,2);
@@ -142,19 +144,19 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     se_ub = z(rz_d) + 1/sqrt(29*2 - 3);
 
     % => draw panel
-    errorbar([5,6,7], ...
+    errorbar([6,7,1], ...
              [r_z_lcr, r_z_hcr, rz_d], ...
              [r_z_lcr-zi(lcr_se_lb), r_z_hcr-zi(hcr_se_lb), rz_d-zi(se_lb)], ...
              [zi(lcr_se_ub)-r_z_lcr, zi(hcr_se_ub)-r_z_hcr, zi(se_ub)-rz_d], ...
-             'ro');
+             'ks');
     xlim([0,7]);
     ylim([0,1]); 
     
     % => axis labels
     ax = gca;    
-    title(['\Delta ', metric, ' results'])    
-    ylabel(['\Delta ', metric, ' and \Delta AIC - Association (r) value'])
-    ax.XTickLabel = {[],'F-lo','F-hi','J-lo','J-hi','lo','hi','all'};   
+    title(['\Delta ', metric, ' and \Delta AIC results'])    
+    ylabel(['Association (r) value'])
+    ax.XTickLabel = {[],'all','J-lo','J-hi','F-lo','F-hi','lo','hi'}; 
     xlabel('Monkey and Stimulus Contrast Condition')
 
 end

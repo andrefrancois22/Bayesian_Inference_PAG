@@ -42,18 +42,20 @@ function F5(db,dp)
     % so the ~distance~ above r for POS(i) is z(-1)(SD_UB) - r
     % (upper bound correlation minus actual correlation)
 
+    % => Monkey colors
+    mclrs = {[1,0.75,0],[0.15,0.75,0.5]};    
     figure; set(gcf,'color','white');
     hold on; hold all;
     % ==> monkey F 
-    errorbar([1,2], ...
+    errorbar([4,5], ...
              [rFl, rFh], ... % ==> original correlations
              [rFl-zi(sdFl_lb), rFh-zi(sdFh_lb)],[zi(sdFl_ub)-rFl, zi(sdFh_ub)-rFh] , ...
-             'o','color','k');
+             's','color',mclrs{1});
     % ==> monkey J
-    errorbar([3,4], ...
+    errorbar([2,3], ...
              [rJl, rJh], ... % ==> original correlations
              [rJl-zi(sdJl_lb), rJh-zi(sdJh_lb)], [zi(sdJl_ub)-rJl, zi(sdJh_ub)-rJh] , ...
-             'ko'); 
+             's','color',mclrs{2}); 
     xlim([0,7]);
     ylim([-0.1,1]);
 
@@ -89,15 +91,15 @@ function F5(db,dp)
     se_lb = z(rz_dp) - 1/sqrt(29*2 - 3); 
     se_ub = z(rz_dp) + 1/sqrt(29*2 - 3);
     % ==> draw plot panel
-    errorbar([5,6,7], ...
+    errorbar([6,7,1], ...
              [r_z_lcr, r_z_hcr, rz_dp], ...
              [r_z_lcr-zi(lcr_se_lb), r_z_hcr-zi(hcr_se_lb), rz_dp-zi(se_lb)], ... 
              [zi(lcr_se_ub)-r_z_lcr, zi(hcr_se_ub)-r_z_hcr, zi(se_ub)-rz_dp], ...
-             'ro');
+             'ks');
 
     % => axis labels
     ax = gca;      
-    ax.XTickLabel = {[],'F-lo','F-hi','J-lo','J-hi','lo','hi','all'}; 
+    ax.XTickLabel = {[],'all','J-lo','J-hi','F-lo','F-hi','lo','hi'}; 
     xlabel('Monkey and Stimulus Contrast Condition')  
     ylabel('Association (r)');    
              
