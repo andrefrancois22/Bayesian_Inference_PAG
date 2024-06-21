@@ -61,8 +61,8 @@ for iS = 1:29
 end
 
 % ==> Fit bias and slope parameters to DV peaks
-% => plot markers
-clrs = {'b','r'}; mrks = {'o:','*-'};
+% => context colors
+clrs = {[1,0,0],[0,0.75,1]};
     
 % ==> bias and perceptual uncertainty vectors
 bv  = nan(29,2);
@@ -114,14 +114,15 @@ for iS =  1:29
         % ==> for visibility to inspect curve fits
         subplot(1,2,k)
         for j = 1:length(cx)  
-            plot(or,squeeze(mrx(iS,j,k,:))',[clrs{j},mrks{k}],'linewidth',1); hold on; hold all;   
             if j==1
                 % ==> plot line fit          
-                plot(or,yh1(p_opt),['k','h:']);
+                plot(or,yh1(p_opt),'color',clrs{j},'linewidth',3);
             elseif j==2
                 % ==> plot line fit  
-                plot(or,yh2(p_opt),['k','>:']);   
+                plot(or,yh2(p_opt),'color',clrs{j},'linewidth',3);   
             end
+            hold on;  hold all;
+           plot(or,squeeze(mrx(iS,j,k,:))','o','markerfacecolor',[clrs{j}],'markeredgecolor','w','markersize',10); hold on; hold all;               
         end
         title('Peak Average (signed) by stimulus condition and orientation')    
         title(['Session: ',num2str(iS)]);
@@ -130,6 +131,8 @@ for iS =  1:29
         ylim([-2,2]);    
     end
 end
+
+%%
 
 % ==> display loss
 fprintf('total fit loss MSE = %d\n...',mean(lss(:)))
@@ -182,29 +185,35 @@ mdbF = median(bdiff(1:13));
 % ==> median JP
 mdbJ = median(bdiff(14:end));
 
+
+% => Monkey colors
+mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
+% => monkey session ranges
+rgs = {1:13,14:29};
+% => monkeys
+M = {'F','J'};
+
 % ==> F2 - slope Hi v slope Lo, and bias Hi v bias Lo
 fg = figure(); set(fg,'color','white'); fg.Position = [134 547 893 403];
-subplot(1,2,1); 
-scatter(slope(14:end,1),slope(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; %ylim([0,0.6]); xlim([0,0.6]);
-hold on; hold all;
-plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
-xlabel('Slope low contrast')
-ylabel('Slope high contrast')
-subplot(1,2,1); 
-scatter(slope(1:13,1),slope(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; %ylim([0,0.4]); xlim([0,0.4]);
-hold on; hold all;
-plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
-xlabel('Slope low contrast')
-ylabel('Slope high contrast')
-subplot(1,2,2); 
-scatter(bv(14:end,1),bv(14:end,2), 50,'o','filled', 'markeredgecolor', [1,0.5,0], 'markerfacecolor', [1,0.5,0]); axis square; %ylim([-0.4,1.1]); xlim([-0.4,1.1]);
-hold on; hold all;
-plot(linspace(-0.4,1,10),linspace(-0.4,1,10),'k--')
-xlabel('Bias low contrast')
-ylabel('Bias high contrast')
-subplot(1,2,2); 
-scatter(bv(1:13,1),bv(1:13,2), 50,'o','filled', 'markeredgecolor', [0.15,0.75,0.5], 'markerfacecolor', [0.15,0.75,0.5]); axis square; %ylim([-0.1,0.65]); xlim([-0.1,0.65]);
-hold on; hold all;
-plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
-xlabel('Bias low contrast')
-ylabel('Bias high contrast')
+
+for m = 1:length(M)
+    subplot(1,2,1); 
+    % ==> plot slope
+    scatter(slope(rgs{m},1),slope(rgs{m},2), 150,'o','filled', 'markeredgecolor', 'w', 'markerfacecolor', mclrs{m}); axis square; %ylim([0,0.6]); xlim([0,0.6]);
+    hold on; hold all;
+    plot(linspace(-0.1,0.65,10),linspace(-0.1,0.65,10),'k--')
+    plot(linspace(-0.1,0.65,10),zeros(1,length(linspace(-0.1,0.65,10))),'k--')
+    plot(zeros(1,length(linspace(-0.1,0.65,10))),linspace(-0.1,0.65,10),'k--')      
+    xlabel('Slope low contrast')
+    ylabel('Slope high contrast')
+    % ==> plot bias
+    subplot(1,2,2); 
+    scatter(bv(rgs{m},1),bv(rgs{m},2), 150,'o','filled', 'markeredgecolor', 'w', 'markerfacecolor', mclrs{m}); axis square; %ylim([-0.4,1.1]); xlim([-0.4,1.1]);
+    hold on; hold all;
+    plot(linspace(-0.4,1,10),linspace(-0.4,1,10),'k--')
+    plot(linspace(-0.4,1,10),zeros(1,length(linspace(-0.4,1,10))),'k--')
+    plot(zeros(1,length(linspace(-0.4,1,10))),linspace(-0.4,1,10),'k--')    
+    xlabel('Bias low contrast')
+    ylabel('Bias high contrast')
+end
+

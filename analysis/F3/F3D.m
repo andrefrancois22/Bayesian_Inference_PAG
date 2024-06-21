@@ -59,5 +59,6 @@ for m = 1:length(M)
     
     subplot(1,2,m); hold on; hold all;
     % ==> plot eigenvector
-    plot([mu(1),V(1,I(2))],[mu(2),V(2,I(2))],'r-','linewidth', 3)    
+    plot([mu(1),V(1,I(2))],[mu(2),V(2,I(2))],'r-','linewidth', 3) 
+    title(['monkey ',M{m}, ' 1st PC slope (deg): ', num2str(rad2deg(THs(m)))]);
 end
