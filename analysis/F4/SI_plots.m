@@ -1,4 +1,4 @@
-
+% ==> draw Psychometric functions and proportions over PFs
 
 for rc = 1:length(cr) % ==> show for lo or high contrast cases
     

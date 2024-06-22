@@ -170,29 +170,25 @@ axis square;
 SI_plots();
 
 %%
-% ==> ANCOVA
 
 % ==> animal session ranges
 rngs = {1:13,14:29};
 
 % ==> z-score function
 normf = @(x) (x - mean(x))/std(x); 
+% ==> ANCOVA
 
 % ==> z-scores across animals
 dbz = nan(29,2);
 dpz = nan(29,2);
-aic_d_z = nan(1,29);
-
 % ==> low & high contrast
-for m = 1:2
-    for c = 1:2
-        % ==> animal F
-        dbz(rngs{m},c)  = normf(db(rngs{m},c));
-        % ==> animal J
-        dpz(rngs{m},c) = normf(dp(rngs{m},c));    
-        % ==> standardize aic by monkey 
-        aic_d_z(rngs{m}) = normf(aic_d(rngs{m}));     
-    end
+for i = 1:2
+    % ==> animal F
+    dbz(rngs{i},i)  = normf(db(1:13,i));
+    % ==> animal J
+    dpz(rngs{i},i) = normf(dp(14:29,i));    
+    % ==> standardize aic by monkey 
+    aic_d_z(rngs{i}) = normf(aic_d(rngs{i}));     
 end
     
 aicz = [aic_d_z, aic_d_z];

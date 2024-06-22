@@ -16,7 +16,7 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     z = @(r) (1/2)*log((1 + r)/(1 - r));
     % ==> inverse of the z transformation
     zi = @(z) (exp(2*z) - 1)/(exp(2*z) + 1);
-    % ==> normalization function
+    % ==> z-score function
     normf = @(x) (x - mean(x))/std(x);    
     
     % ==> wilcoxon tests
