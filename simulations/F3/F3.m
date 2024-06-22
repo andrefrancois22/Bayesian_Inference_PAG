@@ -1,4 +1,6 @@
-clear all; close all; %clc;
+clear all; close all; clc;
+
+rng(1,"twister");
 
 % ==> parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -14,9 +16,9 @@ t = linspace(-795,-45,200);
 % => number of simulated trials
 N = 1000;
 
-tm = 200; % want total tim points to equal 200 (like actual DV fits)  % 200;
+tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
-bnd = 12; %; %10
+bnd = 12; 
 
 % ==> dynamic range function
 dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
@@ -32,7 +34,7 @@ sd = 1;
 mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15]; %****
 
 % ==> prior drift linear factors
-fcs = 0:0.25:10; %0:0.01:1; %
+fcs = 0:0.25:10; 
 fci = 1;
 
 % ==> delta bias
@@ -61,16 +63,15 @@ for fc = fcs
 
         % ==> linear drift case
         % ==> case with a bias that grows linearly with t (mean drift)
-        pr_cw_d  =  fc*(0:(tm-1)) + pr_cw; %****   10*(0:(tm-1)) + pr_cw;    % 
-        pr_ccw_d = -fc*(0:(tm-1)) + pr_ccw; %**** -10*(0:(tm-1)) + pr_ccw; %
+        pr_cw_d  =  fc*(0:(tm-1)) + pr_cw;  
+        pr_ccw_d = -fc*(0:(tm-1)) + pr_ccw;
 
-        % ==> model 4
         % Linear drift starts during -800ms - -600ms time window
-        pr_cw_d_m  = pr_cw_d  / tm; %(0.5*tm);
-        pr_ccw_d_m = pr_ccw_d / tm; %(0.5*tm);
+        pr_cw_d_m  = pr_cw_d  / tm;
+        pr_ccw_d_m = pr_ccw_d / tm; 
         % ==> csens with bound - two cases: with ccw prior or with cw prior
-        csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]); %****
-        csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]); %****   
+        csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]); 
+        csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]);    
 
         % ==> set DV values for timepoints over trials that reach or exceed a bound
         % to the bound value.
@@ -84,37 +85,9 @@ for fc = fcs
         % ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
         % starting from t+1 to the bound for that trial
         % ==> cw cases
-        for i = 1:N
-            bidx = find(csensb_cw_d(i,:) >=  bnd, 1, 'first');
-            % => set to bound
-            if ~isempty(bidx)
-                csensb_cw_d(i,bidx:end) = bnd;
-            end
-        end
-        for i = 1:N
-            bidx = find(csensb_cw_d(i,:) <=  -bnd);
-            bidx = min(bidx);
-            % => set to bound
-            if ~isempty(bidx)
-                csensb_cw_d(i,bidx:end) = -bnd;
-            end
-        end
+        csensb_cw_d = bndf(csensb_cw_d,bnd,N);
         % ==> ccw context cases
-        for i = 1:N
-            bidx = find(csensb_ccw_d(i,:) >=  bnd, 1, 'first');
-            % => set to bound
-            if ~isempty(bidx)
-                csensb_ccw_d(i,bidx:end) = bnd;
-            end
-        end
-        for i = 1:N
-            bidx = find(csensb_ccw_d(i,:) <=  -bnd);
-            bidx = min(bidx);
-            % => set to bound
-            if ~isempty(bidx)
-                csensb_ccw_d(i,bidx:end) = -bnd;
-            end
-        end
+        csensb_ccw_d = bndf(csensb_ccw_d,bnd,N);
 
         % ==> updates
         fprintf('completed plotting for prior offset factor %d...\n',fc)
@@ -221,25 +194,22 @@ title(['r = ',num2str(r),', p = ',num2str(p)]);
 
 %% ==> Single congruent and incongruent DV
 
-% ni = randi(size(dvs_i_ccw,1));
-ni = 392;
+% ==> these may appear different from examples in the paper
+ni = 613; %randi(size(dvs_i_ccw,1));
+nc = 91;  %randi(size(dvs_c_ccw,1)); 
 
-% nc = randi(size(dvs_c_ccw,1)); %nc = 11;
-nc = 85;
-
+% ==> draw figure
 figure(); set(gcf,'color','white');
 hold on; hold all;
 plot(t,dvs_i_ccw(ni,:)','linewidth',1.5, 'color', 'b');
 plot(t,-bnd*ones(1,length(t)),'k--');
 plot(t, bnd*ones(1,length(t)),'k--');
 ylim([-(bnd+2), bnd+2]);
-
 plot(t,dvs_c_ccw(nc,:)','linewidth',1.5,'color','r');
 
 %% ==> distribution of dynamic range trials
 
-
+% ==> plot distribution of dynamic ranges
 dynrs = [dynr_c_cw; dynr_i_cw; dynr_i_ccw; dynr_c_ccw];
-
 figure(); set(gcf,'color','white');
 hist(dynrs,15);
