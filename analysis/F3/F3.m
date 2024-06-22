@@ -93,7 +93,6 @@ for iS = 1:29
 end
 
 %%
-% ==> histograms for F3
 
 % ==> F3A (J210906 low contrast, zero signal stimuli)
 F3A();

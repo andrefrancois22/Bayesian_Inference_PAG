@@ -4,7 +4,7 @@ clear all; close all; clc;
 dataPath     = '/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data';
 drc = '../../data/';
 % ==> directory containing PF curve fit functions
-pfc_functions_dr = '/home/thomas/Desktop/Bayesian_Inference_PAG/simulation/F1/pfc_functions/';
+pfc_functions_dr = '/home/thomas/Desktop/Bayesian_Inference_PAG/simulations/F1/pfc_functions/';
 addpath(pfc_functions_dr)
 
 % ==> dynamic range analysis types
