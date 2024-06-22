@@ -25,7 +25,7 @@ if ~mod(n_o,2)
 end
 
 % => option summing truncated likelihood density and adding to extreme orientations
-% => 'true'  means keep truncated (normalized) densities - this seems better
+% => 'true'  means keep truncated (normalized) densities 
 % => 'false' means add the truncated Gaussian densities to edges 
 % LK_TRC_FLAG = 'true';
 LK_TRC_FLAG = 'false';
