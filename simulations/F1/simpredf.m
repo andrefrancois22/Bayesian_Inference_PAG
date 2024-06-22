@@ -72,8 +72,5 @@ function [mle,map,pos,acc_mle,acc_map,lk,po] = simpredf(pr,s0,vidx,sig,n_o,K,LK_
     
     % ==> terminal updates...
     fprintf('MAP acc=%d, MLE acc=%d for K=%d sample trials, sigma=%d...\n',acc_map,acc_mle,K,sig)
-
-% keyboard
-
 end
 

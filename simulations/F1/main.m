@@ -5,18 +5,15 @@ addpath('pfc_functions/');
 
 rng(1,"twister");
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~ params ~~~~~~~~~~~~~~~~~~~~~~~~~~
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+% ==> params
 % ======> number of orientations
-n_o = 51; %7
+n_o = 7; 
 % ==> number of orientations must be odd for this simulation! 
-% e.g. include a vertical stimulus!
+% e.g. include an ambiguous vertical stimulus (identical to experiment)
 assert(mod(n_o,2),'>>>>>> the number of orientations must be odd! <<<<<<')
 
 % ======> sigmas (sensory noise range)
-sigs = linspace(0.25, 12.75, 50); %linspace(0.25, 8.75, 50);  %linspace(0.25, 3.75, 50);
+sigs = linspace(0.25, 3.75, 7); 
 
 % ======> (1) define a prior pr probability ratio
 fx = 2; % (experiments have a 2x factor)
@@ -36,10 +33,7 @@ LK_TRC_FLAG = 'false';
 % ======> number of 'sample' trials per orientation (Robbe's suggestion)
 % => lower case k is just the number of repeat samples for each orientation
 % => grid (rather than random sample)
-k = 100; %1000 
-
-%**** Robbe's suggestion ==> no random sample here.
-% K = 1000; s0 = randsample(1:n_o,K,true,p_cw); 
+k = 1000; %1000 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

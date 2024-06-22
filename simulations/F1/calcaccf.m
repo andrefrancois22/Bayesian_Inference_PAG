@@ -4,8 +4,7 @@ function [acc_map, acc_mle] = calcaccf(s0,vidx,map,mle,c)
 s0v = s0;
 idx_s0  = (s0v  == vidx);
 % ==> to compute an accuracy value for ambiguous vertical orientation,
-% choose a random 'cw' or 'ccw' groundtruth - other approaches are
-% possible. Point is accuracy will be at chance.
+% choose a random 'cw' or 'ccw' groundtruth
 s0v(idx_s0)   = c(binornd(1,0.5,sum(idx_s0),1)+1); 
 
 % % ==> accuracy computations

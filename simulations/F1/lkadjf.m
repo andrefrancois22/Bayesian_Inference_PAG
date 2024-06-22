@@ -1,6 +1,5 @@
 function lk = lkadjf(p,lk,sig,K,s,d,vidx,pd)
 % this function sums truncated density values in likelihood 
-% Robbe's suggested option
 
 % ==> padded orientation range (to capture full density tails)
 d2 = -pd:pd;
