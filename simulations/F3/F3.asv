@@ -204,7 +204,7 @@ ylim([-(bnd+2), bnd+2]);
 plot(t,dvs_c_ccw(nc,:)','linewidth',1.5,'color','k');
 xlabel('Time');
 ylabel('Accumulated evidence');
-title('Example simulated trials');
+title('Example simulated');
 
 %% ==> distribution of dynamic range trials
 
