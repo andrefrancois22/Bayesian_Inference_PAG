@@ -13,7 +13,5 @@ function [pf_fit, pf_params] = PF_fit_fun(nccw_inc, nccw_cng, ncw_cng, ncw_inc, 
     pf_params = fmincon(obFun, startVec_M1, [], [], [], [], LB_M1, UB_M1, [], options);
     % ==> return pf
     [~, pf_fit] = giveNLL(pf_params, or, nccw, ncw, 'M1');
-
-    
 end
 
