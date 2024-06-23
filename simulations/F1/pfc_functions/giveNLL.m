@@ -19,5 +19,3 @@ for iPF = 1:2   % There are two psychometric functions to be fit
 end
 NLL = sum(NLL);
 end
-
-%%
