@@ -1,11 +1,13 @@
 clear all; close all; clc;
 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % ==> directories
 dataPath     = '/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data';
 drc = '../../data/';
 % ==> directory containing PF curve fit functions
-pfc_functions_dr = '/home/thomas/Desktop/Bayesian_Inference_PAG/simulations/F1/pfc_functions/';
+pfc_functions_dr = '../../simulations/F1/pfc_functions/';
 addpath(pfc_functions_dr)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> dynamic range analysis types
 dyn_types = {'popu','stim'};
@@ -56,6 +58,9 @@ PF = cell([29,2,2]);
 % ==> PF parameters
 % (<Session ID>_<contrast>_<dynamic range split>)
 PFp = cell([29,2,2]);
+
+% ==> choice proportions
+CPs = cell([29,2,2]);
 
 % ==> what is the session
 for iS = 1:29 
@@ -116,7 +121,7 @@ for iS = 1:29
                         dri = [ldyn,hdyn];
 
                         % ==> tally counts
-                        cnts{bh}{xc}{rc}{sp}{th} = sum(idxs{bh}{xc}{rc}{sp} & ori==or(th) & dri(:,sp));
+                        cnts{bh,xc,rc,sp,th} = sum(idxs{bh,xc,rc,sp} & ori==or(th) & dri(:,sp));
                     end                    
                 end
             end
@@ -125,12 +130,19 @@ for iS = 1:29
     % ==> fit psychometric functions for four PFs (by contrast, and DV dynamic range)
     for rc = 1:length(cr)
         for sp = 1:2      
+            % ==> response counts (congruent and incongruent, by context - cw vs ccw)             
+            nccw_inc = [cnts{1,2,rc,sp,:}]; ncw_inc = [cnts{2,1,rc,sp,:}];
+            nccw_cng = [cnts{1,1,rc,sp,:}]; ncw_cng = [cnts{2,2,rc,sp,:}];           
+            
             % ==> PF curve fit ~ input counts, orientations, initial parameter settings, options etc.
-            [PF{iS}{rc}{sp}, PFp{iS}{rc}{sp}] = PF_fit_fun([cnts{1}{2}{rc}{sp}{:}], [cnts{1}{1}{rc}{sp}{:}], [cnts{2}{2}{rc}{sp}{:}], [cnts{2}{1}{rc}{sp}{:}], ...
-             or, startVec_M1, LB_M1, UB_M1, options);                       
+            [PF{iS,rc,sp}, PFp{iS,rc,sp}, ncw, nccw] = PF_fit_fun(nccw_inc, nccw_cng, ncw_cng, ncw_inc, ...
+             or, startVec_M1, LB_M1, UB_M1, options);         
+
+            % ==> save choice proportions
+            CPs{iS,rc,sp} = ncw ./ (ncw + nccw);
         end
         % ==> delta bias (use PF fit parameter vectors)
-        db(iS,rc) = (PFp{iS}{rc}{1}(5) - PFp{iS}{rc}{1}(4)) - (PFp{iS}{rc}{2}(5) - PFp{iS}{rc}{2}(4));   
+        db(iS,rc) = (PFp{iS,rc,1}(5) - PFp{iS}{rc}{1}(4)) - (PFp{iS}{rc}{2}(5) - PFp{iS}{rc}{2}(4));   
         % ==> delta perceptual uncertainty (use PF fit parameter vectors)
         dp(iS,rc)   = PFp{iS}{rc}{1}(3) - PFp{iS}{rc}{2}(3);         
     end
@@ -139,17 +151,18 @@ for iS = 1:29
 end
 
 %%
-close all;
+% ==> draw figure
+fg = figure; set(gcf,'color','white'); set(gcf,'Position',[17 586 1901 376]);
+
 % ==> Average delta bias by animal and by contrast 
 % ==> correlation plots (delta bias and delta AIC) 
-[~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias');
+[~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias', fg, [1,2]);
 
 % ==> average delta perceptual uncertainty
 % ==> correlation plots (delta perceptual uncertainty and delta AIC
-[~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty');
+[~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty', fg, [3,4]);
 
 %%
-close all;
 % ==> correlations between db and dp
 F5(db, dp);
 
@@ -158,6 +171,7 @@ F5(db, dp);
 % => Monkey colors
 mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
 rgs = {1:13,14:29};
+
 figure(); set(gcf,'color','white');
 scatter(db(rgs{2},1), dp(rgs{2},1),75,'o','filled','markerfacecolor',mclrs{2},'markeredgecolor','w');
 xlabel('Difference in decision bias');
@@ -170,29 +184,33 @@ axis square;
 SI_plots();
 
 %%
+% ==> ANCOVA
 
 % ==> animal session ranges
 rngs = {1:13,14:29};
 
 % ==> z-score function
 normf = @(x) (x - mean(x))/std(x); 
-% ==> ANCOVA
 
 % ==> z-scores across animals
 dbz = nan(29,2);
 dpz = nan(29,2);
+aic_d_z = nan(1,29);
+
 % ==> low & high contrast
-for i = 1:2
-    % ==> animal F
-    dbz(rngs{i},i)  = normf(db(1:13,i));
-    % ==> animal J
-    dpz(rngs{i},i) = normf(dp(14:29,i));    
-    % ==> standardize aic by monkey 
-    aic_d_z(rngs{i}) = normf(aic_d(rngs{i}));     
+for m = 1:2
+    for c = 1:2
+        % ==> animal F
+        dbz(rngs{m},c)  = normf(db(rngs{m},c));
+        % ==> animal J
+        dpz(rngs{m},c) = normf(dp(rngs{m},c));    
+        % ==> standardize aic by monkey 
+        aic_d_z(rngs{m}) = normf(aic_d(rngs{m}));     
+    end
 end
     
 aicz = [aic_d_z, aic_d_z];
 % => histogram to get grouping variable.
-[~,~,aicgv] = histcounts(aicz,2);
+[~,~,aicgv] = histcounts(aicz,4);
 % ==> run ANCOVA
 aoctool(dbz(:),dpz(:),aicgv)

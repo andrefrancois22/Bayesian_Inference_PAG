@@ -146,6 +146,6 @@ dynr_c_ccw = dynf(dvs_c_ccw);
     axis square;
     drawnow;      
     % ==> update
-    fprintf('imulated PFs for drift rate and offset parameter %d of %d...\n', fci, length(fcs));
+    fprintf('Simulated PFs for drift rate and offset parameter %d of %d...\n', fci, length(fcs));
     fci = fci + 1;    
 end

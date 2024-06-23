@@ -23,7 +23,7 @@ bnd = 12;
 % ==> standard deviation for randn
 sd = 1;
 % ==> mean for randn
-mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];% +0.08;
+mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15] +0.1;
 % ==> [mu_lb, mu_ub, intv, bs], (4 parameters) ==> linspace(mu_lb, mu_ub, intv) + bs
 
 % ==> prior drift linear factors
@@ -82,9 +82,3 @@ histogram(dynrs,15,'facecolor','w');
 xlabel('Dynamic range (a.u)');
 ylabel('Frequency');
 title('Dynamic range distribution');
-
-
-
-%
-% figure(); errorbar(1,mean(db),std(db),std(db))
-% figure(); errorbar(1,mean(dp),std(dp),std(dp))

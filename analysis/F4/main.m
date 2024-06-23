@@ -59,6 +59,10 @@ PF = cell([29,2,2]);
 % (<Session ID>_<contrast>_<dynamic range split>)
 PFp = cell([29,2,2]);
 
+% ==> choice proportions
+% (<Session ID>_<contrast>_<dynamic range split>)
+CPs = cell([29,2,2]);
+
 % ==> what is the session
 for iS = 1:29 
 
@@ -102,7 +106,7 @@ for iS = 1:29
                 for sp = 1:2           % --> dynamic range split (lo or hi) ldyn/hdyn                           
 
                     % ==> indexing vector for counts
-                    idxs{bh}{xc}{rc}{sp} = ((ctx == cx(xc)) & (ctr == cr(rc)) & (cho == bhs(bh)));
+                    idxs{bh,xc,rc,sp} = ((ctx == cx(xc)) & (ctr == cr(rc)) & (cho == bhs(bh)));
 
                     % ==> stimulus orientation (7 values)
                     for th = 1:length(or)
@@ -118,7 +122,7 @@ for iS = 1:29
                         dri = [ldyn,hdyn];
 
                         % ==> tally counts
-                        cnts{bh}{xc}{rc}{sp}{th} = sum(idxs{bh}{xc}{rc}{sp} & ori==or(th) & dri(:,sp));
+                        cnts{bh,xc,rc,sp,th} = sum(idxs{bh,xc,rc,sp} & ori==or(th) & dri(:,sp));
                     end                    
                 end
             end
@@ -127,14 +131,21 @@ for iS = 1:29
     % ==> fit psychometric functions for four PFs (by contrast, and DV dynamic range)
     for rc = 1:length(cr)
         for sp = 1:2      
+            % ==> response counts (congruent and incongruent, by context - cw vs ccw)             
+            nccw_inc = [cnts{1,2,rc,sp,:}]; ncw_inc = [cnts{2,1,rc,sp,:}];
+            nccw_cng = [cnts{1,1,rc,sp,:}]; ncw_cng = [cnts{2,2,rc,sp,:}];           
+            
             % ==> PF curve fit ~ input counts, orientations, initial parameter settings, options etc.
-            [PF{iS}{rc}{sp}, PFp{iS}{rc}{sp}] = PF_fit_fun([cnts{1}{2}{rc}{sp}{:}], [cnts{1}{1}{rc}{sp}{:}], [cnts{2}{2}{rc}{sp}{:}], [cnts{2}{1}{rc}{sp}{:}], ...
-             or, startVec_M1, LB_M1, UB_M1, options);                       
+            [PF{iS,rc,sp}, PFp{iS,rc,sp}, ncw, nccw] = PF_fit_fun(nccw_inc, nccw_cng, ncw_cng, ncw_inc, ...
+             or, startVec_M1, LB_M1, UB_M1, options);         
+
+            % ==> save choice proportions
+            CPs{iS,rc,sp} = ncw ./ (ncw + nccw);
         end
         % ==> delta bias (use PF fit parameter vectors)
-        db(iS,rc) = (PFp{iS}{rc}{1}(5) - PFp{iS}{rc}{1}(4)) - (PFp{iS}{rc}{2}(5) - PFp{iS}{rc}{2}(4));   
+        db(iS,rc) = (PFp{iS,rc,1}(5) - PFp{iS,rc,1}(4)) - (PFp{iS,rc,2}(5) - PFp{iS,rc,2}(4));   
         % ==> delta perceptual uncertainty (use PF fit parameter vectors)
-        dp(iS,rc)   = PFp{iS}{rc}{1}(3) - PFp{iS}{rc}{2}(3);         
+        dp(iS,rc)   = PFp{iS,rc,1}(3) - PFp{iS,rc,2}(3);         
     end
     % ==> update in the console
     fprintf('Computed psychometric functions for session %d of %d...\n',iS,29)                       
