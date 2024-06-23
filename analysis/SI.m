@@ -3,7 +3,7 @@ clear all; close all; clc;
 dataPath     = '/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data';
 drc = '../data/';
 % ==> directory containing PF curve fit functions
-pfc_functions_dr = '/home/thomas/Desktop/Bayesian_Inference_PAG/simulation/F1/pfc_functions/';
+pfc_functions_dr = '../simulation/F1/pfc_functions/';
 addpath(pfc_functions_dr)
 
 %% ==> compute DV dynamic range medians for each stimulus type (29, 7 x 2 x 2) e.g. population x orientation x context by contrast

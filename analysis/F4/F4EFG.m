@@ -1,4 +1,4 @@
-function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
+function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric, fg, ids)
     % INPUT: 
     % (1) d (delta metric data, can be delta bias, or delta uncertainty)
     % ==> delta bias is the difference betweem the pairs of decision
@@ -35,8 +35,7 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     % => Monkey colors
     mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
     % ==> plot average delta Bias
-    figure; set(gcf,'color','white'); set(gcf,'Position',[675 560 1014 402]);
-    subplot(1,2,1);
+    fg; subplot(1,4,ids(1));
     hold on; hold all;
     % ==> monkey F - lo & hi contrast
     errorbar([4,5], ...
@@ -98,7 +97,7 @@ function [pJl,pFl,pJh,pFh,pl,ph,pall] = F4EFG(d, aic_d, metric)
     % so the ~distance~ above r for POS(i) is z(-1)(SD_UB) - r
     % (upper bound correlation minus actual correlation)
 
-    subplot(1,2,2);
+    subplot(1,4,ids(2));
     hold on; hold all;
     % ==> monkey F 
     errorbar([4,5], ...

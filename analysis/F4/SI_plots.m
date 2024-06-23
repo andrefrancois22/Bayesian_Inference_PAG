@@ -1,12 +1,15 @@
 % ==> draw Psychometric functions and proportions over PFs
 
+% => number of sessions
+Sn = 29;
+
 for rc = 1:length(cr) % ==> show for lo or high contrast cases
     
     % ==> draw a new figure for each contrast condition
     figure(); set(gcf,'color','white'); set(gcf,'Position',[86 282 921 668]);
    
     % ==> what is the session
-    for iS = 1:29 
+    for iS = 1:Sn
 
         % ==> low dynamic range (and low contrast)
         % ==> count trials in ccw condition (==> <choice>_<context>_<contrast>_<dynamic range>)
@@ -27,7 +30,7 @@ for rc = 1:length(cr) % ==> show for lo or high contrast cases
         tn_cw_hi_p =  tn_cw_hi  ./ sum(tn_ccw_hi + tn_cw_hi);  
 
         % ==> figure specs
-        line = {'.-',':'}; clr = {'b','r'; 'c','m'};
+        line = {'.-',':'}; clr = {'b','r'; 'b','m'};
         gcf;    
         ax = subplot(5,6,iS); hold on; hold all;
         title([S.general.monkey, S.general.expDate]); 

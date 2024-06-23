@@ -1,11 +1,13 @@
 clear all; close all; clc;
 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % ==> directories
 dataPath     = '/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data';
 drc = '../../data/';
 % ==> directory containing PF curve fit functions
-pfc_functions_dr = '/home/thomas/Desktop/Bayesian_Inference_PAG/simulations/F1/pfc_functions/';
+pfc_functions_dr = '../../simulations/F1/pfc_functions/';
 addpath(pfc_functions_dr)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> dynamic range analysis types
 dyn_types = {'popu','stim'};
@@ -139,17 +141,18 @@ for iS = 1:29
 end
 
 %%
-close all;
+% ==> draw figure
+fg = figure; set(gcf,'color','white'); set(gcf,'Position',[17 586 1901 376]);
+
 % ==> Average delta bias by animal and by contrast 
 % ==> correlation plots (delta bias and delta AIC) 
-[~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias');
+[~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias', fg, [1,2]);
 
 % ==> average delta perceptual uncertainty
 % ==> correlation plots (delta perceptual uncertainty and delta AIC
-[~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty');
+[~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty', fg, [3,4]);
 
 %%
-close all;
 % ==> correlations between db and dp
 F5(db, dp);
 
@@ -158,6 +161,7 @@ F5(db, dp);
 % => Monkey colors
 mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
 rgs = {1:13,14:29};
+
 figure(); set(gcf,'color','white');
 scatter(db(rgs{2},1), dp(rgs{2},1),75,'o','filled','markerfacecolor',mclrs{2},'markeredgecolor','w');
 xlabel('Difference in decision bias');
@@ -197,6 +201,6 @@ end
     
 aicz = [aic_d_z, aic_d_z];
 % => histogram to get grouping variable.
-[~,~,aicgv] = histcounts(aicz,2);
+[~,~,aicgv] = histcounts(aicz,4);
 % ==> run ANCOVA
 aoctool(dbz(:),dpz(:),aicgv)
