@@ -16,12 +16,6 @@ for iPF = 1:2   % There are two psychometric functions to be fit
 %     NLL(iPF)      = -sum(log(binopdf(nCW(iPF,:), nCCW(iPF,:) + nCW(iPF,:), propCW(iPF,:))));
     NLL(iPF) = -sum(log(max(1e-300, binopdf(nCW(iPF,:), nCCW(iPF,:) + nCW(iPF,:), propCW(iPF,:)))));
 end
-<<<<<<< HEAD
-% ==> Robbe's comment here!
 NLL = sum(NLL);
 end
-=======
-% ==> sum NLL
-NLL = sum(NLL);
-end
->>>>>>> master
+
