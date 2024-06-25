@@ -19,5 +19,4 @@ acc_mle = (sum( (s0v < vidx)' & (mle < vidx) ) + sum( (s0v > vidx)' & (mle > vid
 % % ==> mle accuracy
 % acc_mle = (sum( (s0v < vidx)' & (mle < vidx) ) + sum( (s0v >= vidx)' & (mle >= vidx) )) / (sum(s0v < vidx) + sum(s0v >= vidx));    
 
-
 end
