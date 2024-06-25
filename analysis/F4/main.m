@@ -62,6 +62,9 @@ PFp = cell([29,2,2]);
 % ==> choice proportions
 % (<Session ID>_<contrast>_<dynamic range split>)
 CPs = cell([29,2,2]);
+% ==> ncw and nccw counts
+% (<Session ID>_<contrast>_<dynamic range split>_<counts (nccw (1) and ncw (2))>)
+CTs = cell([29,2,2,2]);
 
 % ==> what is the session
 for iS = 1:29 
@@ -138,9 +141,11 @@ for iS = 1:29
             % ==> PF curve fit ~ input counts, orientations, initial parameter settings, options etc.
             [PF{iS,rc,sp}, PFp{iS,rc,sp}, ncw, nccw] = PF_fit_fun(nccw_inc, nccw_cng, ncw_cng, ncw_inc, ...
              or, startVec_M1, LB_M1, UB_M1, options);         
-
+             
             % ==> save choice proportions
             CPs{iS,rc,sp} = ncw ./ (ncw + nccw);
+            % ==> counts (need ncw and nccw for each session as well)
+            CTs{iS,rc,sp,1} = nccw; CTs{iS,rc,sp,2} = ncw;
         end
         % ==> delta bias (use PF fit parameter vectors)
         db(iS,rc) = (PFp{iS,rc,1}(5) - PFp{iS,rc,1}(4)) - (PFp{iS,rc,2}(5) - PFp{iS,rc,2}(4));   
@@ -150,6 +155,12 @@ for iS = 1:29
     % ==> update in the console
     fprintf('Computed psychometric functions for session %d of %d...\n',iS,29)                       
 end
+
+% ==> save new data (choice proportions from split (CPs), and counts (CTs))
+save([drc,'CPs_dynr_',dyn_type,'.mat'],'CPs');
+save([drc,'CTs_dynr_',dyn_type,'.mat'],'CTs');
+% ==> save PF fits
+save([drc,'PFs_dynr_',dyn_type,'.mat'],'PF');
 
 %%
 % ==> draw figure
