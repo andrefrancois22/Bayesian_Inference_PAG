@@ -3,6 +3,7 @@ clear all; close all; clc;
 % ==> lib
 addpath('pfc_functions/');
 
+% ==> random number generator
 rng(1,"twister");
 
 % ==> params
