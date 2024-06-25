@@ -1,4 +1,4 @@
-function [db,dp] = accevbnd(N, tm, bnd, sd, mus, fcs)
+function [db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw] = accevbnd(N, tm, bnd, sd, mus, fcs)
 
 % ==> delta bias
 db = nan(1,length(fcs));
@@ -6,8 +6,8 @@ db = nan(1,length(fcs));
 dp = nan(1,length(fcs));
 
 % ==> store proportions for each dyn range split
-prop_cw  = nan(3,7);
-prop_ccw = nan(3,7);
+prop_cw  = nan(length(fcs),3,7);
+prop_ccw = nan(length(fcs),3,7);
 
 % ==> dynamic range function
 dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
@@ -20,8 +20,8 @@ for fc = fcs
     for or = 1:7
 
          % ==> prior offsets
-        pr_cw  =  15 * fc; %25
-        pr_ccw = -15 * fc; %-25
+        pr_cw  =  25 * fc; 
+        pr_ccw = -25 * fc; 
         % ==> linear drift case
         % ==> case with a bias that grows linearly with t (mean drift)
         pr_cw_d  =  fc*(0:(tm-1)) + pr_cw;  
@@ -83,17 +83,13 @@ for fc = fcs
 
         % ==> incongruent trials (cw context yields a ccw response, e.g. '-1' )
         dvs_i_cw = csensb_cw_d(cw_r==-1,:);
-dynr_i_cw = dynf(dvs_i_cw);
         % ==> congruent trials (cw context)
         dvs_c_cw = csensb_cw_d(cw_r== 1,:);
-dynr_c_cw = dynf(dvs_c_cw); 
-
+ 
         % ==> incongruent trials (ccw context yields a cw response, e.g. '-1' )
         dvs_i_ccw = csensb_ccw_d(ccw_r== 1,:);
-dynr_i_ccw = dynf(dvs_i_ccw); 
         % ==> congruent trials (ccw context yields a ccw response e.g. '-1')
         dvs_c_ccw = csensb_ccw_d(ccw_r==-1,:);
-dynr_c_ccw = dynf(dvs_c_ccw); 
 
         % ==> cw context, and stim orientation dynr median
         med_cw  = median(dynf(csensb_cw_d));
@@ -101,51 +97,26 @@ dynr_c_ccw = dynf(dvs_c_ccw);
         med_ccw = median(dynf(csensb_ccw_d));
 
         % ==> proportions => high dynamic range DVs
-        prop_cw(1,or)  = sum(cw_r(dynf(csensb_cw_d) > med_cw) == 1)     / (sum(cw_r(dynf(csensb_cw_d) > med_cw) == 1)    + sum(cw_r(dynf(csensb_cw_d) > med_cw) == -1));
-        prop_ccw(1,or) = sum(ccw_r(dynf(csensb_ccw_d) > med_ccw) == 1)  / (sum(ccw_r(dynf(csensb_ccw_d) > med_ccw) == 1) + sum(ccw_r(dynf(csensb_ccw_d) > med_ccw) == -1));
+        prop_cw(fci,2,or)  = sum(cw_r(dynf(csensb_cw_d) > med_cw) == 1)     / (sum(cw_r(dynf(csensb_cw_d) > med_cw) == 1)    + sum(cw_r(dynf(csensb_cw_d) > med_cw) == -1));
+        prop_ccw(fci,2,or) = sum(ccw_r(dynf(csensb_ccw_d) > med_ccw) == 1)  / (sum(ccw_r(dynf(csensb_ccw_d) > med_ccw) == 1) + sum(ccw_r(dynf(csensb_ccw_d) > med_ccw) == -1));
 
         % ==> proportions => low dynamic range DVs
-        prop_cw(2,or)  = sum(cw_r(dynf(csensb_cw_d) <= med_cw) == 1)     / (sum(cw_r(dynf(csensb_cw_d) <= med_cw) == 1)    + sum(cw_r(dynf(csensb_cw_d) <= med_cw) == -1));
-        prop_ccw(2,or) = sum(ccw_r(dynf(csensb_ccw_d) <= med_ccw) == 1)  / (sum(ccw_r(dynf(csensb_ccw_d) <= med_ccw) == 1) + sum(ccw_r(dynf(csensb_ccw_d) <= med_ccw) == -1));
+        prop_cw(fci,1,or)  = sum(cw_r(dynf(csensb_cw_d) <= med_cw) == 1)     / (sum(cw_r(dynf(csensb_cw_d) <= med_cw) == 1)    + sum(cw_r(dynf(csensb_cw_d) <= med_cw) == -1));
+        prop_ccw(fci,1,or) = sum(ccw_r(dynf(csensb_ccw_d) <= med_ccw) == 1)  / (sum(ccw_r(dynf(csensb_ccw_d) <= med_ccw) == 1) + sum(ccw_r(dynf(csensb_ccw_d) <= med_ccw) == -1));
 
         % ==> proportions without split
-        prop_cw(3,or)  = sum(cw_r  == 1) / (sum(cw_r  == 1) + sum(cw_r  == -1));
-        prop_ccw(3,or) = sum(ccw_r == 1) / (sum(ccw_r == 1) + sum(ccw_r == -1));
+        prop_cw(fci,3,or)  = sum(cw_r  == 1) / (sum(cw_r  == 1) + sum(cw_r  == -1));
+        prop_ccw(fci,3,or) = sum(ccw_r == 1) / (sum(ccw_r == 1) + sum(ccw_r == -1));
 
     end
     
     % ==> delta bias
-    db(fci) = (prop_cw(2,4) - prop_ccw(2,4)) - (prop_cw(1,4) - prop_ccw(1,4));
+    db(fci) = (prop_cw(fci,2,4) - prop_ccw(fci,2,4)) - (prop_cw(fci,1,4) - prop_ccw(fci,1,4));
     % ==> delta perceptual uncertainty (approx)
-    dp(fci) = (prop_cw(1,5) - prop_cw(1,3)) - (prop_cw(2,5) - prop_cw(2,3));
-    
-    % ==> plot simulated choice proportions by dynamic range split
-    figure(3); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
-    subplot(6,7,fci)
-    hold on; hold all; 
-    plot([mus],[prop_cw(3,:)],'b.-', 'linewidth', 1.5); 
-    plot([mus],[prop_ccw(3,:)],'r.-', 'linewidth', 1.5); 
-    xlabel('Orientation');
-    ylabel('p(cw)')    
-    %xlim([-max(mus),max(mus)]); 
-    ylim([0,1]);
-    axis square;
-    drawnow;      
-    % ==> plot simulated choice proportions by dynamic range split
-    figure(4); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
-    subplot(6,7,fci)
-    hold on; hold all; 
-    plot([mus],[prop_cw(1,:)],'bx:', 'linewidth', 1); 
-    plot([mus],[prop_ccw(1,:)],'rx:','linewidth', 1);  
-    plot([mus],[prop_cw(2,:)],'b.-', 'linewidth', 1.5); 
-    plot([mus],[prop_ccw(2,:)],'r.-', 'linewidth', 1.5); 
-    xlabel('Orientation');
-    ylabel('p(cw)')
-    %xlim([-max(mus),max(mus)]); 
-    ylim([0,1]);
-    axis square;
-    drawnow;      
+    dp(fci) = (prop_cw(fci,1,5) - prop_cw(fci,1,3)) - (prop_cw(fci,2,5) - prop_cw(fci,2,3));
+        
     % ==> update
-    fprintf('imulated PFs for drift rate and offset parameter %d of %d...\n', fci, length(fcs));
+    fprintf('Simulated PFs for drift rate and offset parameter %d of %d...\n', fci, length(fcs));
+    % ==> increment
     fci = fci + 1;    
 end

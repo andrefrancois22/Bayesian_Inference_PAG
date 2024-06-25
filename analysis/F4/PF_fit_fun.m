@@ -1,4 +1,4 @@
-function [pf_fit, pf_params] = PF_fit_fun(nccw_inc, nccw_cng, ncw_cng, ncw_inc, or, startVec_M1, LB_M1, UB_M1, options)
+function [pf_fit, pf_params, ncw, nccw] = PF_fit_fun(nccw_inc, nccw_cng, ncw_cng, ncw_inc, or, startVec_M1, LB_M1, UB_M1, options)
     % function for fitting PF curve for each context using 2AFC counts.
 
     % ==> counts

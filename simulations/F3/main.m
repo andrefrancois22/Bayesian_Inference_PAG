@@ -14,7 +14,7 @@ t = linspace(-795,-45,200);
 [~,iu2] = min(abs(t + 600)); %-600
 
 % => number of simulated trials
-N = 10000;
+N = 1000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
 bnd = 12; 
@@ -23,22 +23,45 @@ bnd = 12;
 % ==> standard deviation for randn
 sd = 1;
 % ==> mean for randn
-mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];% +0.08;
-% ==> [mu_lb, mu_ub, intv, bs], (4 parameters) ==> linspace(mu_lb, mu_ub, intv) + bs
+mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];
 
 % ==> prior drift linear factors
 fcs = 0:0.25:10; 
-% (==> single parameter fc)
-
-% ==> objective (NLL)
-% ==> accevbnd outputs propCW for all 4 curves (from dynamic range split)
-% iPF can range from 1-4, where propCW will contain all PFs (4 x 7 matrix of simulated proportions)
-%  NLL(iPF) = -sum(log(max(1e-300, binopdf(nCW(iPF,:), nCCW(iPF,:) + nCW(iPF,:), propCW(iPF,:)))));
 
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
-[db,dp] = accevbnd(N, tm, bnd, sd, mus, fcs);
+[db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw] = accevbnd(N, tm, bnd, sd, mus, fcs);
 
+%%
+
+% ==> plot simulated choice proportions by dynamic range split
+for fci = 1:length(fcs)
+    figure(3); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
+    subplot(6,7,fci)
+    hold on; hold all; 
+    plot(mus,squeeze(prop_cw(fci,3,:))','b.-', 'linewidth', 1.5); 
+    plot(mus,squeeze(prop_ccw(fci,3,:))','r.-', 'linewidth', 1.5); 
+    xlabel('Orientation');
+    ylabel('p(cw)')    
+    %xlim([-max(mus),max(mus)]); 
+    ylim([0,1]);
+    axis square;
+    drawnow;      
+    % ==> plot simulated choice proportions by dynamic range split
+    figure(4); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
+    subplot(6,7,fci)
+    hold on; hold all; 
+    plot(mus,squeeze(prop_cw(fci,1,:))','bx:', 'linewidth', 1); 
+    plot(mus,squeeze(prop_ccw(fci,1,:))','rx:','linewidth', 1);  
+    plot(mus,squeeze(prop_cw(fci,2,:))','b.-', 'linewidth', 1.5); 
+    plot(mus,squeeze(prop_ccw(fci,2,:))','r.-', 'linewidth', 1.5); 
+    xlabel('Orientation');
+    ylabel('p(cw)')
+    %xlim([-max(mus),max(mus)]); 
+    ylim([0,1]);
+    axis square;
+    drawnow;  
+end
 
 %% 
 % ==> correlation between simulated delta bias and simulated delta
@@ -75,6 +98,15 @@ title('Example simulated trials');
 %% 
 %==> distribution of dynamic range trials
 
+% ==> dynamic range function
+dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
+
+dynr_c_cw = dynf(dvs_c_cw);
+dynr_i_cw = dynf(dvs_i_cw);
+
+dynr_c_ccw = dynf(dvs_c_ccw); 
+dynr_i_ccw = dynf(dvs_i_ccw); 
+
 % ==> plot distribution of dynamic ranges
 dynrs = [dynr_c_cw; dynr_i_cw; dynr_i_ccw; dynr_c_ccw];
 figure(); set(gcf,'color','white');
@@ -82,9 +114,3 @@ histogram(dynrs,15,'facecolor','w');
 xlabel('Dynamic range (a.u)');
 ylabel('Frequency');
 title('Dynamic range distribution');
-
-
-
-%
-% figure(); errorbar(1,mean(db),std(db),std(db))
-% figure(); errorbar(1,mean(dp),std(dp),std(dp))
