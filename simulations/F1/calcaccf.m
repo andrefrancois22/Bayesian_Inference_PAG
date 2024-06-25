@@ -7,17 +7,17 @@ idx_s0  = (s0v  == vidx);
 % choose a random 'cw' or 'ccw' groundtruth
 s0v(idx_s0)   = c(binornd(1,0.5,sum(idx_s0),1)+1); 
 
-% % ==> accuracy computations
-% % ==> map accuracy
-% acc_map = (sum( (s0v < vidx)' & (map < vidx) ) + sum( (s0v > vidx)' & (map > vidx) )) / (sum(s0v < vidx) + sum(s0v > vidx));
-% % ==> mle accuracy
-% acc_mle = (sum( (s0v < vidx)' & (mle < vidx) ) + sum( (s0v > vidx)' & (mle > vidx) )) / (sum(s0v < vidx) + sum(s0v > vidx));    
-
 % ==> accuracy computations
 % ==> map accuracy
-acc_map = (sum( (s0v < vidx)' & (map < vidx) ) + sum( (s0v >= vidx)' & (map >= vidx) )) / (sum(s0v < vidx) + sum(s0v >= vidx));
+acc_map = (sum( (s0v < vidx)' & (map < vidx) ) + sum( (s0v > vidx)' & (map > vidx) )) / (sum(s0v < vidx) + sum(s0v > vidx));
 % ==> mle accuracy
-acc_mle = (sum( (s0v < vidx)' & (mle < vidx) ) + sum( (s0v >= vidx)' & (mle >= vidx) )) / (sum(s0v < vidx) + sum(s0v >= vidx));    
+acc_mle = (sum( (s0v < vidx)' & (mle < vidx) ) + sum( (s0v > vidx)' & (mle > vidx) )) / (sum(s0v < vidx) + sum(s0v > vidx));    
+
+% % ==> accuracy computations
+% % ==> map accuracy
+% acc_map = (sum( (s0v < vidx)' & (map < vidx) ) + sum( (s0v >= vidx)' & (map >= vidx) )) / (sum(s0v < vidx) + sum(s0v >= vidx));
+% % ==> mle accuracy
+% acc_mle = (sum( (s0v < vidx)' & (mle < vidx) ) + sum( (s0v >= vidx)' & (mle >= vidx) )) / (sum(s0v < vidx) + sum(s0v >= vidx));    
 
 
 end
