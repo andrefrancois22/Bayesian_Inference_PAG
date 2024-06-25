@@ -17,8 +17,8 @@ load([drc,'PFs_dynr_',dyn_type,'.mat'],'PF');
 
 % ==> parameters 
 % => number of simulated trials
-N = 500;
-tm = 200; % timepoints (same resolution as actual DV fits)  
+N = 100;
+tm = 500; % timepoints (same resolution as actual DV fits)  
 % ==> bound
 bnd = 12; 
 % ==> sd (for diffusion component)
@@ -45,7 +45,7 @@ LB(4,1)  = 0;                         UB(4,1) = 200;   % initial offset
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> for each session, and for each contrast level, fit acc-bound predicted dynr PFs curves to actual data
-iS = 17;
+iS = 19;
 cr = 1; % => lo contrast (fit models separately for different stimulus contrast images)
 % ==> accumulation to bound model type
 mod_type = 'm2';
