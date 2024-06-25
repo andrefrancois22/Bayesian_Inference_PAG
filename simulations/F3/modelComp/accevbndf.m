@@ -11,8 +11,8 @@ dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
 for or = 1:7
 
     % ==> prior offsets
-    pr_cw  =  ofs * fc; 
-    pr_ccw = -ofs * fc; 
+    pr_cw  =  ofs; 
+    pr_ccw = -ofs; 
     % ==> linear drift case
     % ==> case with a bias that grows linearly with t (mean drift)
     pr_cw_d  =  fc*(0:(tm-1)) + pr_cw;  

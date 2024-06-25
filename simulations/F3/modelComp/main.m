@@ -41,38 +41,48 @@ ofs = 15;
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % ==> PF curve estimation Set options
 fitFlag         = 1;       % 0 or 1, where 1 means do the fit right now
-nBootStraps     = 10000;     % determines number of non parametric bootstraps if fitFlag == 1
-options         = optimoptions('fmincon');
+nBootStraps     = 1000;     % determines number of non parametric bootstraps if fitFlag == 1
+options         = optimoptions('fmincon','ConstraintTolerance', 1e-100, ...
+                                         'OptimalityTolerance', 1e-100, ...
+                                         'StepTolerance',       1e-100, ...
+                                         'Algorithm', 'sqp');
 options.Display = 'iter';
 % Set bounds on model parameters
 % Model fit to choice data split by task context (1 & 2: guess rate; 3: perceptual uncertainty; 4 & 5: decision criterion)
 % ==> interval, overall bias, fc (drift rate), initial offset, bound
-startVec = [0.15, 0.0, 5, 15, 12]; 
-LB(1,1)  = 0.1;                       UB(1,1) = 0.2;    % orientation mean interval
+startVec = [0.038, 0, 8, 90];%, 12]; 
+LB(1,1)  = 0.01;                      UB(1,1) = 0.06;    % orientation mean interval
 LB(2,1)  = -0.2;                      UB(2,1) = 0.2;  % overall bias (not decision bias - this is left or right shift of all curves)
 LB(3,1)  = 0;                         UB(3,1) = 20;   % drift rate (slope of the linear drift)
-LB(4,1)  = 0;                         UB(4,1) = 30;   % initial offset
-LB(5,1)  = 6;                         UB(5,1) = 20;   % bound
+LB(4,1)  = 0;                         UB(4,1) = 200;   % initial offset
+% LB(5,1)  = 6;                         UB(5,1) = 20;   % bound
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> for each session, and for each contrast level, fit acc-bound predicted dynr PFs curves to actual data
 iS = 17;
-cr = 1; % => lo contrast (fit models separately for different stimulus contrast images)
+cr = 2; % => lo contrast (fit models separately for different stimulus contrast images)
 % ==> wrap in objective function
-[nll] = calcnllf(iS,cr,CTs,PF,propccw,propcw);
+[nll] = calcnllf(iS,cr,CTs,propccw,propcw);
 fprintf('NLL = %d...\n',nll)
 
-mod_type = 'm1';
+mod_type = 'm2';
 
 % ==> objective function for fmincon
-obFun = @(paramVec) modfitf(iS, cr, CTs, PF, N, tm, sd, paramVec, mod_type); 
+obFun = @(paramVec) modfitf(iS, cr, CTs, N, tm, sd, paramVec, mod_type); 
 % ==> run optimization
 simfit = fmincon(obFun, startVec, [], [], [], [], LB, UB, [], options);
 % ==> return best fit simulated dynamic range proportions
-[nll, propcw, propccw] = modfitf(iS, cr, CTs, PF, N, tm, sd, simfit, mod_type);
+[nll, propcw, propccw] = modfitf(iS, cr, CTs, N, tm, sd, simfit, mod_type);
 
 simfit
+nll
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%
+
+% simfit = [0.038, 0, 8, 90]; mod_type = 'm2'; %(17 ctr 1)
+simfit = [0.05, 0, 3, 40]; mod_type = 'm2';    %(17, ctr 2)
+[nll, propcw, propccw] = modfitf(iS, cr, CTs, N, tm, sd, simfit, mod_type);
+nll
 
 close all; 
 figure(1);
@@ -84,16 +94,16 @@ plot(1:7,propcw(2,:),'rh:')
 plot(1:7,propccw(2,:),'bh:')
 subplot(2,3,2);
 hold on; hold all;
-plot(CPs{iS,1,2}(2,:),'r:')
-plot(CPs{iS,1,2}(1,:),'b:')
-plot(CPs{iS,1,1}(1,:),'b')
-plot(CPs{iS,1,1}(2,:),'r')
+plot(CPs{iS,cr,2}(2,:),'b:')
+plot(CPs{iS,cr,2}(1,:),'r:')
+plot(CPs{iS,cr,1}(1,:),'r')
+plot(CPs{iS,cr,1}(2,:),'b')
 subplot(2,3,3);
 hold on; hold all;
-plot(1:7, CTs{iS,1,1,2}(2,:) ./ (CTs{iS,1,1,2}(2,:) + CTs{iS,1,1,1}(2,:)),'r');
-plot(1:7, CTs{iS,1,1,2}(1,:) ./ (CTs{iS,1,1,2}(1,:) + CTs{iS,1,1,1}(1,:)),'b');
-plot(1:7, CTs{iS,1,2,2}(2,:) ./ (CTs{iS,1,2,2}(2,:) + CTs{iS,1,2,1}(2,:)),'r:');
-plot(1:7, CTs{iS,1,2,2}(1,:) ./ (CTs{iS,1,2,2}(1,:) + CTs{iS,1,2,1}(1,:)),'b:');
+plot(1:7, CTs{iS,cr,1,2}(2,:) ./ (CTs{iS,cr,1,2}(2,:) + CTs{iS,cr,1,1}(2,:)),'b');
+plot(1:7, CTs{iS,cr,1,2}(1,:) ./ (CTs{iS,cr,1,2}(1,:) + CTs{iS,cr,1,1}(1,:)),'r');
+plot(1:7, CTs{iS,cr,2,2}(2,:) ./ (CTs{iS,cr,2,2}(2,:) + CTs{iS,cr,2,1}(2,:)),'b:');
+plot(1:7, CTs{iS,cr,2,2}(1,:) ./ (CTs{iS,cr,2,2}(1,:) + CTs{iS,cr,2,1}(1,:)),'r:');
 hold on; hold all;
 plot(1:7,propcw(1,:), 'r-h')
 plot(1:7,propccw(1,:),'b-h')

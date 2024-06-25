@@ -14,7 +14,7 @@ t = linspace(-795,-45,200);
 [~,iu2] = min(abs(t + 600)); %-600
 
 % => number of simulated trials
-N = 10000;
+N = 1000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
 bnd = 12; 
