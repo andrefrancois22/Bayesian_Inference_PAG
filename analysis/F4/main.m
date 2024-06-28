@@ -206,7 +206,7 @@ SI_plots();
 close all; clc;
 
 % => colors
-clrs = {[0,0,1],[1,0,0];[0.5,0.5,1],[1,0.5,0.5]};
+clrs = {[0.5,0.5,1],[1,0.5,0.5]; [0,0,1],[1,0,0]};
 
 % ==> example 17
 iS = 17;
@@ -248,11 +248,11 @@ ylabel('prop cw')
 sca = 8000;
 % ==> for each orientation plot proportions
 for o = 1:length(or)
-    scatter(or(o), CPs{iS,rc,1}(2,o),  max([1,round(tn_ccw_lo_p(o)*sca)]), 'o','filled', 'markerfacecolor', [1,0,0], 'markeredgecolor', 'w')
-    scatter(or(o), CPs{iS,rc,1}(1,o),  max([1,round(tn_cw_lo_p(o)*sca)]),  'o','filled', 'markerfacecolor', [0,0,1], 'markeredgecolor', 'w')
+    scatter(or(o), CPs{iS,rc,1}(2,o),  max([1,round(tn_ccw_lo_p(o)*sca)]), 'o','filled', 'markerfacecolor', clrs{1,2}, 'markeredgecolor', 'w')
+    scatter(or(o), CPs{iS,rc,1}(1,o),  max([1,round(tn_cw_lo_p(o)*sca)]),  'o','filled', 'markerfacecolor', clrs{1,1}, 'markeredgecolor', 'w')
     % ==> trial proportions for high dynamic range
-    scatter(or(o), CPs{iS,rc,2}(2,o),  max([1,round(tn_ccw_hi_p(o)*sca)]), 'o','filled', 'markerfacecolor', [1,0.5,0.5], 'markeredgecolor', 'w')
-    scatter(or(o), CPs{iS,rc,2}(1,o),  max([1,round(tn_cw_hi_p(o)*sca)]),  'o','filled', 'markerfacecolor', [0.5,0.5,1], 'markeredgecolor', 'w')
+    scatter(or(o), CPs{iS,rc,2}(2,o),  max([1,round(tn_ccw_hi_p(o)*sca)]), 'o','filled', 'markerfacecolor', clrs{2,2}, 'markeredgecolor', 'w')
+    scatter(or(o), CPs{iS,rc,2}(1,o),  max([1,round(tn_cw_hi_p(o)*sca)]),  'o','filled', 'markerfacecolor', clrs{2,1}, 'markeredgecolor', 'w')
 end
 axis square;
 drawnow;
