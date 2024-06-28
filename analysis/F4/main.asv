@@ -234,7 +234,8 @@ hold on; hold all;
 % => plot
 for xc = 1:length(cx)
     for sp = 1:2
-        plot(or, PF{iS,rc,sp}(xc,:), 'color', clrs{sp,xc}, 'linewidth', 4)   
+        plot(or, PF{iS,rc,sp}(xc,:), 'color', clrs{sp,xc}, 'linewidth', 3)   
+        [clrs{sp,xc}]
     end
 end
 plot(zeros(length(or),1),linspace(0,1,length(or)),'k--','linewidth', 0.5) 
@@ -245,14 +246,14 @@ xlabel('orientation')
 ylabel('prop cw')  
 
 % ==>
-sca = 8000;
+sca = 4000;
 % ==> for each orientation plot proportions
 for o = 1:length(or)
-    scatter(or(o), CPs{iS,rc,1}(2,o),  max([1,round(tn_ccw_lo_p(o)*sca)]), 'o','filled', 'markerfacecolor', [1,0,0], 'markeredgecolor', 'w')
-    scatter(or(o), CPs{iS,rc,1}(1,o),  max([1,round(tn_cw_lo_p(o)*sca)]),  'o','filled', 'markerfacecolor', [0,0,1], 'markeredgecolor', 'w')
+    scatter(or(o), CPs{iS,rc,1}(2,o),  max([1,round(tn_ccw_lo_p(o)*sca)]), 'o','filled', 'markerfacecolor', [1,0,0], 'markeredgecolor', clr{rc,2})
+    scatter(or(o), CPs{iS,rc,1}(1,o),  max([1,round(tn_cw_lo_p(o)*sca)]),  'o','filled', 'markerfacecolor', [0,0,1], 'markeredgecolor', clr{rc,1})
     % ==> trial proportions for high dynamic range
-    scatter(or(o), CPs{iS,rc,2}(2,o),  max([1,round(tn_ccw_hi_p(o)*sca)]), 'o','filled', 'markerfacecolor', [1,0.5,0.5], 'markeredgecolor', 'w')
-    scatter(or(o), CPs{iS,rc,2}(1,o),  max([1,round(tn_cw_hi_p(o)*sca)]),  'o','filled', 'markerfacecolor', [0.5,0.5,1], 'markeredgecolor', 'w')
+    scatter(or(o), CPs{iS,rc,2}(2,o),  max([1,round(tn_ccw_hi_p(o)*sca)]), 'o','filled', 'markerfacecolor', [1,0.5,0.5], 'markeredgecolor', clr{rc,2})
+    scatter(or(o), CPs{iS,rc,2}(1,o),  max([1,round(tn_cw_hi_p(o)*sca)]),  'o','filled', 'markerfacecolor', [0.5,0.5,1], 'markeredgecolor', clr{rc,1})
 end
 axis square;
 drawnow;

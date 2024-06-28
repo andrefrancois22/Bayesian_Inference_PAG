@@ -10,6 +10,9 @@ for rc = 1:length(cr) % ==> show for lo or high contrast cases
    
     % ==> what is the session
     for iS = 1:Sn
+        
+        % ==> orientations
+        or = oris{iS};
 
         % ==> low dynamic range (and low contrast)
         % ==> count trials in ccw condition (==> <choice>_<context>_<contrast>_<dynamic range>)
@@ -50,11 +53,11 @@ for rc = 1:length(cr) % ==> show for lo or high contrast cases
 
         % ==> for each orientation plot proportions
         for o = 1:length(or)
-            scatter(or(o), PF{iS,rc,1}(2,o),  max([1,round(tn_ccw_lo_p(o)*250)]), 'o','filled', 'markerfacecolor', [1,0,0], 'markeredgecolor', clr{rc,2})
-            scatter(or(o), PF{iS,rc,1}(1,o),  max([1,round(tn_cw_lo_p(o)*250)]),  'o','filled', 'markerfacecolor', [0,0,1], 'markeredgecolor', clr{rc,1})
+            scatter(or(o), CPs{iS,rc,1}(2,o),  max([1,round(tn_ccw_lo_p(o)*300)]), 'o','filled', 'markerfacecolor', [1,0,0], 'markeredgecolor', clr{rc,2})
+            scatter(or(o), CPs{iS,rc,1}(1,o),  max([1,round(tn_cw_lo_p(o)*300)]),  'o','filled', 'markerfacecolor', [0,0,1], 'markeredgecolor', clr{rc,1})
             % ==> trial proportions for high dynamic range
-            scatter(or(o), PF{iS,rc,2}(2,o),  max([1,round(tn_ccw_hi_p(o)*250)]), 'o','filled', 'markerfacecolor', [1,0.5,0.5], 'markeredgecolor', clr{rc,2})
-            scatter(or(o), PF{iS,rc,2}(1,o),  max([1,round(tn_cw_hi_p(o)*250)]),  'o','filled', 'markerfacecolor', [0.5,0.5,1], 'markeredgecolor', clr{rc,1})
+            scatter(or(o), CPs{iS,rc,2}(2,o),  max([1,round(tn_ccw_hi_p(o)*300)]), 'o','filled', 'markerfacecolor', [1,0.5,0.5], 'markeredgecolor', clr{rc,2})
+            scatter(or(o), CPs{iS,rc,2}(1,o),  max([1,round(tn_cw_hi_p(o)*300)]),  'o','filled', 'markerfacecolor', [0.5,0.5,1], 'markeredgecolor', clr{rc,1})
         end
         axis square;
         drawnow;  
