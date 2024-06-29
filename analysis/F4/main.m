@@ -174,11 +174,11 @@ fg = figure; set(gcf,'color','white'); set(gcf,'Position',[17 586 1901 376]);
 
 % ==> Average delta bias by animal and by contrast 
 % ==> correlation plots (delta bias and delta AIC) 
-[~,~,~,~,~,~,~] = F4EFG(db, aic_d,'bias', fg, [1,2]);
+[~,~,~,~,~,~,palldb] = F4EFG(db, aic_d,'bias', fg, [1,2]);
 
 % ==> average delta perceptual uncertainty
 % ==> correlation plots (delta perceptual uncertainty and delta AIC
-[~,~,~,~,~,~,~] = F4EFG(dp, aic_d,'uncertainty', fg, [3,4]);
+[~,~,~,~,~,~,palldp] = F4EFG(dp, aic_d,'uncertainty', fg, [3,4]);
 
 %%
 % ==> correlations between db and dp
