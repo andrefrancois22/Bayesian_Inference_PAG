@@ -38,11 +38,11 @@ FIT_FLAG = true;
 
 % ==> for each session, and for each contrast level, fit acc-bound predicted dynr PFs curves to actual data
 iS = 1;
-cr = 1; % => lo contrast (fit models separately for different stimulus contrast images)
+cr = 2; % => lo contrast (fit models separately for different stimulus contrast images)
 
 % ==> parameters for accumulation to bound forward model
 % => number of simulated trials (forward model is pretty fast)
-N = 500;
+N = 1000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
 bnd = 12; 
@@ -119,14 +119,15 @@ if FIT_FLAG
 
     % ==> return 4 indices of min NLL in NNLs_init
     [min_nll, idx] = min(NNLs_init(:));
-    [i,j,k,l] = ind2sub( size(NNLs_init), idx );
+    [i,j,k,l] = ind2sub(size(NNLs_init), idx);
 
     % ==> could visualize 4 x 4 heatmaps of pairwise NLL maps for params
     
-    % ==> interval, overall bias (shift), fc (drift rate), initial offset, bound
+    % ==> define initial coarse parameter settings for fmincon optimization.
+    % => interval, overall bias (shift), fc (drift rate), initial offset, bound
     startVec = [itsvs(i),sftvs(j),dftvs(k),oftvs(l)]; %[0.038, 0, 8, 90];%, 12]; 
 
-    % ==> NLLs
+    % ==> initialize NLLs
     nlls = cell(r,1);
     % ==> simulation optim params
     startVecs = cell(r,1);
@@ -136,13 +137,13 @@ if FIT_FLAG
 
     % ==> run fmincon several times (variable results even with multistart)
     for rep = 1:r
-        % ==> run optimization
+        % ==> run fmincon optimization
         simfit = fmincon(obFun, startVec, [], [], [], [], LB, UB, [], options);
         % ==> return best fit simulated dynamic range proportions
         [nll, ~, ~] = modfitf(iS, cr, CTs, N, tm, sd, simfit, mod_type);
         % ==> track nlls
         nlls{rep} = nll;    
-        % ==> reset startVec if new minimum for nll in next round
+        % ==> reset startVec if new minimum reached for nll in next round
         % ==> kind of a simulated annealing procedure...
         if nll <= min(cell2mat(nlls))
             % ==> startVec
