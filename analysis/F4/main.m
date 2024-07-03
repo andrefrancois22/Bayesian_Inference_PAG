@@ -92,9 +92,11 @@ for iS = 1:29
     ctx = S.exp.taskContext; ctr = S.exp.stimContrast; ori = S.exp.stimOriDeg;
     % x axis is orientation (the values differ for FN and JP!). Use unique values
     or = sort(unique(ori),'ascend')'; cx = sort(unique(ctx),'ascend')'; cr = sort(unique(ctr),'ascend')'; bhs = sort(unique(cho),'ascend')';
-
     % ==> store orientations for SI PF plots
     oris{iS} = or;
+    
+    % ==> quick sanity check
+    assert(size(dvs,1) == size(cho,1))
     
     % ==> counts
     % (<choice>_<context>_<contrast>_<dynamic range split>_<orientation>)

@@ -16,7 +16,7 @@ load([drc,'CTs_dynr_',dyn_type,'.mat'],'CTs');
 load([drc,'PFs_dynr_',dyn_type,'.mat'],'PF');
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% ==> PF curve estimation Set options
+% Set options
 fitFlag         = 1;       % 0 or 1, where 1 means do the fit right now
 nBootStraps     = 10;     % determines number of non parametric bootstraps if fitFlag == 1
 options         = optimoptions('fmincon','ConstraintTolerance', 1e-100, ...
@@ -25,11 +25,10 @@ options         = optimoptions('fmincon','ConstraintTolerance', 1e-100, ...
                                          'Algorithm', 'Interior-point');
 options.Display = 'iter';
 % Set bounds on model parameters
-LB(1,1)  = 0.01;                      UB(1,1) = 0.06;    % orientation mean interval
-LB(2,1)  = -0.2;                      UB(2,1) = 0.2;  % overall bias (not decision bias - this is left or right shift of all curves)
-LB(3,1)  = 0;                         UB(3,1) = 20;   % drift rate (slope of the linear drift)
-LB(4,1)  = 0;                         UB(4,1) = 200;   % initial offset
-% LB(5,1)  = 6;                         UB(5,1) = 20;   % bound
+LB(1,1)  = 0.01;                      UB(1,1) = 0.06;   % orientation mean interval
+LB(2,1)  = -0.2;                      UB(2,1) = 0.2;    % overall bias (not decision bias - this is left or right shift of all curves)
+LB(3,1)  = 0;                         UB(3,1) = 20;     % drift rate (slope of the linear drift)
+LB(4,1)  = 0;                         UB(4,1) = 200;    % initial offset
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> fit or used cashed results?
@@ -37,12 +36,12 @@ LB(4,1)  = 0;                         UB(4,1) = 200;   % initial offset
 FIT_FLAG = true;
 
 % ==> for each session, and for each contrast level, fit acc-bound predicted dynr PFs curves to actual data
-iS = 1;
-cr = 2; % => lo contrast (fit models separately for different stimulus contrast images)
+iS = 16; %16-18-19-20-21 -2
+cr = 1; % => lo contrast (fit models separately for different stimulus contrast images)
 
 % ==> parameters for accumulation to bound forward model
 % => number of simulated trials (forward model is pretty fast)
-N = 1000;
+N = 500;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
 bnd = 12; 
@@ -121,11 +120,9 @@ if FIT_FLAG
     [min_nll, idx] = min(NNLs_init(:));
     [i,j,k,l] = ind2sub(size(NNLs_init), idx);
 
-    % ==> could visualize 4 x 4 heatmaps of pairwise NLL maps for params
-    
     % ==> define initial coarse parameter settings for fmincon optimization.
     % => interval, overall bias (shift), fc (drift rate), initial offset, bound
-    startVec = [itsvs(i),sftvs(j),dftvs(k),oftvs(l)]; %[0.038, 0, 8, 90];%, 12]; 
+    startVec = [itsvs(i),sftvs(j),dftvs(k),oftvs(l)];  
 
     % ==> initialize NLLs
     nlls = cell(r,1);
@@ -171,13 +168,18 @@ end
     
 if ~FIT_FLAG
     % ==> inspect results of the optimization
+    % (wrap this into a plotting function)
 
     % ==> load optimal parameters and simulated choice proportions
     ps = load(['params/','iS_',num2str(iS),'_cr_',num2str(cr),'_startVec.mat']);
-    propcw  = ps.propcw;
-    propccw = ps.propccw;
-    simfit  = ps.simfit; 
-
+    % ==> run model with optimized parameters, and with many simulated trials
+    [nll, propcw, propccw] = modfitf(iS, cr, CTs, 10000, tm, sd, ps.simfit, mod_type);
+    
+    %propcw  = ps.propcw;
+    %propccw = ps.propccw;
+    %simfit  = ps.simfit; 
+    
+    
     % ==> visualize the results
     close all;  clc;
     figure(1); set(gcf,'color','white'); set(gcf,'Position', [33 585 1854 365]);
@@ -238,3 +240,30 @@ if ~FIT_FLAG
     ps
 end
 
+%%
+close all; clc;
+% ==> test some predictions
+
+% ==> relationship between optimal offset and drift rate
+
+iN  = [1,1,15,17,17,18,19,19,20,21,23,29];
+crs = [1,2, 1, 1, 2, 2, 1, 2, 2, 1, 1, 2];
+% iN  = [1,15,17,19,21,23];
+% crs = [1, 1, 1, 1, 1, 1]; 
+
+% iN  = [1,17,18,19,20,29];
+% crs = [2, 2, 2, 2, 2, 2]; 
+
+ofsp = nan(length(iN),1);
+dftp = nan(length(iN),1);
+
+for iS = 1:length(iN)
+    % ==> load optimal params
+    ps = load(['params/','iS_',num2str(iN(iS)),'_cr_',num2str(crs(iS)),'_startVec.mat']);
+    % ==> store results
+    ofsp(iS) = ps.simfit(end);
+    dftp(iS) = ps.simfit(end-1);
+end
+
+corr(ofsp,dftp)
+figure(); plot(ofsp,dftp,'o');
