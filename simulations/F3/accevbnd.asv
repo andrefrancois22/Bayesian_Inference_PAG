@@ -68,15 +68,13 @@ for fc = fcs
             % ==> ccw
             ccw_dv_cw_r =   (csensb_ccw_d(:,end) ==  bnd);
             ccw_dv_ccw_r = -(csensb_ccw_d(:,end) == -bnd);
-            
-        elseif strcmp(M_FLAG,'NO_BOUND')   
-            % ==> no bound - responses are sign at the end of DV
+        elseif strcmp(M_FLAG,'NO_BOUND')            
             % ==> cw
             cw_dv_cw_r =    (sign(csensb_cw_d(:,end))  ==   1);
-            cw_dv_ccw_r =  -(sign(csensb_cw_d(:,end))  ==  -1);
+            cw_dv_ccw_r =   (sign(csensb_cw_d(:,end))  ==  -1);
             % ==> ccw
             ccw_dv_cw_r =   (sign(csensb_ccw_d(:,end)) ==  1);
-            ccw_dv_ccw_r = -(sign(csensb_ccw_d(:,end)) == -1);                        
+            ccw_dv_ccw_r =  (sign(csensb_ccw_d(:,end)) == -1);                        
         end      
         
         % ==> some sanity checks

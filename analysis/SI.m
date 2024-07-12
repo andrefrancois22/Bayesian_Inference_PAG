@@ -1,4 +1,4 @@
-clear all; close all; clc;
+% clear all; close all; clc;
 % ==> directories
 dataPath     = '/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data';
 drc = '../data/';
@@ -66,6 +66,7 @@ for iS = 1:29
     dynr = [dynr; mean(dynf(dvs(I,:)))]; %params(2);
 end
 %%
+
 % ==> DV parameters
 % offsetCat     = params(1);  % Bias in favor of CW or CCW choice
 % scalarCat     = params(2);  % Controls dynamic range of cat dv
@@ -77,19 +78,23 @@ end
 % spreadRiseDir = params(8);  % Controls speed rise of cat dv
 % midRiseDir    = params(9) + midRiseCat - 1.65*spreadRiseCat + 1.65*spreadRiseDir; % Controls half rise time of dir dv
 
-figure(1); set(gcf,'color','white');
-subplot(1,3,1);
-scatter(ofs,dynr,50,'ko','filled'); title(num2str(corr(ofs,dynr)));
+[rr,pr]=corr(ofs,sri);
+
+figure(); set(gcf,'color','white');
+% subplot(1,3,1);
+% scatter(ofs,dynr,50,'ko','filled'); title(num2str(corr(ofs,dynr)));
+% xlabel('mean offset');
+% ylabel('mean dynamic range');
+% axis square;
+% subplot(1,3,2);
+plot(ofs, sri,'o','markerfacecolor',[0.5,0.5,1],'markeredgecolor','w','markersize',12); 
+title('DV mean offset and mean rise time'); %title(['r = ', num2str(corr(ofs,sri))]);
 xlabel('mean offset');
-ylabel('mean dynamic range');
+ylabel('mean half rise');
+text(0.4,-100,['r = ',num2str(num2str(rr)),' p = ',num2str(pr)])
 axis square;
-subplot(1,3,2);
-scatter(ofs, sri,50,'ko','filled'); title(num2str(corr(ofs,sri)));
-xlabel('mean offset');
-ylabel('mean half rise')
-axis square;
-subplot(1,3,3);
-scatter(sri, dynr,50,'ko','filled'); title(num2str(corr(ofs,sri)));
-xlabel('mean (half rise time)');
-ylabel('mean dynamic range')
-axis square;
+% subplot(1,3,3);
+% scatter(sri, dynr,50,'ko','filled'); title(num2str(corr(ofs,sri)));
+% xlabel('mean (half rise time)');
+% ylabel('mean dynamic range')
+% axis square;

@@ -17,12 +17,7 @@ t = linspace(-795,-45,200);
 N = 1000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
-bnd = 12;
-% ==> initial offset
-ofs = 25; %25;
-
-M_FLAG = 'BOUND'; 
-% M_FLAG = 'NO_BOUND';
+bnd = 12; 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> standard deviation for randn
@@ -31,11 +26,11 @@ sd = 1;
 mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];
 
 % ==> prior drift linear factors
-fcs = 0:0.25:10; 
+fcs = 0.05:0.005:0.1; %0:0.25:10; 
 
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
-[db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG);
+[db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw] = accevbnd(N, tm, bnd, sd, mus, fcs);
 
 %%
 

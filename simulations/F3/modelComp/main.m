@@ -32,8 +32,8 @@ LB(4,1)  = 0;                         UB(4,1) = 200;    % initial offset
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> fit remaining for model2 
-iN  = [13,14,14,15,16,18,20,21,22,22,23,24,25,25,26,26,27,27,28,28,29];
-crs = [ 2, 1, 2, 2, 2, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1];
+iN  = [28,29];
+crs = [2, 1];
 
 for J = 1:length(iN)
 
@@ -249,18 +249,14 @@ end
 
 end
 %%
-close all; clc;
+% close all; clc;
 % ==> test some predictions
 
 % ==> relationship between optimal offset and drift rate
 
-iN  = [1,1,15,17,17,18,19,19,20,21,23,29];
-crs = [1,2, 1, 1, 2, 2, 1, 2, 2, 1, 1, 2];
-% iN  = [1,15,17,19,21,23];
-% crs = [1, 1, 1, 1, 1, 1]; 
-
-% iN  = [1,17,18,19,20,29];
-% crs = [2, 2, 2, 2, 2, 2]; 
+N = 27;
+iN  = [1:N,1:N];
+crs = [ones(1,N),ones(1,N)*2]
 
 ofsp = nan(length(iN),1);
 dftp = nan(length(iN),1);
@@ -273,5 +269,14 @@ for iS = 1:length(iN)
     dftp(iS) = ps.simfit(end-1);
 end
 
-corr(ofsp,dftp)
-figure(); plot(ofsp,dftp,'o');
+[r,p]=corr(ofsp, dftp)
+
+figure(); set(gcf,'color','white');
+plot(ofsp,dftp,'o','markerfacecolor',[0.5,0.5,1],'markeredgecolor','w','markersize',12);
+title('Optimized DDM offset & drift rate');
+text(45,12,['r = ',num2str(r),' p = ',num2str(p)])
+xlabel('initial Offset');
+ylabel('Drift rate');
+xlim([-2,100]);
+ylim([-1,15]);
+axis square;

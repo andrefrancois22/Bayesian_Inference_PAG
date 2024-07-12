@@ -15,8 +15,9 @@ for or = 1:7
     pr_ccw = -ofs; 
     % ==> linear drift case
     % ==> case with a bias that grows linearly with t (mean drift)
-    pr_cw_d  =  fc*(0:(tm-1)) + pr_cw;  
-    pr_ccw_d = -fc*(0:(tm-1)) + pr_ccw;
+    % fc is an 'urgency signal' - should remove this. (and problem with the sign -fc - remove)
+    pr_cw_d  =  (0:(tm-1)) + pr_cw;  % fc*(0:(tm-1)) + pr_cw;  
+    pr_ccw_d =  (0:(tm-1)) + pr_ccw;  %-fc*(0:(tm-1)) + pr_ccw;
 
     % ==> randn
     rdn = randn(N,tm);
