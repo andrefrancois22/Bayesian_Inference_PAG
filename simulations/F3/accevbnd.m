@@ -13,44 +13,44 @@ prop_ccw = nan(length(fcs),3,7);
 dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
 
 fci = 1;
-% ==> stimulus orientation
+
 for fc = fcs 
-    
-    % ==> factor for prior offset in cw and ccw directions
+        
+    % ==> stimulus orientation
     for or = 1:7
 
-         % ==> prior offsets
+        % ==> factor for prior offset in cw and ccw directions
+        % ==> prior offsets
         pr_cw  =  ofs * fc; 
         pr_ccw = -ofs * fc; 
+        
+        pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  = ofs;
+        pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = -ofs;
+        
         % ==> linear drift case
-        % ==> case with a bias that grows linearly with t (mean drift)
-        pr_cw_d  =  (0:(tm-1)) + pr_cw;  % fc*(0:(tm-1)) + pr_cw;  
-        pr_ccw_d =  (0:(tm-1)) + pr_ccw; %-fc*(0:(tm-1)) + pr_ccw;
+%         % ==> case with a bias that grows linearly with t (mean drift)
+%         pr_cw_d  =  (0:(tm-1)) + pr_cw;  % fc*(0:(tm-1)) + pr_cw;  
+%         pr_ccw_d =  (0:(tm-1)) + pr_ccw; %-fc*(0:(tm-1)) + pr_ccw;
 
         % ==> randn
         rdn = randn(N,tm);
         % ==> Gaussian random walk
-        sens_cw  = mus(or) + sd*rdn;
-        sens_ccw = mus(or) + sd*rdn;
-        % ==> cummulative sum over time
-        csens_cw  = cumsum(sens_cw,2);
-        csens_ccw = cumsum(sens_ccw,2);          
+        sens_cw  = mus(or) + sd*rdn; %(momentary sens evidence)
+        sens_ccw = mus(or) + sd*rdn;        
         
-        % Linear drift starts during -800ms - -600ms time window
-        pr_cw_d_m  = pr_cw_d  / tm;
-        pr_ccw_d_m = pr_ccw_d / tm; 
-        % ==> csens with bound - two cases: with ccw prior or with cw prior
-        csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]); 
-        csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]);    
-
-        % ==> set DV values for timepoints over trials that reach or exceed a bound
-        % to the bound value.
-        % ==> cw prior ctx
-        csensb_cw_d(csensb_cw_d >=  bnd) =  bnd;
-        csensb_cw_d(csensb_cw_d <= -bnd) = -bnd;
-        % ==> ccw prior ctx
-        csensb_ccw_d(csensb_ccw_d >=  bnd) =  bnd;
-        csensb_ccw_d(csensb_ccw_d <= -bnd) = -bnd;
+        % ==> FIX HERE..
+        % ==> cummulative sum over time (momentary evidence - )
+        csensb_cw_d  = cumsum(sens_cw  + repmat(pr_cw_v', [N,1]), 2);
+        csensb_ccw_d = cumsum(sens_ccw + repmat(pr_ccw_v', [N,1]),2);          
+        
+%         keyboard;
+        
+%         % Linear drift starts during -800ms - -600ms time window
+%         pr_cw_d_m  = pr_cw_d  / tm;
+%         pr_ccw_d_m = pr_ccw_d / tm; 
+%         % ==> csens with bound - two cases: with ccw prior or with cw prior
+%         csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]); 
+%         csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]);    
 
         % ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
         % starting from t+1 to the bound for that trial

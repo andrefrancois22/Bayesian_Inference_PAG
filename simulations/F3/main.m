@@ -19,10 +19,10 @@ tm = 200; % timepoints (same resolution as actual DV fits)
 % ==> bound
 bnd = 12;
 % ==> initial offset
-ofs = 25; %25;
+ofs = 0.25; 
 
-M_FLAG = 'BOUND'; 
-% M_FLAG = 'NO_BOUND';
+% M_FLAG = 'BOUND'; 
+M_FLAG = 'NO_BOUND';
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> standard deviation for randn
@@ -30,8 +30,8 @@ sd = 1;
 % ==> mean for randn
 mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];
 
-% ==> prior drift linear factors
-fcs = 0:0.25:10; 
+% ==> prior offset factors (will influence drift rate due to integration)
+fcs = 0:0.01:0.4; 
 
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
