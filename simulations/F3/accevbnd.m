@@ -14,7 +14,7 @@ dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
 
 fci = 1;
 
-for fc = fcs 
+for fc = fcs
         
     % ==> stimulus orientation
     for or = 1:7
@@ -24,14 +24,9 @@ for fc = fcs
         pr_cw  =  ofs * fc; 
         pr_ccw = -ofs * fc; 
         
-        pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  = ofs;
+        pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  =  ofs;
         pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = -ofs;
         
-        % ==> linear drift case
-%         % ==> case with a bias that grows linearly with t (mean drift)
-%         pr_cw_d  =  (0:(tm-1)) + pr_cw;  % fc*(0:(tm-1)) + pr_cw;  
-%         pr_ccw_d =  (0:(tm-1)) + pr_ccw; %-fc*(0:(tm-1)) + pr_ccw;
-
         % ==> randn
         rdn = randn(N,tm);
         % ==> Gaussian random walk
@@ -42,15 +37,6 @@ for fc = fcs
         % ==> cummulative sum over time (momentary evidence - )
         csensb_cw_d  = cumsum(sens_cw  + repmat(pr_cw_v', [N,1]), 2);
         csensb_ccw_d = cumsum(sens_ccw + repmat(pr_ccw_v', [N,1]),2);          
-        
-%         keyboard;
-        
-%         % Linear drift starts during -800ms - -600ms time window
-%         pr_cw_d_m  = pr_cw_d  / tm;
-%         pr_ccw_d_m = pr_ccw_d / tm; 
-%         % ==> csens with bound - two cases: with ccw prior or with cw prior
-%         csensb_cw_d =  csens_cw  + repmat(pr_cw_d_m,  [N,1]); 
-%         csensb_ccw_d = csens_ccw + repmat(pr_ccw_d_m, [N,1]);    
 
         % ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
         % starting from t+1 to the bound for that trial
@@ -77,7 +63,7 @@ for fc = fcs
             % ==> ccw
             ccw_dv_cw_r =   (sign(csensb_ccw_d(:,end)) ==  1);
             ccw_dv_ccw_r = -(sign(csensb_ccw_d(:,end)) == -1);                        
-        end      
+        end              
         
         % ==> some sanity checks
         assert(sum([cw_dv_cw_r  & cw_dv_ccw_r]) == 0)
@@ -91,8 +77,7 @@ for fc = fcs
         % ==> handle DVs that never reached a bound...
         % ==> use sign of DV
         cw_r(cw_r == 0)   = sign(csensb_cw_d(cw_r==0,end));
-        ccw_r(ccw_r == 0) = sign(csensb_ccw_d(ccw_r==0,end));
-            
+        ccw_r(ccw_r == 0) = sign(csensb_ccw_d(ccw_r==0,end));            
 
         % ==> incongruent trials (cw context yields a ccw response, e.g. '-1' )
         dvs_i_cw = csensb_cw_d(cw_r==-1,:);
@@ -123,6 +108,12 @@ for fc = fcs
 
     end
     
+%     figure(2);
+%     plot(1:tm,mean(csensb_cw_d(cw_r == 1,:)),'r-')
+%     hold on; hold all;
+%     plot(1:tm,mean(csensb_ccw_d(ccw_r == -1,:)),'b-')    
+%     keyboard
+        
     % ==> delta bias
     db(fci) = (prop_cw(fci,2,4) - prop_ccw(fci,2,4)) - (prop_cw(fci,1,4) - prop_ccw(fci,1,4));
     % ==> delta perceptual uncertainty (approx)

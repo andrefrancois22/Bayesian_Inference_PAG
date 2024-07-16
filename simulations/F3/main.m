@@ -17,12 +17,12 @@ t = linspace(-795,-45,200);
 N = 1000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
-bnd = 12;
+bnd = 10; %12; -6
 % ==> initial offset
-ofs = 0.25; 
+ofs = 0.8; %0.25; 
 
-% M_FLAG = 'BOUND'; 
-M_FLAG = 'NO_BOUND';
+M_FLAG = 'BOUND'; 
+% M_FLAG = 'NO_BOUND';
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> standard deviation for randn
@@ -31,18 +31,17 @@ sd = 1;
 mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];
 
 % ==> prior offset factors (will influence drift rate due to integration)
-fcs = 0:0.01:0.4; 
+fcs = 0:0.02:0.4 %0:0.01:0.2; 
 
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
 [db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG);
 
-%%
 
 % ==> plot simulated choice proportions by dynamic range split
 for fci = 1:length(fcs)
     figure(3); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
-    subplot(6,7,fci)
+    subplot(4,7,fci)
     hold on; hold all; 
     plot(mus,squeeze(prop_cw(fci,3,:))','b.-', 'linewidth', 1.5); 
     plot(mus,squeeze(prop_ccw(fci,3,:))','r.-', 'linewidth', 1.5); 
@@ -54,7 +53,7 @@ for fci = 1:length(fcs)
     drawnow;      
     % ==> plot simulated choice proportions by dynamic range split
     figure(4); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
-    subplot(6,7,fci)
+    subplot(4,7,fci)
     hold on; hold all; 
     plot(mus,squeeze(prop_cw(fci,1,:))','bx:', 'linewidth', 1); 
     plot(mus,squeeze(prop_ccw(fci,1,:))','rx:','linewidth', 1);  
@@ -85,11 +84,11 @@ title(['r = ',num2str(r),', p = ',num2str(p)]);
 % ==> Single congruent and incongruent DV
 
 % ==> these may appear different from examples in the paper
-ni = 613; %randi(size(dvs_i_ccw,1));
-nc = 91;  %randi(size(dvs_c_ccw,1)); 
+ni = randi(size(dvs_i_ccw,1));
+nc = randi(size(dvs_c_ccw,1)); 
 
 % ==> draw figure
-figure(); set(gcf,'color','white');
+figure(3); set(gcf,'color','white');
 hold on; hold all;
 plot(t,dvs_i_ccw(ni,:)','linewidth',1.5, 'color', [0.6,0.6,0.6]);
 plot(t,-bnd*ones(1,length(t)),'k--');
