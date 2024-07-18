@@ -5,20 +5,20 @@ function [nll, propcw, propccw] = modfitf(iS, cr, CTs, N, tm, sd, params, mod_ty
     % compared to actual dynamic range split choice proportions
     
     % ==> stimulus orientation offset interval (assumption is that they are evenly spaced)
-    intv = params(1);
+    intv = 0.05; %params(1);
     % ==> overall bias (horizontal offset of all four curves)
-    bs = params(2);    
+    bs = params(1);    
     % ==> drift rate
-    fc = params(3);
+    fc = params(2);
     % ==> bound
-    bnd = 12; %params(5);
+    bnd = 8; %params(5);    
     
     if strcmp(mod_type,'m1')     % ==> no initial offset 
         % ==> initial offset
         ofs = 0;
     elseif strcmp(mod_type,'m2') % ==> arbitrary initial offset
         % ==> initial ofset
-        ofs = params(4);        
+        ofs = params(3);        
     end
     
     % ==> orientation intervals

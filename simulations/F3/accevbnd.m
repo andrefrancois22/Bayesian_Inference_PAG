@@ -27,6 +27,10 @@ for fc = fcs
         pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  =  ofs;
         pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = -ofs;
         
+        % ==> case 'impulse function'
+%         pr_cw_v  = repmat(0,  [tm,1]);  pr_cw_v(1)  =  ofs;
+%         pr_ccw_v = repmat(0, [tm,1]);  pr_ccw_v(1) = -ofs;
+        
         % ==> randn
         rdn = randn(N,tm);
         % ==> Gaussian random walk

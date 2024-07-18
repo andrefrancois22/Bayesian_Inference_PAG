@@ -14,24 +14,30 @@ t = linspace(-795,-45,200);
 [~,iu2] = min(abs(t + 600)); %-600
 
 % => number of simulated trials
-N = 1000;
+N = 2500;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
-bnd = 10; %12; -6
+bnd = 8; %12; -6
 % ==> initial offset
-ofs = 0.8; %0.25; 
+ofs = 0.6; %0.25; 
 
 M_FLAG = 'BOUND'; 
 % M_FLAG = 'NO_BOUND';
+% ==> add case 'IMPULSE_PRIOR'
+
+% ==> to do
+% have option to add noise to prior offset that varies across trials.
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> standard deviation for randn
 sd = 1;
 % ==> mean for randn
-mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];
+intv = 0.05;
+mus = [-3*intv, -2*intv, -intv, 0, intv, 2*intv, 3*intv];
+% mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];
 
 % ==> prior offset factors (will influence drift rate due to integration)
-fcs = 0:0.02:0.4 %0:0.01:0.2; 
+fcs = 0.06:0.02:0.4 %0:0.01:0.2; 
 
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
@@ -43,8 +49,8 @@ for fci = 1:length(fcs)
     figure(3); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
     subplot(4,7,fci)
     hold on; hold all; 
-    plot(mus,squeeze(prop_cw(fci,3,:))','b.-', 'linewidth', 1.5); 
-    plot(mus,squeeze(prop_ccw(fci,3,:))','r.-', 'linewidth', 1.5); 
+    plot(mus,squeeze(prop_cw(fci,3,:))', 'b-', 'linewidth', 1.5); 
+    plot(mus,squeeze(prop_ccw(fci,3,:))','r-', 'linewidth', 1.5); 
     xlabel('Orientation');
     ylabel('p(cw)')    
     %xlim([-max(mus),max(mus)]); 
@@ -55,10 +61,10 @@ for fci = 1:length(fcs)
     figure(4); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
     subplot(4,7,fci)
     hold on; hold all; 
-    plot(mus,squeeze(prop_cw(fci,1,:))','bx:', 'linewidth', 1); 
-    plot(mus,squeeze(prop_ccw(fci,1,:))','rx:','linewidth', 1);  
-    plot(mus,squeeze(prop_cw(fci,2,:))','b.-', 'linewidth', 1.5); 
-    plot(mus,squeeze(prop_ccw(fci,2,:))','r.-', 'linewidth', 1.5); 
+    plot(mus,squeeze(prop_cw(fci,1,:))', 'color', [0.5,0.5,1], 'linewidth', 1.5); 
+    plot(mus,squeeze(prop_ccw(fci,1,:))','color', [1,0.5,0.5],'linewidth', 1.5);  
+    plot(mus,squeeze(prop_cw(fci,2,:))', 'b-', 'linewidth', 1.5); 
+    plot(mus,squeeze(prop_ccw(fci,2,:))','r-', 'linewidth', 1.5); 
     xlabel('Orientation');
     ylabel('p(cw)')
     %xlim([-max(mus),max(mus)]); 

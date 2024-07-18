@@ -25,17 +25,16 @@ options         = optimoptions('fmincon','ConstraintTolerance', 1e-100, ...
                                          'Algorithm', 'Interior-point');
 options.Display = 'iter';
 % Set bounds on model parameters
-LB(1,1)  = 0.01;                      UB(1,1) = 0.06;   % orientation mean interval
-LB(2,1)  = -0.2;                      UB(2,1) = 0.2;    % overall bias (not decision bias - this is left or right shift of all curves)
-LB(3,1)  = 0;                         UB(3,1) = 20;     % drift rate (slope of the linear drift)
-LB(4,1)  = 0;                         UB(4,1) = 200;    % initial offset
+LB(1,1)  = 0;                      UB(1,1) = 0.06;   % overall bias (not decision bias - this is left or right shift of all curves)
+LB(2,1)  = 0;                      UB(2,1) = 0.6;    % drift rate (slope of the linear drift)
+LB(3,1)  = 0;                      UB(3,1) = 1.25;     % initial offset
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> fit remaining for model2 
-iN  = [28,29];
-crs = [2, 1];
+iN  = [17];
+crs = [1];
 
-for J = 1:length(iN)
+for J = 1
 
 % ==> fit or used cashed results?
 % FIT_FLAG = false;
@@ -83,53 +82,51 @@ stp = 10;
 r = 100;
 
 if FIT_FLAG
-    itsvs = linspace(LB(1,1),UB(1,1),stp); % --> orientation mus interval
-    sftvs = linspace(LB(2,1),UB(2,1),stp); % --> horizontal shift
-    dftvs = linspace(LB(3,1),UB(3,1),stp); % --> drift rate
-    oftvs = linspace(LB(4,1),UB(4,1),stp); % --> initial offset
+%     itsvs = linspace(LB(1,1),UB(1,1),stp); % --> orientation mus interval
+    sftvs = linspace(LB(1,1),UB(1,1),stp); % --> horizontal shift
+    dftvs = linspace(LB(2,1),UB(2,1),stp); % --> drift rate
+    oftvs = linspace(LB(3,1),UB(3,1),stp); % --> initial offset
 
     % ==> forward model NNLs
-    NNLs_init = nan(stp,stp,stp,stp);
+    NNLs_init = nan(stp,stp,stp);
     
     % ==> this takes a few minutes
     fprintf('Running initial parameter coarse grid search before fmincon (takes minutes)...\n');
     
     % ==> brute force grid search for initial param settings before fmincon
     i = 1;
-    for itvi = 1:stp                                    % --> orientation mus interval
-        % => interval
-        itv = itsvs(itvi);
-        for sfti = 1:stp                                % --> horizontal shift
-            % => shift
-            sft = sftvs(sfti);
-            for dfti = 1:stp                            % --> drift rate
-                % => drift rate
-                dft = dftvs(dfti);
-                for ofti = 1:stp                        % --> initial offset
-                    % => offset
-                    oft = oftvs(ofti);               
-                    % ==> interval, overall bias (shift), fc (drift rate), initial offset
-                    startVec = [itv, sft, dft, oft];                
-                    % ==> run forward model    
-                    [nll, ~, ~] = modfitf(iS, cr, CTs, N, tm, sd, startVec, mod_type);
-                    % ==> store
-                    NNLs_init(itvi,sfti,dfti,ofti) = nll;
-                    % => for command line updates
-                    i = i + 1;
-                end            
-            end
+
+    for sfti = 1:stp                                % --> horizontal shift
+        % => shift
+        sft = sftvs(sfti);
+        for dfti = 1:stp                            % --> drift rate
+            % => drift rate
+            dft = dftvs(dfti);
+            for ofti = 1:stp                        % --> initial offset
+                % => offset
+                oft = oftvs(ofti);               
+                % ==> interval, overall bias (shift), fc (drift rate), initial offset
+                startVec = [sft, dft, oft];                
+                % ==> run forward model    
+                [nll, ~, ~] = modfitf(iS, cr, CTs, N, tm, sd, startVec, mod_type);
+                % ==> store
+                NNLs_init(sfti,dfti,ofti) = nll;
+                % => for command line updates
+                i = i + 1;
+            end            
         end
         % => update               
-        clc; fprintf('completed step %d of %d...\n',i,stp^length(LB));  
+        clc; fprintf('completed step %d of %d...\n',i,stp^length(LB));              
     end
+    
 
-    % ==> return 4 indices of min NLL in NNLs_init
+    % ==> return 3 indices of min NLL in NNLs_init
     [min_nll, idx] = min(NNLs_init(:));
-    [i,j,k,l] = ind2sub(size(NNLs_init), idx);
+    [i,j,k] = ind2sub(size(NNLs_init), idx);
 
     % ==> define initial coarse parameter settings for fmincon optimization.
     % => interval, overall bias (shift), fc (drift rate), initial offset, bound
-    startVec = [itsvs(i),sftvs(j),dftvs(k),oftvs(l)];  
+    startVec = [sftvs(i),dftvs(j),oftvs(k)];  
 
     % ==> initialize NLLs
     nlls = cell(r,1);
@@ -180,7 +177,7 @@ if ~FIT_FLAG
     % ==> load optimal parameters and simulated choice proportions
     ps = load(['params/','iS_',num2str(iS),'_cr_',num2str(cr),'_startVec.mat']);
     % ==> run model with optimized parameters, and with many simulated trials
-    [nll, propcw, propccw] = modfitf(iS, cr, CTs, 10000, tm, sd, ps.simfit, mod_type);
+    [nll, propcw, propccw] = modfitf(iS, cr, CTs, 50000, tm, sd, ps.simfit, mod_type);
     
     %propcw  = ps.propcw;
     %propccw = ps.propccw;
@@ -191,10 +188,10 @@ if ~FIT_FLAG
     figure(); set(gcf,'color','white'); set(gcf,'Position', [33 585 1854 365]);
     subplot(1,4,1);
     hold on; hold all;
-    plot(-3:3, propcw(1,:), 'color', [1,0.75,0.75], 'linewidth', 2, 'linestyle', '--');
-    plot(-3:3, propccw(1,:),'color', [0.75,0.75,1], 'linewidth', 2, 'linestyle', '--');
-    plot(-3:3, propcw(2,:), 'r-', 'linewidth', 1, 'linestyle', '--');
-    plot(-3:3, propccw(2,:),'b-', 'linewidth', 1, 'linestyle', '--');
+    plot(-3:3, propcw(1,:), 'color', [1,0.75,0.75], 'linewidth', 2, 'linestyle', '-');
+    plot(-3:3, propccw(1,:),'color', [0.75,0.75,1], 'linewidth', 2, 'linestyle', '-');
+    plot(-3:3, propcw(2,:), 'r', 'linewidth', 2, 'linestyle', '-');
+    plot(-3:3, propccw(2,:),'b', 'linewidth', 2, 'linestyle', '-');
     xlabel('Orientation');
     ylabel('Simulated p(cw)');
     title('Optimized Drift-Diffusion');
