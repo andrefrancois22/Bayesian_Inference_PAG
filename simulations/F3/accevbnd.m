@@ -26,7 +26,11 @@ for fc = fcs
         
         pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  =  ofs;
         pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = -ofs;
-        
+
+        % ==> set prior expectation step function for each trial
+        pr_cw_vn  = repmat(pr_cw_v', [N,1]);  pr_cw_vn(:,1)  + randn(N,1)/100;
+        pr_ccw_vn = repmat(pr_ccw_v', [N,1]); pr_ccw_vn(:,1) + randn(N,1)/100;
+
         % ==> case 'impulse function'
 %         pr_cw_v  = repmat(0,  [tm,1]);  pr_cw_v(1)  =  ofs;
 %         pr_ccw_v = repmat(0, [tm,1]);  pr_ccw_v(1) = -ofs;
@@ -39,8 +43,8 @@ for fc = fcs
         
         % ==> FIX HERE..
         % ==> cummulative sum over time (momentary evidence - )
-        csensb_cw_d  = cumsum(sens_cw  + repmat(pr_cw_v', [N,1]), 2);
-        csensb_ccw_d = cumsum(sens_ccw + repmat(pr_ccw_v', [N,1]),2);          
+        csensb_cw_d  = cumsum(sens_cw  + pr_cw_vn, 2);
+        csensb_ccw_d = cumsum(sens_ccw + pr_ccw_vn,2);          
 
         % ==> once a bnd has been reached at time t for a given trial, set the remaining DV values
         % starting from t+1 to the bound for that trial
