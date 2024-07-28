@@ -28,13 +28,12 @@ for fc = fcs
         pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = -ofs;
 
         % % ==> set prior expectation step function for each trial
-        pr_cw_vn  = repmat(pr_cw_v', [N,1]);  pr_cw_vn  = pr_cw_vn  + randn(N,tm)/4;
-        pr_ccw_vn = repmat(pr_ccw_v', [N,1]); pr_ccw_vn = pr_ccw_vn + randn(N,tm)/4;
+        pr_cw_vn  = repmat(pr_cw_v', [N,1]);  %pr_cw_vn  = pr_cw_vn  + randn(N,tm);
+        pr_ccw_vn = repmat(pr_ccw_v', [N,1]); %pr_ccw_vn = pr_ccw_vn + randn(N,tm);
 
         % % ==> case 'impulse function'
         % pr_cw_v  = repmat(0,  [tm,1]);  pr_cw_v(1)  =  ofs;
-        % pr_ccw_v = repmat(0, [tm,1]);   pr_ccw_v(1) = -ofs;
-        % 
+        % pr_ccw_v = repmat(0, [tm,1]);   pr_ccw_v(1) = -ofs; 
         % % ==> set prior expectation step function for each trial
         % pr_cw_vn  = repmat(pr_cw_v', [N,1]);  pr_cw_vn  = pr_cw_vn  + randn(N,tm);
         % pr_ccw_vn = repmat(pr_ccw_v', [N,1]); pr_ccw_vn = pr_ccw_vn + randn(N,tm);        
