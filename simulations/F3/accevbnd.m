@@ -37,12 +37,12 @@ for fc = fcs
         end
         % ==> case 'impulse function'
         if strcmp(P_FLAG,'IMPULSE_PRIOR')
-            pr_cw_v  = zeros(tm,1);  pr_cw_v(1)  =  ofs;
-            pr_ccw_v = zeros(tm,1);  pr_ccw_v(1) = -ofs; 
+            pr_cw_v  = zeros(tm,1);  pr_cw_v(1)  =  ofs * fc;
+            pr_ccw_v = zeros(tm,1);  pr_ccw_v(1) = -ofs * fc; 
             % ==> set prior expectation step function for each trial
             pr_cw_vn  = repmat(pr_cw_v', [N,1]);
             pr_ccw_vn = repmat(pr_ccw_v', [N,1]);        
-        end
+        end     
 
         % ==> trial-by-trial noise?
         if strcmp(P_FLAG,'TRIAL_NOISE')
