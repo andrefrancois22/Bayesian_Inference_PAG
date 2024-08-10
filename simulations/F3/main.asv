@@ -14,14 +14,13 @@ t = linspace(-795,-45,200);
 [~,iu2] = min(abs(t + 600)); %-600
 
 % => number of simulated trials
-N = 2500;
+N = 1000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
 bnd = 8; %12; -6
 % ==> initial offset
 ofs = 0.6; %0.25; 
 
-% ==> accumulation bound or no bound?
 M_FLAG = 'BOUND'; 
 % M_FLAG = 'NO_BOUND';
 
@@ -30,8 +29,8 @@ P_FLAG = 'IMPULSE_PRIOR';
 % P_FLAG = 'REG_DRIFT_PRIOR';
 
 % ==> Trial-by-trial noise?
-N_FLAG = 'NO_TRIAL_NOISE';
-% N_FLAG = 'TRIAL_NOISE';
+N_FLAG = 'TRIAL_NOISE';
+% N_FLAG = 'NO_TRIAL_NOISE';
 
 % ==> to do
 % have option to add noise to prior offset that varies across trials.
@@ -45,7 +44,7 @@ mus = [-3*intv, -2*intv, -intv, 0, intv, 2*intv, 3*intv];
 % mus = [-0.15, -0.1, -0.05, 0.0, 0.05, 0.1, 0.15];
 
 % ==> prior offset factors (will influence drift rate due to integration)
-fcs = 0.0:0.02:0.4; %0:0.01:0.2; 
+fcs = 0.06:0.02:0.4; %0:0.01:0.2; 
 
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
@@ -53,7 +52,7 @@ fcs = 0.0:0.02:0.4; %0:0.01:0.2;
 
 
 % ==> plot simulated choice proportions by dynamic range split
-for fci = 3:length(fcs)
+for fci = 1:length(fcs)
     figure(3); set(gcf,'color','white'); set(gcf, 'Position',[273 218 1150 719]);
     subplot(4,7,fci)
     hold on; hold all; 
@@ -81,6 +80,7 @@ for fci = 3:length(fcs)
     drawnow;  
 end
 
+%% 
 % ==> store averages of DVs at specific time windows
 mu_early_csens_cw_ds = nan(length(fcs),1);
 mu_late_csens_cw_ds  = nan(length(fcs),1);
@@ -103,7 +103,7 @@ for fci = 1:length(fcs)
 end
 
 % ==> plot range
-rg = floor(min([mu_early_csens_cw_ds; mu_early_csens_ccw_ds; mu_late_csens_cw_ds; mu_late_csens_ccw_ds])):ceil(max([mu_early_csens_cw_ds; mu_early_csens_ccw_ds; mu_late_csens_cw_ds; mu_late_csens_ccw_ds]));
+rg = floor():ceil();
 
 figure(10); 
 set(gcf,'color','white');
@@ -116,8 +116,6 @@ plot(zeros(length(rg)),rg, 'k--');
 xlabel('Early DV value (a.u)');
 ylabel('Late DV value');
 title('Early bias + drift');
-axis square;
-drawnow;
 
 %% 
 % ==> correlation between simulated delta bias and simulated delta

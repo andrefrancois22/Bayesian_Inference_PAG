@@ -1,4 +1,4 @@
-function [db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG)
+function [db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG)
 
 % ==> delta bias
 db = nan(1,length(fcs));
@@ -28,28 +28,20 @@ for fc = fcs
         pr_cw  =  ofs * fc; 
         pr_ccw = -ofs * fc; 
         
-        if strcmp(P_FLAG,'REG_DRIFT_PRIOR')
-            pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  =  ofs;
-            pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = -ofs;
-            % % ==> set prior expectation step function for each trial
-            pr_cw_vn  = repmat(pr_cw_v', [N,1]);  
-            pr_ccw_vn = repmat(pr_ccw_v', [N,1]); 
-        end
+        % pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  =  ofs;
+        % pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = -ofs;
+        % % % ==> set prior expectation step function for each trial
+        % pr_cw_vn  = repmat(pr_cw_v', [N,1]);  %pr_cw_vn  = pr_cw_vn  + randn(N,tm);
+        % pr_ccw_vn = repmat(pr_ccw_v', [N,1]); %pr_ccw_vn = pr_ccw_vn + randn(N,tm);
+
         % ==> case 'impulse function'
         if strcmp(P_FLAG,'IMPULSE_PRIOR')
             pr_cw_v  = zeros(tm,1);  pr_cw_v(1)  =  ofs;
             pr_ccw_v = zeros(tm,1);  pr_ccw_v(1) = -ofs; 
             % ==> set prior expectation step function for each trial
-            pr_cw_vn  = repmat(pr_cw_v', [N,1]);
-            pr_ccw_vn = repmat(pr_ccw_v', [N,1]);        
+            pr_cw_vn  = repmat(pr_cw_v', [N,1]);  pr_cw_vn  = pr_cw_vn  + randn(N,tm);
+            pr_ccw_vn = repmat(pr_ccw_v', [N,1]); pr_ccw_vn = pr_ccw_vn + randn(N,tm);        
         end
-
-        % ==> trial-by-trial noise?
-        if strcmp(P_FLAG,'TRIAL_NOISE')
-            pr_cw_vn  = pr_cw_vn  + randn(N,tm);
-            pr_ccw_vn = pr_ccw_vn + randn(N,tm);
-        end
-
         % ==> randn
         rdn = randn(N,tm);
         % ==> Gaussian random walk
