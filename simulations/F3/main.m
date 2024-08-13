@@ -22,16 +22,24 @@ bnd = 8; %12; -6
 ofs = 0.6; %0.25; 
 
 % ==> accumulation bound or no bound?
-M_FLAG = 'BOUND'; 
-% M_FLAG = 'NO_BOUND';
+% M_FLAG = 'BOUND'; 
+M_FLAG = 'NO_BOUND';
 
 % ==> add case 'IMPULSE_PRIOR'
-P_FLAG = 'IMPULSE_PRIOR';
-% P_FLAG = 'REG_DRIFT_PRIOR';
+% P_FLAG = 'IMPULSE_PRIOR';
+P_FLAG = 'REG_DRIFT_PRIOR';
 
-% ==> Trial-by-trial noise?
+% ==> Trial-by-trial noise? ('cross-trial noise in the prior expectation')
 N_FLAG = 'NO_TRIAL_NOISE';
 % N_FLAG = 'TRIAL_NOISE';
+
+% ==> check
+
+% ==> create a new SI that shows how the DDMs work:
+% ==> show the prior step function and the sensory evidence 
+% ==> also illustrate the cross-trial variability (the TRIAL_NOISE case)
+% ==> where you show the multiplicative constant applied to the step
+% function
 
 % ==> to do
 % have option to add noise to prior offset that varies across trials.

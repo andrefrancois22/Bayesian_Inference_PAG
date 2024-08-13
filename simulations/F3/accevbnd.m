@@ -44,11 +44,11 @@ for fc = fcs
             pr_ccw_vn = repmat(pr_ccw_v', [N,1]);        
         end     
 
-        % ==> trial-by-trial noise?
-        if strcmp(P_FLAG,'TRIAL_NOISE')
-            pr_cw_vn  = pr_cw_vn  + randn(N,tm);
-            pr_ccw_vn = pr_ccw_vn + randn(N,tm);
-        end
+        % % ==> trial-by-trial noise?
+        % if strcmp(P_FLAG,'TRIAL_NOISE')
+        %     pr_cw_vn  = pr_cw_vn  + randn(N,tm);
+        %     pr_ccw_vn = pr_ccw_vn + randn(N,tm);
+        % end
 
         % ==> randn
         rdn = randn(N,tm);
