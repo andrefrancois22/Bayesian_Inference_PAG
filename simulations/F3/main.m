@@ -1,5 +1,4 @@
 clear all; close all; clc;
-
 rng(1,"twister");
 
 % ==> parameters ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,7 +13,7 @@ t = linspace(-795,-45,200);
 [~,iu2] = min(abs(t + 600)); %-600
 
 % => number of simulated trials
-N = 2500;
+N = 5000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
 bnd = 8; %12; -6
@@ -22,16 +21,19 @@ bnd = 8; %12; -6
 ofs = 0.6; %0.25; 
 
 % ==> accumulation bound or no bound?
-% M_FLAG = 'BOUND'; 
-M_FLAG = 'NO_BOUND';
+M_FLAG = 'BOUND'; 
+% M_FLAG = 'NO_BOUND';
 
 % ==> add case 'IMPULSE_PRIOR'
 % P_FLAG = 'IMPULSE_PRIOR';
 P_FLAG = 'REG_DRIFT_PRIOR';
 
 % ==> Trial-by-trial noise? ('cross-trial noise in the prior expectation')
-N_FLAG = 'NO_TRIAL_NOISE';
-% N_FLAG = 'TRIAL_NOISE';
+% N_FLAG = 'NO_TRIAL_NOISE';
+N_FLAG = 'TRIAL_NOISE';
+% ==> define log normal noise
+m = 0.01; % mean
+v = 0.01; % variance
 
 % ==> check
 
@@ -57,7 +59,7 @@ fcs = 0.0:0.02:0.4; %0:0.01:0.2;
 
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
-[db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG);
+[db,dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG, m, v);
 
 
 % ==> plot simulated choice proportions by dynamic range split
@@ -127,7 +129,7 @@ title('Early bias + drift');
 axis square;
 drawnow;
 
-%% 
+
 % ==> correlation between simulated delta bias and simulated delta
 % uncertainty
 [r,p] = corr(db',dp');
@@ -140,15 +142,13 @@ xlabel('Simulated \Delta bias');
 ylabel('Simulated \Delta perceptual uncertainty')
 title(['r = ',num2str(r),', p = ',num2str(p)]);
 
-%% 
-% ==> Single congruent and incongruent DV
 
+% ==> Single congruent and incongruent DV
 % ==> these may appear different from examples in the paper
 ni = randi(size(dvs_i_ccw,1));
 nc = randi(size(dvs_c_ccw,1)); 
-
 % ==> draw figure
-figure(3); set(gcf,'color','white');
+figure(7); set(gcf,'color','white');
 hold on; hold all;
 plot(t,dvs_i_ccw(ni,:)','linewidth',1.5, 'color', [0.6,0.6,0.6]);
 plot(t,-bnd*ones(1,length(t)),'k--');
@@ -159,9 +159,7 @@ xlabel('Time');
 ylabel('Accumulated evidence');
 title('Example simulated trials');
 
-%% 
 %==> distribution of dynamic range trials
-
 % ==> dynamic range function
 dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
 
@@ -173,7 +171,7 @@ dynr_i_ccw = dynf(dvs_i_ccw);
 
 % ==> plot distribution of dynamic ranges
 dynrs = [dynr_c_cw; dynr_i_cw; dynr_i_ccw; dynr_c_ccw];
-figure(); set(gcf,'color','white');
+figure(8); set(gcf,'color','white');
 histogram(dynrs,15,'facecolor','w');
 xlabel('Dynamic range (a.u)');
 ylabel('Frequency');
