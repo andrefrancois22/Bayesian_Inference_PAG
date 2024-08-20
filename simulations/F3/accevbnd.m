@@ -202,7 +202,7 @@ for fc = fcs
     LB_M1(5,1)  = -10;                        UB_M1(5,1) = 10;         % decision criterion
     % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    % ==> for dynr case (1 or 2)
+    % ==> for dynr case (1 - high or 2 - low)
     for dri = 1:2
         % ==> context 1 ccw response (incongruent) & ==> context 2 ccw response (congruent)
         nccw = [squeeze(cnts(fci,1,2,:,dri))'; squeeze(cnts(fci,2,1,:,dri))']; 
