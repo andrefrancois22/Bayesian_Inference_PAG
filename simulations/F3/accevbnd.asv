@@ -184,24 +184,6 @@ for fc = fcs
     
     % ==> for dynr case (1 - high or 2 - low)
     for dri = 1:2
-
-        % ==> fit psychometric functions
-        % ==> use identical db and dp metrics (must do this for dynamic range proportions too)
-        fprintf('computing psychometric functions...\n')
-        % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        options         = optimoptions('fmincon');
-        options.Display = 'off';
-        % Set bounds on model parameters
-        % Model fit to choice data split by task context (1 & 2: guess rate; 3: perceptual uncertainty; 4 & 5: decision criterion)
-        startVec_M1 = [0.04 0.04 1 0 0]; 
-    
-        LB_M1(1,1)  = 0;                         UB_M1(1,1) = 0.05;      % lapse rate
-        LB_M1(2,1)  = 0;                         UB_M1(2,1) = 0.05;      % lapse rate
-        LB_M1(3,1)  = 0.0;                       UB_M1(3,1) = 5;        % perceptual uncertainty
-        LB_M1(4,1)  = -10;                       UB_M1(4,1) = 10;         % decision criterion (-10->10 range originally)
-        LB_M1(5,1)  = -10;                       UB_M1(5,1) = 10;         % decision criterion
-        % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        
         % ==> context 1 ccw response (incongruent) & ==> context 2 ccw response (congruent)
         nccw = [squeeze(cnts(fci,1,2,:,dri))'; squeeze(cnts(fci,2,1,:,dri))']; 
         % ==> context 1 cw response (congruent)    & ==> context 2 cw response (incongruent)
@@ -215,17 +197,17 @@ for fc = fcs
             paramEst_M1_ddm{fci,dri} = fmincon(obFun, startVec_M1, [], [], [], [], LB_M1, UB_M1, [], options);        
             % ==> return pf
             [NLL, predPF_ddm{fci,dri}] = giveNLL(paramEst_M1_ddm{fci,dri}, mus, nccw, ncw, 'M1');
-            if NLL > 250 % ==> somewhat arbitrary limit, but saves us from local minima
-                fprintf(['NLL = ',num2str(NLL),', run fmincon again for better results...\n'])
+            if NLL > 100
                 % ==> NLL bigger than 100 usually means fmincon converged
                 % to a local optimum and PF curve fitting will not be good
                 % ==> don't break out of while loop - try again
-                NLL = inf;                
+                NLL = inf;
+                fprintf('run fmincon again for better results...\n')
             end
             % ==> try optimization again with slightly jittered initial
             % parameter settings by adding a small epsilon of Gaussian
             % noise
-            startVec_M1 = startVec_M1 + randn(1,5);
+            startVec_M1 = startVec_M1 + randn(1,5)/100;
         end
         % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
     end
