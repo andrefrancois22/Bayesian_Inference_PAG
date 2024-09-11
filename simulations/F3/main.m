@@ -18,10 +18,10 @@ t = linspace(-795,-45,200);
 N = 3000;
 tm = 200; % timepoints (same resolution as actual DV fits)  
 % ==> bound
-bnd = 8; %8
+bnd = 8; %for F3F - no drift: bnd = 16;
 
 % ==> initial offset
-ofs = 0.6; %0.6; 
+ofs = 0.6; %for F3F drift: ofs = 18.6;
 
 % ==> accumulation bound or no bound?
 M_FLAG = 'BOUND'; 
@@ -29,6 +29,7 @@ M_FLAG = 'BOUND';
 
 % ==> add case 'IMPULSE_PRIOR'
 % P_FLAG = 'IMPULSE_PRIOR';
+% P_FLAG = 'NO_IMPULSE';
 P_FLAG = 'REG_DRIFT_PRIOR';
 
 % ==> Trial-by-trial noise? ('cross-trial noise in the prior expectation')
@@ -59,7 +60,7 @@ v = 1; % variance
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> standard deviation for randn
-sd = 1.25;
+sd = 1;
 % ==> mean for randn
 intv = 0.05;
 mus = [-3*intv, -2*intv, -intv, 0, intv, 2*intv, 3*intv];
@@ -68,9 +69,12 @@ mus = [-3*intv, -2*intv, -intv, 0, intv, 2*intv, 3*intv];
 % ==> prior offset factors (will influence drift rate due to integration)
 fcs = 0.0:0.02:0.4; %0:0.01:0.2; 
 
+% ==> gain factor for whole prior step function
+prf = 1.0; %0.25;
+
 % ==> run accumulation of evidence to bound drift diffusion (forward) model
 % => compute simulated dynamic range split, and PFs
-[predPF_ddm, db, dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG, m, v);
+[predPF_ddm, db, dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG, m, v, prf);
 
 % ==> plot props or plot pfs?
 plot_data = 'plot_props'; 
@@ -83,6 +87,8 @@ for fci = 3:length(fcs)
     hold on; hold all; 
     plot(mus,squeeze(prop_cw(fci,3,:))', 'b-', 'linewidth', 1.5); 
     plot(mus,squeeze(prop_ccw(fci,3,:))','r-', 'linewidth', 1.5); 
+    plot([min(xlim),max(xlim)],[0.5,0.5],'k--');
+    plot([0,0],[0,1],'k--');    
     xlabel('Orientation');
     ylabel('p(cw)')    
     %xlim([-max(mus),max(mus)]); 
@@ -97,7 +103,7 @@ for fci = 3:length(fcs)
         plot(mus,squeeze(prop_cw(fci,1,:))', 'color', [0.5,0.5,1], 'linewidth', 1.5); 
         plot(mus,squeeze(prop_ccw(fci,1,:))','color', [1,0.5,0.5],'linewidth', 1.5);  
         plot(mus,squeeze(prop_cw(fci,2,:))', 'b-', 'linewidth', 1.5); 
-        plot(mus,squeeze(prop_ccw(fci,2,:))','r-', 'linewidth', 1.5); 
+        plot(mus,squeeze(prop_ccw(fci,2,:))','r-', 'linewidth', 1.5);        
     end
     % ==> plot PFs over these
     if strcmp(plot_data,'plot_pfs')
@@ -106,6 +112,8 @@ for fci = 3:length(fcs)
         plot(mus,predPF_ddm{fci,2}(1,:),'color', [0.5,0.5,1],'LineWidth',1.5)
         plot(mus,predPF_ddm{fci,2}(2,:),'color', [1,0.5,0.5],'LineWidth',1.5)   
     end
+    plot([min(xlim),max(xlim)],[0.5,0.5],'k--');
+    plot([0,0],[0,1],'k--');
     xlabel('Orientation');
     ylabel('p(cw)')
     %xlim([-max(mus),max(mus)]); 
@@ -114,9 +122,9 @@ for fci = 3:length(fcs)
     drawnow;  
 end
 % ==> print figure to svg
-print(fig4,[FIGDR,'SI-DYN_RANGE_PROPS', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd),'.svg'],'-dsvg')
+print(fig4,[FIGDR,'SI-DYN_RANGE_PROPS', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd), '_BND_', num2str(bnd),'.svg'],'-dsvg')
 % ==> print figure to svg
-print(fig3,[FIGDR,'SI-SIMPLE_PROPS', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd),'.svg'],'-dsvg')
+print(fig3,[FIGDR,'SI-SIMPLE_PROPS', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd), '_BND_', num2str(bnd),'.svg'],'-dsvg')
 
 % ==> nice sanity check - plot all curves in same subpanels
 % ==> plot PFs over these
@@ -138,16 +146,18 @@ for fci = 3:length(fcs)
     plot(mus,predPF_ddm{fci,1}(1,:),'bo-','LineWidth',1.5)
     plot(mus,predPF_ddm{fci,1}(2,:),'ro-','LineWidth',1.5)
     plot(mus,predPF_ddm{fci,2}(1,:),'color', [0.5,0.5,1],'LineWidth',1.5,'marker','o')
-    plot(mus,predPF_ddm{fci,2}(2,:),'color', [1,0.5,0.5],'LineWidth',1.5,'marker','o')           
+    plot(mus,predPF_ddm{fci,2}(2,:),'color', [1,0.5,0.5],'LineWidth',1.5,'marker','o') 
+    plot([min(xlim),max(xlim)],[0.5,0.5],'k--');
+    plot([0,0],[0,1],'k--');    
     xlabel('Orientation');
-    ylabel('p(cw)')
+    ylabel('p(cw)');
     %xlim([-max(mus),max(mus)]); 
     ylim([0,1]);
     axis square;
     drawnow;  
 end
 % ==> print figure to svg
-print(fig5,[FIGDR,'SI-PFS_AND_PROPS', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd),'.svg'],'-dsvg')
+print(fig5,[FIGDR,'SI-PFS_AND_PROPS', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd), '_BND_', num2str(bnd), '.svg'],'-dsvg')
 
 
 % ==> store averages of DVs at specific time windows
@@ -161,12 +171,12 @@ mu_late_csens_ccw_ds  = nan(length(fcs),1);
 for fci = 1:length(fcs)
     % ==> clockwise cases
     % ==> concatenate vectors across orientations
-    csens_cw_dsc = vertcat(csensb_cw_ds{fci,:});
+    csens_cw_dsc = vertcat(csensb_cw_ds{fci,4}); %=> column index is for neutral orientations
     mu_early_csens_cw_ds(fci)  = mean(mean(csens_cw_dsc(:,il2:iu2)));
     mu_late_csens_cw_ds(fci)   = mean(mean(csens_cw_dsc(:,il:iu)));
     % ==> counterclockwise cases
     % ==> concatenate vectors across orientations
-    csens_ccw_dsc = vertcat(csensb_ccw_ds{fci,:});    
+    csens_ccw_dsc = vertcat(csensb_ccw_ds{fci,4});    
     mu_early_csens_ccw_ds(fci) = mean(mean(csens_ccw_dsc(:,il2:iu2)));
     mu_late_csens_ccw_ds(fci)  = mean(mean(csens_ccw_dsc(:,il:iu)));    
 end
@@ -192,7 +202,7 @@ end
 axis square;
 drawnow;
 % ==> print figure to svg
-print(gcf,[FIGDR,'F3F-SCATTER', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd),'.svg'],'-dsvg')
+print(gcf,[FIGDR,'F3F-SCATTER', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd), '_BND_', num2str(bnd),'.svg'],'-dsvg')
 
 
 
@@ -208,7 +218,7 @@ xlabel('Simulated \Delta bias');
 ylabel('Simulated \Delta perceptual uncertainty')
 title(['r = ',num2str(r),', p = ',num2str(p)]);
 % ==> print figure to svg
-print(gcf,[FIGDR,'F5A-SCATTER', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd),'.svg'],'-dsvg')
+print(gcf,[FIGDR,'F5A-SCATTER', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd), '_BND_', num2str(bnd), '.svg'],'-dsvg')
 
 
 % ==> Single congruent and incongruent DV
@@ -246,5 +256,4 @@ xlabel('Dynamic range (a.u)');
 ylabel('Frequency');
 title('Dynamic range distribution');
 % ==> print figure to svg
-print(gcf,[FIGDR,'F4C-DYN_RANGE_HIST', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd),'.svg'],'-dsvg')
-
+print(gcf,[FIGDR,'F4C-DYN_RANGE_HIST', '-', P_FLAG, '-', M_FLAG, '-', N_FLAG, '-SD-', num2str(sd), '_BND_', num2str(bnd), '.svg'],'-dsvg')

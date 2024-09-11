@@ -1,4 +1,4 @@
-function [predPF_ddm, db, dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG, m, v)
+function [predPF_ddm, db, dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG, m, v, prf)
 
 % ==> delta bias
 db = nan(1,length(fcs));
@@ -26,6 +26,10 @@ csensb_ccw_ds = cell([length(fcs),7]);
 % ==> dynamic range function
 dynf = @(x) max([max(x, [], 2) - x(:,1), -(min(x, [], 2) - x(:,1))], [], 2);
 
+% ==> orientation vector
+% or_idx_v = [];
+
+% ==> index
 fci = 1;
 
 for fc = fcs
@@ -37,6 +41,10 @@ for fc = fcs
         % ==> prior offsets
         pr_cw  =  ofs * fc; 
         pr_ccw = -ofs * fc; 
+
+        % ==> parameter for changing prior strength
+        pr_cw = pr_cw * prf;
+        pr_ccw = pr_ccw * prf;
         
         if strcmp(P_FLAG,'REG_DRIFT_PRIOR')
             pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  =  ofs;
@@ -61,6 +69,29 @@ for fc = fcs
                 % keyboard
             end            
         end
+        if strcmp(P_FLAG,'NO_IMPULSE')
+            pr_cw_v  = repmat(pr_cw,  [tm,1]);  pr_cw_v(1)  = 0;
+            pr_ccw_v = repmat(pr_ccw, [tm,1]);  pr_ccw_v(1) = 0;
+            % % ==> set prior expectation step function for each trial
+            pr_cw_vn  = repmat(pr_cw_v', [N,1]);  
+            pr_ccw_vn = repmat(pr_ccw_v', [N,1]); 
+
+            % ==> trial-by-trial noise?
+            if strcmp(N_FLAG,'TRIAL_NOISE')
+                mu = log((m^2)/sqrt(v+m^2));
+                sigma = sqrt(log(v/(m^2)+1));
+
+                epsi = lognrnd(mu,sigma,N,1);
+                % ==> negative sign
+                % epsi = epsi.*(-1).^randi(2,N,1);                
+    
+                % keyboard
+                % ==> add single-trial noise to prior component
+                pr_cw_vn  = pr_cw_vn  .* repmat(epsi,[1,tm]);
+                pr_ccw_vn = pr_ccw_vn .* repmat(epsi,[1,tm]);   
+                % keyboard
+            end            
+        end        
         % ==> case 'impulse function'
         if strcmp(P_FLAG,'IMPULSE_PRIOR')
             pr_cw_v  = zeros(tm,1);  pr_cw_v(1)  =  ofs * fc;
@@ -121,7 +152,36 @@ for fc = fcs
             % ==> ccw
             ccw_dv_cw_r =   (sign(csensb_ccw_d(:,end)) ==  1);
             ccw_dv_ccw_r = -(sign(csensb_ccw_d(:,end)) == -1);                        
-        end              
+        end   
+
+        % if fc > 0.2            
+        %     clf;
+        %     tdv = randi(N);
+        % 
+        %     figure(); set(gcf,'color','white');
+        %     subplot(1,3,1);
+        %     plot(1:tm,pr_cw_v,'b-')
+        %     hold on; hold all;
+        %     plot(1:tm,zeros(1,tm),'k--')
+        %     axis square;
+        %     ylim([-3,3])            
+        % 
+        %     subplot(1,3,2);
+        %     plot(1:tm,sens_cw(tdv,:),'b-')
+        %     hold on; hold all;
+        %     plot(1:tm,zeros(1,tm),'k--')
+        %     axis square;
+        %     ylim([-bnd,bnd])            
+        % 
+        %     subplot(1,3,3);
+        %     plot(1:tm,csensb_cw_d(tdv,:),'b-')
+        %     hold on; hold all;
+        %     plot(1:tm,zeros(1,tm),'k--')
+        %     axis square;
+        %     ylim([-bnd,bnd])   
+        % 
+        %     keyboard
+        % end
         
         % ==> some sanity checks
         assert(sum([cw_dv_cw_r  & cw_dv_ccw_r]) == 0);
@@ -180,6 +240,10 @@ for fc = fcs
         % ==> save all simulated DVs
         csensb_cw_ds{fci,or}  = csensb_cw_d;
         csensb_ccw_ds{fci,or} = csensb_ccw_d;
+
+        % ==> will use this to compute F3A scatterplots filtering out all
+        % oriented cases (keeping only simulated neutral orientations)
+        %or_idx_v = [or_idx_v; repmat(or,[N,1])];
     end
     
     % ==> for dynr case (1 - high or 2 - low)
