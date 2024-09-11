@@ -37,18 +37,13 @@ for m = 1:length(M)
         s(b) = TH;
     end
 
-    % ==> get confidence intervals - is 45-deg inside that interval for s?
-    % or 0 for s - pi/4
-    %
-    help prctile
-
-    keyboard;
+    % ==> get confidence intervals - is zero inside that interval?
 
     % ==> compute difference between estimated slopes and 'null' slope (e.g. x=y, or TH = pi/4)
     ds = s - pi/4;
     % ==> test that ds deviated significantly from zero (means slope angle is greater than pi/4 e.g. x=y)
     %[ps, ~] = signrank(ds);
-    % ==> no good - signrank inflates significance because of N
+    % ==> no good - signrank inflates significan
 
     fprintf('first eigenvector slope for monkey %s signrank test p = %d..\n',M{m},ps);
     
