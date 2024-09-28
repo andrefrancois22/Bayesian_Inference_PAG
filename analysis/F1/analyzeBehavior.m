@@ -3,9 +3,9 @@ clearvars
 clc
 
 % Set Paths
-thisPath     = strcat('/Users/g4344/Desktop/Research/Finished/Charlton & Goris (2024)/pfc_analysis');
-dataPath     = strcat('/Users/g4344/Desktop/Research/Finished/Charlton & Goris (2024)/pfc_data');
-functionPath = strcat('/Users/g4344/Desktop/Research/Finished/Charlton & Goris (2024)/pfc_functions');
+thisPath     = pwd; %strcat('/Users/g4344/Desktop/Research/Finished/Charlton & Goris (2024)/pfc_analysis');
+dataPath     = strcat('../../data/pfc_data/');
+functionPath = strcat('../../simulations/F1/pfc_functions/');
 
 % Choose example data-set
 plotExpPrior = [7, 24];  % F: 1-13; JP: 14-29
@@ -209,9 +209,9 @@ for iS = 1:numel(fileNameList)
     perfCatchRule1(iS) = S.beh.perfCatchRule1;
     perfCatchRule2(iS) = S.beh.perfCatchRule2;
 
-    % Performance on all trials
-    perfAllRule1(iS) = S.beh.perfAllRule1;
-    perfAllRule2(iS) = S.beh.perfAllRule2;
+    % % Performance on all trials
+    % perfAllRule1(iS) = S.beh.perfAllRule1;
+    % perfAllRule2(iS) = S.beh.perfAllRule2;
 
     % Orientation sensitivity per rule
     oriSensLC_rule(iS,:)       = S.beh.model(2).oriSens.est(1,:);

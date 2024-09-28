@@ -2,7 +2,7 @@ clear all; close all; clc;
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % ==> directories
-dataPath     = '/home/thomas/Desktop/UTAustin/Goris/pfc_code/pfc_data';
+dataPath     = '../../data/pfc_data/';
 drc = '../../data/';
 % ==> directory containing PF curve fit functions
 pfc_functions_dr = '../../simulations/F1/pfc_functions/';
@@ -205,7 +205,7 @@ SI_plots();
 
 %% 
 % ==> Figure FD
-close all; clc;
+% close all; clc;
 
 % => colors
 clrs = {[0.5,0.5,1],[1,0.5,0.5]; [0,0,1],[1,0,0]};

@@ -39,10 +39,16 @@ for m = 1:length(M)
 
     % ==> get confidence intervals - is 45-deg inside that interval for s?
     % or 0 for s - pi/4
-    %
-    help prctile
-
-    keyboard;
+    prc = prctile((s - pi/4),[2.5 97.5]);
+    fprintf('Percentile values for confidence interval for 2.5 and 97.5 density are %d and %d...\n',prc(1),prc(2))
+    % ==> check that 0 is not within the confidence interval - e.g. prc
+    % values are larger than 0
+    assert(unique(prc > 0))
+    if unique(prc > 0)
+        fprintf('Confidence interval bounds for (s - pi/4) are larger than 0...\n')
+    else
+        fprintpf('Confidence interval bounds for (s - pi/4) include 0...\n')
+    end
 
     % ==> compute difference between estimated slopes and 'null' slope (e.g. x=y, or TH = pi/4)
     ds = s - pi/4;
@@ -50,7 +56,7 @@ for m = 1:length(M)
     %[ps, ~] = signrank(ds);
     % ==> no good - signrank inflates significance because of N
 
-    fprintf('first eigenvector slope for monkey %s signrank test p = %d..\n',M{m},ps);
+    fprintf('first eigenvector slope for monkey %s...\n',M{m});
     
     % ==> subplot
     subplot(2,2,sbpi(1,m));
