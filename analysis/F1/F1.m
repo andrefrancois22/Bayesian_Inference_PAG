@@ -5,7 +5,8 @@ clc
 % Set Paths
 thisPath     = pwd; %strcat('/Users/g4344/Desktop/Research/Finished/Charlton & Goris (2024)/pfc_analysis');
 dataPath     = strcat('../../data/pfc_data/');
-functionPath = strcat('../../simulations/F1/pfc_functions/');
+functionPath = strcat('../../analysis/F1/pfc_functions/');
+addpath(functionPath)
 
 % Choose example data-set
 plotExpPrior = [7, 24];  % F: 1-13; JP: 14-29
@@ -125,8 +126,8 @@ for iS = 1:numel(fileNameList)
             propCW_rule{iC}  = nCW_rule./(nCW_rule + nCCW_rule);
             nTrials_rule{iC} = nCW_rule + nCCW_rule;
                         
-            % Fit model to estimate sensitivity and bias
-            cd(functionPath)
+            % % Fit model to estimate sensitivity and bias
+            % cd(functionPath)
             
             obFun               = @(paramVec) giveNLL(paramVec, oriValues, nCCW_prior, nCW_prior, 'M1');         
             paramEst_M1{iS}{iC} = fmincon(obFun, startVec_M1, [], [], [], [], LB_M1, UB_M1, [], options);
@@ -209,9 +210,9 @@ for iS = 1:numel(fileNameList)
     perfCatchRule1(iS) = S.beh.perfCatchRule1;
     perfCatchRule2(iS) = S.beh.perfCatchRule2;
      
-    % % Performance on all trials
-    % perfAllRule1(iS) = S.beh.perfAllRule1;
-    % perfAllRule2(iS) = S.beh.perfAllRule2;
+    % Performance on all trials
+    perfAllRule1(iS) = S.beh.perfAllRule1;
+    perfAllRule2(iS) = S.beh.perfAllRule2;
 
     % Orientation sensitivity per rule
     oriSensLC_rule(iS,:)       = S.beh.model(2).oriSens.est(1,:);
