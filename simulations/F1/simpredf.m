@@ -1,5 +1,23 @@
 function [mle,map,pos,acc_mle,acc_map,lk,po] = simpredf(pr,s0,vidx,sig,n_o,K,LK_TRC_FLAG)
-    % Computes likelihood, posterior, MAP, pdf density >= cw orientation and MLE accuracy
+
+    % ~~~~~~~~~~~~~~~ IDEAL BAYESIAN OBSERVER MODEL ~~~~~~~~~~~~~~~
+    % Runs the ideal bayesian observer model for F1.
+    % ~~~~~~~~~~~~ INPUT ~~~~~~~~~~~~
+    % pr             ==> prior: step function simulated context priors in the animal experiments
+    % s0             ==> physical stimulus value for each simulated trial
+    % vidx           ==> index for simulated neutral (vertical) stimulus
+    % sig            ==> noise magnitude
+    % n_o            ==> number of orientations
+    % K              ==> number of simulated trials
+    % LK_TRC_FLAG         ==> option summing truncated likelihood density and adding to extreme orientations
+    % ~~~~~~~~~~~~ OUTPUT ~~~~~~~~~~~~
+    % mle            ==> maximum likelihood estimates - orientation values
+    % map            ==> maximum a posteriori estimates - orientation values 
+    % pos            ==> posterior sample
+    % acc_mle        ==> MLE accuracy
+    % acc_map        ==> MAP accuracy
+    % lk             ==> likelihood
+    % po             ==> posterior
 
     % => delta away from stimulus s can be one of the following:
     % { -3, -2, -1, 0, +1, +2, +3 }
