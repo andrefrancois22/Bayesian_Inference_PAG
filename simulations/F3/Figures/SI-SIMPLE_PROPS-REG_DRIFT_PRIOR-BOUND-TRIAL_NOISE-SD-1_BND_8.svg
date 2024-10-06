@@ -84,8 +84,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M434 143.06 L445 132.5587 L456 117.804 L467 98.6787 L478 85.2733 L489 75.6813 L500 70.2253" style="fill:none; fill-rule:evenodd;"
-      /><path d="M434 150.4813 L445 145.4653 L456 137.3693 L467 119.4467 L478 104.1053 L489 88.7053 L500 78.0867" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M434 141.9747 L445 132.6173 L456 116.0733 L467 100.7907 L478 85.332 L489 75.6813 L500 70.3427" style="fill:none; fill-rule:evenodd;"
+      /><path d="M434 150.276 L445 146.492 L456 135.1987 L467 121.7053 L478 105.044 L489 88.7933 L500 78.1747" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="110.5" style="fill:none;" x1="423" x2="511" y1="110.5"
@@ -139,8 +139,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M565.875 141.008 L576.75 127.987 L587.625 112.501 L598.5 96.957 L609.375 82.37 L620.25 74.627 L631.125 70.596" style="fill:none; fill-rule:evenodd;"
-      /><path d="M565.875 150.723 L576.75 145.851 L587.625 137.412 L598.5 124.971 L609.375 106.063 L620.25 93.129 L631.125 81.442" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M565.875 140.718 L576.75 129.64 L587.625 113.835 L598.5 96.029 L609.375 84.574 L620.25 75.178 L631.125 70.335" style="fill:none; fill-rule:evenodd;"
+      /><path d="M565.875 150.317 L576.75 146.286 L587.625 137.789 L598.5 123.84 L609.375 108.151 L620.25 91.621 L631.125 81.036" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="110.5" style="fill:none;" x1="555" x2="642" y1="110.5"
@@ -194,8 +194,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M697.875 137.296 L708.75 125 L719.625 108.934 L730.5 93.912 L741.375 81.703 L752.25 73.757 L763.125 69.813" style="fill:none; fill-rule:evenodd;"
-      /><path d="M697.875 151.187 L708.75 146.431 L719.625 139.239 L730.5 127.668 L741.375 110.993 L752.25 95.333 L763.125 83.617" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M697.875 135.817 L708.75 125.754 L719.625 107.774 L730.5 93.303 L741.375 82.109 L752.25 73.699 L763.125 69.842" style="fill:none; fill-rule:evenodd;"
+      /><path d="M697.875 150.636 L708.75 146.46 L719.625 139.007 L730.5 127.523 L741.375 111.37 L752.25 95.942 L763.125 83.298" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="110.5" style="fill:none;" x1="687" x2="774" y1="110.5"
@@ -249,8 +249,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M829.875 135.556 L840.75 121.549 L851.625 107.484 L862.5 92.143 L873.375 79.818 L884.25 73.061 L895.125 69.639" style="fill:none; fill-rule:evenodd;"
-      /><path d="M829.875 151.709 L840.75 148.258 L851.625 141.385 L862.5 129.379 L873.375 114.183 L884.25 97.885 L895.125 86.256" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M829.875 134.077 L840.75 122.651 L851.625 106.266 L862.5 91.012 L873.375 79.731 L884.25 73.38 L895.125 69.958" style="fill:none; fill-rule:evenodd;"
+      /><path d="M829.875 150.926 L840.75 147.475 L851.625 140.863 L862.5 129.727 L873.375 113.168 L884.25 98.697 L895.125 88.112" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="110.5" style="fill:none;" x1="819" x2="906" y1="110.5"
@@ -304,8 +304,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M961.875 131.38 L972.75 120.012 L983.625 103.308 L994.5 89.33 L1005.375 79.354 L1016.25 72.945 L1027.125 69.291" style="fill:none; fill-rule:evenodd;"
-      /><path d="M961.875 151.883 L972.75 148.229 L983.625 143.589 L994.5 129.698 L1005.375 116.793 L1016.25 101.539 L1027.125 89.417" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M961.875 133.236 L972.75 118.62 L983.625 103.685 L994.5 89.243 L1005.375 78.484 L1016.25 72.249 L1027.125 68.972" style="fill:none; fill-rule:evenodd;"
+      /><path d="M961.875 151.854 L972.75 148.896 L983.625 142.806 L994.5 131.322 L1005.375 116.851 L1016.25 102.003 L1027.125 88.286" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="110.5" style="fill:none;" x1="951" x2="1038" y1="110.5"
@@ -359,8 +359,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M170.875 286.183 L181.75 272.611 L192.625 259.097 L203.5 245.061 L214.375 235.114 L225.25 229.314 L236.125 226.675" style="fill:none; fill-rule:evenodd;"
-      /><path d="M170.875 309.615 L181.75 306.135 L192.625 301.611 L203.5 290.388 L214.375 277.222 L225.25 261.823 L236.125 248.918" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M170.875 286.937 L181.75 272.582 L192.625 260.17 L203.5 245.177 L214.375 234.679 L225.25 228.937 L236.125 226.53" style="fill:none; fill-rule:evenodd;"
+      /><path d="M170.875 309.586 L181.75 306.338 L192.625 300.712 L203.5 290.533 L214.375 276.468 L225.25 263.244 L236.125 248.425" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="268" style="fill:none;" x1="160" x2="247" y1="268"
@@ -414,8 +414,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M302 283.488 L313 271.1973 L324 257.8507 L335 243.3307 L346 233.856 L357 228.5173 L368 226.024" style="fill:none; fill-rule:evenodd;"
-      /><path d="M302 310.2107 L313 307.9227 L324 303.4347 L335 291.2907 L346 279.5573 L357 264.6853 L368 251.72" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M302 282.608 L313 270.5227 L324 255.2987 L335 243.8293 L346 233.856 L357 228.928 L368 226.0827" style="fill:none; fill-rule:evenodd;"
+      /><path d="M302 310.0053 L313 307.7173 L324 302.3787 L335 292.904 L346 279.176 L357 264.7147 L368 253.2747" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="268" style="fill:none;" x1="291" x2="379" y1="268"
@@ -469,8 +469,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M434 282.696 L445 268.88 L456 255.1813 L467 241.5413 L478 234.4427 L489 228.048 L500 225.7013" style="fill:none; fill-rule:evenodd;"
-      /><path d="M434 310.24 L445 307.6 L456 303.4347 L467 293.8427 L478 281.6107 L489 268.0293 L500 254.6533" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M434 281.728 L445 268.1173 L456 253.5973 L467 242.744 L478 233.24 L489 228.048 L500 225.6427" style="fill:none; fill-rule:evenodd;"
+      /><path d="M434 309.6827 L445 307.6587 L456 303.376 L467 294.4 L478 283.2827 L489 267.3547 L500 255.1227" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="268" style="fill:none;" x1="423" x2="511" y1="268"
@@ -524,8 +524,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M565.875 279.542 L576.75 265.216 L587.625 251.963 L598.5 239.783 L609.375 232.794 L620.25 228.299 L631.125 226.327" style="fill:none; fill-rule:evenodd;"
-      /><path d="M565.875 309.905 L576.75 307.44 L587.625 303.699 L598.5 296.101 L609.375 284.356 L620.25 270.001 L631.125 257.647" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M565.875 279.484 L576.75 264.578 L587.625 250.339 L598.5 240.392 L609.375 232.649 L620.25 228.299 L631.125 226.356" style="fill:none; fill-rule:evenodd;"
+      /><path d="M565.875 310.079 L576.75 306.976 L587.625 303.177 L598.5 295.753 L609.375 284.008 L620.25 271.625 L631.125 257.067" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="268" style="fill:none;" x1="555" x2="642" y1="268"
@@ -579,8 +579,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M697.875 276.642 L708.75 263.621 L719.625 251.151 L730.5 239.638 L741.375 232.011 L752.25 228.299 L763.125 226.211" style="fill:none; fill-rule:evenodd;"
-      /><path d="M697.875 310.282 L708.75 307.846 L719.625 304.424 L730.5 296.652 L741.375 284.704 L752.25 273.133 L763.125 259.967" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M697.875 277.338 L708.75 263.476 L719.625 251.615 L730.5 239.174 L741.375 232.388 L752.25 228.27 L763.125 226.472" style="fill:none; fill-rule:evenodd;"
+      /><path d="M697.875 309.644 L708.75 308.049 L719.625 304.308 L730.5 295.811 L741.375 285.69 L752.25 272.205 L763.125 261.243" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="268" style="fill:none;" x1="687" x2="774" y1="268"
@@ -634,8 +634,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M829.875 274.206 L840.75 260.634 L851.625 248.657 L862.5 238.797 L873.375 231.982 L884.25 227.951 L895.125 225.892" style="fill:none; fill-rule:evenodd;"
-      /><path d="M829.875 310.34 L840.75 308.513 L851.625 304.859 L862.5 297.522 L873.375 286.56 L884.25 274.177 L895.125 261.968" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M829.875 275.598 L840.75 261.562 L851.625 250.049 L862.5 238.826 L873.375 231.46 L884.25 227.458 L895.125 226.008" style="fill:none; fill-rule:evenodd;"
+      /><path d="M829.875 310.34 L840.75 308.6 L851.625 304.366 L862.5 297.232 L873.375 287.604 L884.25 274.38 L895.125 262.374" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="268" style="fill:none;" x1="819" x2="906" y1="268"
@@ -689,8 +689,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M961.875 271.567 L972.75 259.996 L983.625 247.294 L994.5 237.086 L1005.375 231.083 L1016.25 226.994 L1027.125 226.211" style="fill:none; fill-rule:evenodd;"
-      /><path d="M961.875 309.847 L972.75 308.339 L983.625 304.859 L994.5 298.682 L1005.375 288.561 L1016.25 276.787 L1027.125 265.39" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M961.875 273.742 L972.75 259.3 L983.625 248.599 L994.5 237.289 L1005.375 231.315 L1016.25 227.516 L1027.125 225.66" style="fill:none; fill-rule:evenodd;"
+      /><path d="M961.875 310.369 L972.75 308.948 L983.625 304.714 L994.5 299.436 L1005.375 289.286 L1016.25 276.41 L1027.125 262.838" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="268" style="fill:none;" x1="951" x2="1038" y1="268"
@@ -744,8 +744,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M170.875 428.69 L181.75 415.524 L192.625 403.257 L203.5 394.18 L214.375 387.829 L225.25 384.784 L236.125 383.015" style="fill:none; fill-rule:evenodd;"
-      /><path d="M170.875 467.927 L181.75 466.477 L192.625 463.519 L203.5 457.023 L214.375 448.149 L225.25 435.447 L236.125 422.948" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M170.875 426.747 L181.75 415.669 L192.625 403.199 L203.5 394.093 L214.375 388.96 L225.25 384.262 L236.125 383.102" style="fill:none; fill-rule:evenodd;"
+      /><path d="M170.875 467.492 L181.75 466.332 L192.625 463.49 L203.5 456.588 L214.375 447.279 L225.25 435.012 L236.125 424.804" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="425.5" style="fill:none;" x1="160" x2="247" y1="425.5"
@@ -799,8 +799,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M302 426.82 L313 413.708 L324 401.4173 L335 392.94 L346 387.308 L357 384.4333 L368 382.7613" style="fill:none; fill-rule:evenodd;"
-      /><path d="M302 468.444 L313 466.772 L324 463.868 L335 457.9427 L346 449.5827 L357 438.964 L368 426.2333" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M302 424.2387 L313 414.5587 L324 401.4467 L335 392.9107 L346 386.8973 L357 384.6093 L368 382.468" style="fill:none; fill-rule:evenodd;"
+      /><path d="M302 468.1213 L313 467.1827 L324 463.7507 L335 458.0307 L346 448.7613 L357 436.7053 L368 425.06" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="425.5" style="fill:none;" x1="291" x2="379" y1="425.5"
@@ -854,8 +854,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M434 423.124 L445 411.508 L456 400.42 L467 393.116 L478 386.7507 L489 383.876 L500 382.4093" style="fill:none; fill-rule:evenodd;"
-      /><path d="M434 468.532 L445 466.9773 L456 463.956 L467 458.8813 L478 450.1107 L489 439.6973 L500 426.8787" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M434 422.86 L445 411.9773 L456 399.8333 L467 392.2653 L478 386.3693 L489 384.0813 L500 382.6733" style="fill:none; fill-rule:evenodd;"
+      /><path d="M434 468.4733 L445 466.772 L456 463.9853 L467 459.1747 L478 450.3747 L489 438.436 L500 427.876" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="425.5" style="fill:none;" x1="423" x2="511" y1="425.5"
@@ -909,8 +909,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M565.875 421.962 L576.75 410.333 L587.625 398.907 L598.5 392.005 L609.375 386.785 L620.25 384.03 L631.125 383.073" style="fill:none; fill-rule:evenodd;"
-      /><path d="M565.875 468.13 L576.75 466.738 L587.625 463.664 L598.5 459.43 L609.375 449.802 L620.25 441.624 L631.125 428.922" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M565.875 419.99 L576.75 409.086 L587.625 399.864 L598.5 391.396 L609.375 386.843 L620.25 384.146 L631.125 382.87" style="fill:none; fill-rule:evenodd;"
+      /><path d="M565.875 467.985 L576.75 466.796 L587.625 464.128 L598.5 459.111 L609.375 451.368 L620.25 439.681 L631.125 430.053" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="425.5" style="fill:none;" x1="555" x2="642" y1="425.5"
@@ -964,8 +964,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M697.875 420.338 L708.75 407.694 L719.625 399.226 L730.5 390.99 L741.375 386.698 L752.25 383.943 L763.125 383.044" style="fill:none; fill-rule:evenodd;"
-      /><path d="M697.875 467.985 L708.75 466.419 L719.625 463.809 L730.5 459.43 L741.375 451.629 L752.25 441.595 L763.125 431.039" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M697.875 419.787 L708.75 410.333 L719.625 397.834 L730.5 391.077 L741.375 387.075 L752.25 383.972 L763.125 382.667" style="fill:none; fill-rule:evenodd;"
+      /><path d="M697.875 468.072 L708.75 466.854 L719.625 463.954 L730.5 459.314 L741.375 451.571 L752.25 442.697 L763.125 431.88" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="425.5" style="fill:none;" x1="687" x2="774" y1="425.5"
@@ -1019,8 +1019,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M829.875 418.134 L840.75 407.288 L851.625 397.747 L862.5 390.642 L873.375 386.466 L884.25 383.972 L895.125 382.696" style="fill:none; fill-rule:evenodd;"
-      /><path d="M829.875 468.478 L840.75 467.405 L851.625 464.186 L862.5 460.358 L873.375 453.195 L884.25 443.161 L895.125 433.272" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M829.875 419.555 L840.75 406.911 L851.625 398.356 L862.5 390.004 L873.375 386.176 L884.25 384.03 L895.125 382.928" style="fill:none; fill-rule:evenodd;"
+      /><path d="M829.875 468.217 L840.75 467.057 L851.625 464.708 L862.5 460.938 L873.375 453.195 L884.25 443.828 L895.125 432.17" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="425.5" style="fill:none;" x1="819" x2="906" y1="425.5"
@@ -1074,8 +1074,8 @@
       >p(cw)</text
     ></g
     ><g style="stroke-linecap:butt; fill:blue; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:round; stroke:blue; color-interpolation:linearRGB; stroke-width:2;"
-    ><path d="M961.875 415.35 L972.75 404.881 L983.625 397.515 L994.5 390.439 L1005.375 385.973 L1016.25 383.421 L1027.125 382.957" style="fill:none; fill-rule:evenodd;"
-      /><path d="M961.875 468.594 L972.75 466.97 L983.625 465.259 L994.5 461.46 L1005.375 454.471 L1016.25 444.843 L1027.125 433.649" style="fill:none; fill-rule:evenodd; stroke:red;"
+    ><path d="M961.875 416.046 L972.75 407.288 L983.625 397.631 L994.5 390.207 L1005.375 385.915 L1016.25 383.682 L1027.125 383.16" style="fill:none; fill-rule:evenodd;"
+      /><path d="M961.875 468.217 L972.75 467.231 L983.625 465.491 L994.5 461.199 L1005.375 454.297 L1016.25 444.582 L1027.125 432.982" style="fill:none; fill-rule:evenodd; stroke:red;"
     /></g
     ><g style="stroke-linecap:butt; text-rendering:geometricPrecision; image-rendering:optimizeQuality; color-rendering:optimizeQuality; stroke-linejoin:bevel; stroke-dasharray:10,6; color-interpolation:linearRGB; stroke-width:0.6667; stroke-miterlimit:1;"
     ><line y2="425.5" style="fill:none;" x1="951" x2="1038" y1="425.5"
