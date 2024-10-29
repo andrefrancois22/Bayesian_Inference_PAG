@@ -1,5 +1,35 @@
 function [predPF_ddm, db, dp, prop_cw, prop_ccw, dvs_c_cw, dvs_i_cw, dvs_c_ccw, dvs_i_ccw, csensb_cw_ds, csensb_ccw_ds] = accevbnd(N, tm, bnd, sd, mus, fcs, ofs, M_FLAG, P_FLAG, N_FLAG, m, v, prf)
 
+% ~~~~~~~~~~~~~~~ DDM EVIDENCE ACCUMULATION MODEL ~~~~~~~~~~~~~~~
+% Runs the variants of the DDM (evidence accumulation model). Also produces
+% simulated choices, median split analysis, and psychometric function
+% fitting to the choices.
+% ~~~~~~~~~~~~ INPUT ~~~~~~~~~~~~
+% N              ==> Number of simulated trials
+% tm             ==> Number of time points
+% bnd            ==> Magnitude of the bound value. The bound value is only used when the model flag M_FLAG is equal to "BOUND"
+% sd             ==> standard deviation for randn, which simulates the noise component of the momentary sensory evidence (the diffusion)
+% mus            ==> simulated offsets for each of the 7 stimulus orientations
+% fcs            ==> Prior offset factors (will influence drift rate due to integration)
+% ofs            ==> The initial offset of the simulated DVs
+% M_FLAG         ==> Evidence accumation type: BOUND or NO_BOUND (terminate at a bound, or terminate with the sign after tm timesteps)
+% P_FLAG         ==> Model type: IMPULSE_PRIOR (only an initial offset), NO_IMPULSE (0 initial offset, followed by non-zero prior drift component), REG_DRIFT_PRIOR (an initial offset as well as a non-zero drift component following time 0)
+% N_FLAG         ==> Trial noise parameter - cross-trial noise in the prior expectation
+% m              ==> mean for log-normal cross-trial noise.
+% v              ==> variance for log-normal cross-trial noise
+% ~~~~~~~~~~~~ OUTPUT ~~~~~~~~~~~~
+% predPF_ddm    ==> psychometric functions fit to the simulated choices following the median split analysis
+% db            ==> Delta Bias results for each session: the difference in the decision criteria separating the low dynamic range DV PFs minus the decision criteria separating the high dynamic range DV PFs.
+% dp            ==> Delta Uncertainty for each session: the difference in perceptual uncertainty between the PFs fit the low and the high dynamic range simulated DVs
+% prop_cw       ==> choice proportions for simulated cw data
+% prop_ccw      ==> choice proportions for the simulated ccw data
+% dvs_c_cw      ==> simulated DVs for congruent cw cases
+% dvs_c_ccw     ==> simulated DVs for congruent ccw cases
+% dvs_i_cw      ==> simulated DVs for incongruent cw cases
+% dvs_i_ccw     ==> simulated DVs for incongruent ccw cases
+% csensb_cw_ds  ==> simulated DVs for all cw trials
+% csensb_ccw_ds ==> simulated DVs for all ccw trials
+
 % ==> delta bias
 db = nan(1,length(fcs));
 % ==> delta perceptual uncertainty
@@ -153,35 +183,6 @@ for fc = fcs
             ccw_dv_cw_r =   (sign(csensb_ccw_d(:,end)) ==  1);
             ccw_dv_ccw_r = -(sign(csensb_ccw_d(:,end)) == -1);                        
         end   
-
-        % if fc > 0.2            
-        %     clf;
-        %     tdv = randi(N);
-        % 
-        %     figure(); set(gcf,'color','white');
-        %     subplot(1,3,1);
-        %     plot(1:tm,pr_cw_v,'b-')
-        %     hold on; hold all;
-        %     plot(1:tm,zeros(1,tm),'k--')
-        %     axis square;
-        %     ylim([-3,3])            
-        % 
-        %     subplot(1,3,2);
-        %     plot(1:tm,sens_cw(tdv,:),'b-')
-        %     hold on; hold all;
-        %     plot(1:tm,zeros(1,tm),'k--')
-        %     axis square;
-        %     ylim([-bnd,bnd])            
-        % 
-        %     subplot(1,3,3);
-        %     plot(1:tm,csensb_cw_d(tdv,:),'b-')
-        %     hold on; hold all;
-        %     plot(1:tm,zeros(1,tm),'k--')
-        %     axis square;
-        %     ylim([-bnd,bnd])   
-        % 
-        %     keyboard
-        % end
         
         % ==> some sanity checks
         assert(sum([cw_dv_cw_r  & cw_dv_ccw_r]) == 0);

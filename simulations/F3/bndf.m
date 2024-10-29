@@ -1,7 +1,9 @@
 function [csens_cx_bnd] = bndf(csens_cx,bnd,N, M_FLAG)
 
-if strcmp(M_FLAG, 'BOUND')
-    
+% ==> sets DV values that reach a bound to the bound value, including all
+% subsequent DV values following the bound crossing
+
+if strcmp(M_FLAG, 'BOUND')   
     % ==> set DV values for timepoints over trials that reach or exceed a bound
     % to the bound value.
     csens_cx(csens_cx >=  bnd) =  bnd;

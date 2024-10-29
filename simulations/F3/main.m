@@ -39,26 +39,6 @@ N_FLAG = 'TRIAL_NOISE';
 m = 1; % mean
 v = 1; % variance
 
-% ==> check
-
-% ==> create a new SI that shows how the DDMs work:
-% ==> show the prior step function and the sensory evidence 
-% ==> also illustrate the cross-trial variability (the TRIAL_NOISE case)
-% ==> where you show the multiplicative constant applied to the step
-% function
-
-% ==> to do
-% have option to add noise to prior offset that varies across trials.
-
-% ==> implementing contrast
-% ==> try (1) change sd parameter 
-% ==> try (2) change (reduce) intv
-
-% ==> UPDATE METHODS - BASED ON IMPROVEMENTS IN ANALYSIS.
-% ==> UPDATE FIGURE PANELS! ADD INTO THE OVERLEAF FOLDER! (F5 - x-axis values range should be a closer match)
-% ==> F4A - add contrast manipulation PF curves.
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 % ==> standard deviation for randn
 sd = 1;
 % ==> mean for randn

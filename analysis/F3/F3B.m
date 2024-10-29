@@ -12,7 +12,7 @@ rc = 1;
 figure();  set(gcf,'Color','w'); set(gcf, 'Position',[675 553 963 409])
 
 for m = 1:length(M)
-    subplot(1,2,m);
+    subplot(1,2,(length(M) + 1)-m); % => switch order to match manuscript panel order
     for xc = 1:length(cx)
         hold on; hold all;
         % ==> plot average over model dv fit curves
