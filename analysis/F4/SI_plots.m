@@ -36,7 +36,7 @@ for rc = 1:length(cr) % ==> show for lo or high contrast cases
         line = {'.-',':'}; clr = {'b','r'; 'b','m'};
         gcf;    
         ax = subplot(5,6,iS); hold on; hold all;
-        title([S.general.monkey, S.general.expDate]); 
+        title(Ss{iS}); 
         hold on; hold all;  
         % => plot
         for xc = 1:length(cx)

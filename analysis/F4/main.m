@@ -69,6 +69,9 @@ CPs = cell([29,2,2]);
 % (<Session ID>_<contrast>_<dynamic range split>_<counts (nccw (1) and ncw (2))>)
 CTs = cell([29,2,2,2]);
 
+% ==> sessions
+Ss = cell([29,1]);
+
 % ==> what is the session
 for iS = 1:29 
 
@@ -95,6 +98,9 @@ for iS = 1:29
     % ==> store orientations for SI PF plots
     oris{iS} = or;
     
+    % ==> monkey and session
+    Ss{iS} = [S.general.monkey, S.general.expDate];
+
     % ==> quick sanity check
     assert(size(dvs,1) == size(cho,1))
     
