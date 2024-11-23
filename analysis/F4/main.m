@@ -7,6 +7,8 @@ drc = '../../data/';
 % ==> directory containing PF curve fit functions
 pfc_functions_dr = '../../simulations/F1/pfc_functions/';
 addpath(pfc_functions_dr)
+
+write_flag = false;
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % ==> dynamic range analysis types
@@ -170,11 +172,15 @@ for iS = 1:29
     fprintf('Computed psychometric functions for session %d of %d...\n',iS,29)                       
 end
 
-% ==> save new data (choice proportions from split (CPs), and counts (CTs))
-save([drc,'CPs_dynr_',dyn_type,'.mat'],'CPs');
-save([drc,'CTs_dynr_',dyn_type,'.mat'],'CTs');
-% ==> save PF fits
-save([drc,'PFs_dynr_',dyn_type,'.mat'],'PF');
+if write_flag
+    % ==> save new data (choice proportions from split (CPs), and counts (CTs))
+    save([drc,'CPs_dynr_',dyn_type,'.mat'],'CPs');
+    save([drc,'CTs_dynr_',dyn_type,'.mat'],'CTs');
+    % ==> save PF fits
+    save([drc,'PFs_dynr_',dyn_type,'.mat'],'PF');
+else
+    fprintf('Using cashed results...\n');
+end
 
 %%
 % ==> draw figure
