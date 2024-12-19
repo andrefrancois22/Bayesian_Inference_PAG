@@ -2,7 +2,16 @@ clear all; close all; clc;
 % ==> directories
 dataPath     = strcat('../../data/pfc_data/');
 drc = '../../data/';
+
 figs_dr = '../SIfigures/';
+save_flag = 1;
+
+% => Monkey colors
+mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
+% => monkey session ranges
+rgs = {1:13,14:29};
+% => monkeys
+M = {'F','J'};
 
 % ==> compute DV peak averages by orientation
 
@@ -77,7 +86,14 @@ slope = nan(29,2);
 % => track loss for sanity check
 lss = nan(29,2);
 
-for iS = 1:29 
+% ==> grand mean
+Yh1 = zeros(1,length(or));
+Yh2 = zeros(1,length(or));
+
+% ==> max n sessions
+Sn = 29;
+
+for iS = 1:Sn 
     
     % ==> draw figure
     figure(2); set(gcf,'color','white'); 
@@ -136,13 +152,56 @@ for iS = 1:29
         xlabel('Orientation');    
         ylim([-2,2]);    
 
-        % ==> save figures
-        saveas(gcf,[figs_dr,num2str(iS),'_F2E.png']);
+        % ==> grand mean
+        yh1(p_opt)
+
+        if save_flag
+            % ==> save figures
+            saveas(gcf,[figs_dr,num2str(iS),'_F2E.png']);
+        end
     end
 end
 
 % 2025
 % ================================================================================================================================================================
+
+% ==> create averages on a per animal basis
+for m = 1:length(M)
+
+    % ==> mean values (per monkey)
+    mrX = mean(mrx(rgs{m},:,:,:),1);
+
+    figure(); set(gcf,'color','white'); 
+    axis square;
+    % => k is contrast
+    for k = 1:2   
+        subplot(1,2,k)
+        for j = 1:length(cx)  
+            if j==1
+                Yh1 = yh1(squeeze(mean(p_opts(rgs{m},k,:),1)));
+                % ==> plot line fit          
+                plot(or,Yh1,'color',clrs{j},'linewidth',3);
+            elseif j==2
+                Yh2 = yh2(squeeze(mean(p_opts(rgs{m},k,:),1)));
+                % ==> plot line fit  
+                plot(or,Yh2,'color',clrs{j},'linewidth',3);   
+            end
+            hold on;  hold all;
+           plot(or,squeeze(mrX(:,j,k,:))','o','markerfacecolor',[clrs{j}],'markeredgecolor','w','markersize',10); hold on; hold all;               
+        end
+        title('Peak Average (signed) by stimulus condition and orientation')    
+        title(['Grand average: Monkey ',M{m}]);
+        ylabel('Peak Average (signed)');
+        xlabel('Orientation');    
+        ylim([-2,2]);    
+
+        if save_flag
+            % ==> save figures
+            saveas(gcf,[figs_dr,'Monkey_',M{m},'_F2E_grand_averages.png']);
+        end
+    end
+end
+
 % ==> intercepts (horizontal orientation axis)
 % <session, contrast, zero-horizzontal intercept line (context line - red or blue)>
 or_ints = nan(29,2,2);
@@ -173,12 +232,18 @@ end
 dfo = or_ints(:,:,1) - or_ints(:,:,2);
 
 figure(); set(gcf,'color','white'); hold on; hold all;
-scatter(dfo(:,1),dfo(:,2),75,'ko','filled'); axis square;
-% plot( min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1))) , zeros(length(min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1)))),1), 'k--');
-% plot( zeros(length(min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1)))),1), min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1))) , 'k--');
+for m = 1:length(M)
+    scatter(dfo(rgs{m},1),dfo(rgs{m},2), 100, 'markerfacecolor',mclrs{m}, 'markeredgecolor',mclrs{m}); axis square; % 
+end
 plot(-2:7,-2:7,'k--');
 xlabel('Low contrast DV "decision bias" difference');
 ylabel('High contrast DV "decision bias" difference');
+
+if save_flag
+    % ==> save figures
+    saveas(gcf,[figs_dr,'orientation_units.png']);
+end
+
 % ================================================================================================================================================================
 
 
@@ -234,14 +299,6 @@ fprintf('JP bias difference Wilcoxon test p = %d, H = %d \n',pbJ,hbJ)
 mdbF = median(bdiff(1:13));
 % ==> median JP
 mdbJ = median(bdiff(14:end));
-
-
-% => Monkey colors
-mclrs = {[1,0.75,0],[0.15,0.75,0.5]};
-% => monkey session ranges
-rgs = {1:13,14:29};
-% => monkeys
-M = {'F','J'};
 
 % ==> F2 - slope Hi v slope Lo, and bias Hi v bias Lo
 fg = figure(); set(fg,'color','white'); fg.Position = [134 547 893 403];
