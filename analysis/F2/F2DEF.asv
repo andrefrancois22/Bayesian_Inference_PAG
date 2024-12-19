@@ -2,7 +2,6 @@ clear all; close all; clc;
 % ==> directories
 dataPath     = strcat('../../data/pfc_data/');
 drc = '../../data/';
-figs_dr = '../SIfigures/';
 
 % ==> compute DV peak averages by orientation
 
@@ -135,32 +134,27 @@ for iS = 1:29
         ylabel('Peak Average (signed)');
         xlabel('Orientation');    
         ylim([-2,2]);    
-
-        % ==> save figures
-        saveas(gcf,[figs_dr,num2str(iS),'_F2E.png']);
     end
 end
 
-% 2025
-% ================================================================================================================================================================
 % ==> intercepts (horizontal orientation axis)
 % <session, contrast, zero-horizzontal intercept line (context line - red or blue)>
 or_ints = nan(29,2,2);
 
 for iS = 1:29
     for k = 1:2
-        % ==> delta (determines precision of the horizontal line intercept estimate)
-        d = 10^(-5); 
+        % ==> delta
+        d = 10^(-5);
         % ==> fine orientation range
         xf = x(1):d:x(end);
         % ==> interpolation for fine line for yh1 (to get a zero crossing)
         yh1_intrp = interp1(x,yh1(p_opts(iS,k,:)),xf);
-        % ==> find zero crossing (case could be slightly negative or positive)
+        % ==> find zero crossing (ca)
         id1 = find(min(abs(yh1_intrp)) == yh1_intrp | -min(abs(yh1_intrp)) == yh1_intrp);
 
         % ==> interpolation for fine line for yh1 (to get a zero crossing)
         yh2_intrp = interp1(x,yh2(p_opts(iS,k,:)),xf);
-        % ==> find zero crossing (case could be slightly negative or positive)
+        % ==> find zero crossing 
         id2 = find(min(abs(yh2_intrp)) == yh2_intrp | -min(abs(yh2_intrp)) == yh2_intrp);
 
         % ==> store crossings
@@ -170,17 +164,7 @@ for iS = 1:29
 end
 
 % ==> differences in units of orientation
-dfo = or_ints(:,:,1) - or_ints(:,:,2);
-
-figure(); set(gcf,'color','white'); hold on; hold all;
-scatter(dfo(:,1),dfo(:,2),75,'ko','filled'); axis square;
-% plot( min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1))) , zeros(length(min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1)))),1), 'k--');
-% plot( zeros(length(min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1)))),1), min(min(dfo(:,2)),min(dfo(:,1))):max( max(dfo(:,2)),max(dfo(:,1))) , 'k--');
-plot(-2:7,-2:7,'k--');
-xlabel('Low contrast DV "decision bias" difference');
-ylabel('High contrast DV "decision bias" difference');
-% ================================================================================================================================================================
-
+dfo = or_ints(:,:,2) - or_ints(:,:,1);;
 
 %%
 
